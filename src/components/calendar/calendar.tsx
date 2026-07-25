@@ -1,6 +1,13 @@
-import { Grid, Group, Stack, Text } from "@mantine/core";
+import {Grid, Stack} from "@mantine/core";
+import {DateCard} from "./card/date.card.tsx";
+import type CollectionEntity from "../../models/entity/collection.model.tsx";
+import {type JSX, useEffect} from "react";
 
-export default function Caldendar() {
+interface CalendarProps {
+    data: CollectionEntity[]
+}
+
+export default function Calendar({data}: CalendarProps): JSX.Element {
     const now = new Date();
 
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -11,37 +18,31 @@ export default function Caldendar() {
         0,
     ).getDate();
 
+    useEffect(() => {
+
+    }, []);
+
     return (
         <Stack p="md">
             <Grid columns={7}>
                 {Array(dayOfWeekIndex + daysInCurrentMonth)
                     .fill(1)
-                    .map((_, index: number) => (
-                        <Grid.Col span={1}>
+                    .map((_, index: number) => {
+                        const matchingData = data[index];
+                        if(matchingData) {
+                            console.log(matchingData);
+                        }
+
+                        return <Grid.Col key={`calendar-card-${index}`} span={1}>
                             {index > dayOfWeekIndex - 1 && (
                                 <DateCard
                                     content={index + 1 - dayOfWeekIndex}
                                 />
                             )}
                         </Grid.Col>
-                    ))}
-                <Grid.Col></Grid.Col>
+                    })}
             </Grid>
         </Stack>
     );
 }
 
-function DateCard({ content }: any) {
-    return (
-        <Group
-            justify="center"
-            style={{
-                height: "150px",
-                borderRadius: 5,
-                borderStyle: "dashed",
-                border: "1px solid rgba(0,0,0,0.1)",
-            }}>
-            <Text>{content}</Text>
-        </Group>
-    );
-}
