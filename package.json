@@ -39,5 +39,11 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10"
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-use-before-define": "off",
+      "@typescript-eslint/no-use-before-define": "off"
+    }
   }
 }

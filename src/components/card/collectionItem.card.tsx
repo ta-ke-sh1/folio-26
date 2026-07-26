@@ -1,12 +1,12 @@
 import {Group, Text} from "@mantine/core";
 import "./date.card.scss"
 
-interface DateCardProps {
+interface CollectionItemCardProps {
     content: any,
     data?: any
 }
 
-export function DateCard({ content, data }: DateCardProps) {
+export function CollectionItemCard({ content, data }: CollectionItemCardProps) {
 
     return (
         <Group

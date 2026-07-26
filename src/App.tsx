@@ -14,6 +14,7 @@ import "mantine-datatable/styles.layer.css";
 
 import "@fontsource-variable/darker-grotesque";
 import "@fontsource-variable/darker-grotesque/wght.css";
+import CollectionLayout from "./layouts/collection/collection.layout.tsx";
 
 type RouteItem = {
     element: JSX.Element;
@@ -26,8 +27,12 @@ const routes: RouteItem[] = [
         element: <LoginLayout />,
     },
     {
-        path: "*",
+        path: "/",
         element: <MainLayout />,
+    },
+    {
+        path: "/collection/:id",
+        element: <CollectionLayout />,
     },
     {
         path: "/admin",

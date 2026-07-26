@@ -1,5 +1,5 @@
 import DatabaseService from "../services/database.service";
-import { DatabaseTables } from "../enums/database.enums";
+import {DatabaseTables} from "../enums/database.enums";
 import type CollectionEntity from "../models/entity/collection.model";
 
 // Omit auto-generated fields for creation payloads
@@ -11,7 +11,6 @@ export type UpdateCollectionDto = Partial<CreateCollectionDto>;
 export default class CollectionService {
     private static instance: CollectionService;
     private dbService: DatabaseService;
-    private tableName = DatabaseTables.Collections;
 
     private constructor() {
         this.dbService = DatabaseService.getInstance();
@@ -28,35 +27,35 @@ export default class CollectionService {
      * Fetch all collections.
      */
     public async getAllCollections() {
-        return this.dbService.getAll(this.tableName);
+        return this.dbService.getAll(DatabaseTables.Collections);
     }
 
     /**
      * Fetch a single collection by its ID.
      */
     public async getCollectionById(id: number) {
-        return this.dbService.getById(this.tableName, id.toString());
+        return this.dbService.getById(DatabaseTables.Collections, id.toString());
     }
 
     /**
      * Add a new collection.
      */
     public async createCollection(data: CreateCollectionDto) {
-        return this.dbService.create(this.tableName, data);
+        return this.dbService.create(DatabaseTables.Collections, data);
     }
 
     /**
      * Edit an existing collection by ID.
      */
     public async updateCollection(id: number, data: UpdateCollectionDto) {
-        return this.dbService.updateById(this.tableName, id, data);
+        return this.dbService.updateById(DatabaseTables.Collections, id, data);
     }
 
     /**
      * Delete a collection by ID.
      */
     public async deleteCollection(id: number) {
-        return this.dbService.deleteById(this.tableName, id);
+        return this.dbService.deleteById(DatabaseTables.Collections, id);
     }
 
     /**
@@ -74,9 +73,22 @@ export default class CollectionService {
 
         return this.dbService
             .getDatabase()
-            .from(this.tableName)
+            .from(DatabaseTables.Collections)
             .select()
             .gte("created_at", startDate)
             .lt("created_at", endDate);
+    }
+
+    /**
+     * Fetch collection items with a specific collection id.
+     *
+     * @param id
+     */
+    public async getCollectionItemsById(id: number) {
+        return this.dbService
+            .getDatabase()
+            .from(DatabaseTables.CollectionItems)
+            .select()
+            .eq("collection_id", id)
     }
 }

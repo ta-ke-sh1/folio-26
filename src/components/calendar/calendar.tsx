@@ -1,5 +1,5 @@
 import {Grid, Stack} from "@mantine/core";
-import {DateCard} from "./card/date.card.tsx";
+import {DateCard} from "../card/date.card.tsx";
 import type CollectionEntity from "../../models/entity/collection.model.tsx";
 import {type JSX} from "react";
 
