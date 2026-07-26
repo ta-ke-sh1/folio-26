@@ -39,7 +39,6 @@ export default function MainLayout() {
             const response = await DatabaseService.getInstance().getAll(
                 DatabaseTables.Collections
             );
-            console.log(response);
 
             if (response.success) {
                 setData(response.data as CollectionEntity[]);
