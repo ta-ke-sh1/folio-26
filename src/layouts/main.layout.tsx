@@ -2,10 +2,9 @@ import {Group, Stack, Title, Text, Button} from "@mantine/core";
 import LayoutWrapper from "../components/wrappers/layout/layout.wrapper.tsx";
 import Calendar from "../components/calendar/calendar";
 import {useEffect, useState} from "react";
-import DatabaseService from "../services/database.service.ts";
-import {DatabaseTables} from "../enums/database.enums.ts";
 import type CollectionEntity from "../models/entity/collection.model.tsx";
 import {IconChevronLeft, IconChevronRight} from "@tabler/icons-react";
+import CollectionService from "../services/collection.service.ts";
 
 /** Helper function to format a Date object or month/year pair into "JUL. 2026" format */
 function formatMonthYear(year: number, monthIndex: number): string {
@@ -30,25 +29,26 @@ export default function MainLayout() {
     const [data, setData] = useState<CollectionEntity[]>([]);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/immutability
-        (async () => await fetchCollections())();
-    }, []);
+        async function fetchCollections(): Promise<void> {
+            try {
+                const response = await CollectionService.getInstance().getCollectionsByMonthAndYear(
+                    currentDate.year,
+                    currentDate.month
+                );
 
-    async function fetchCollections(): Promise<void> {
-        try {
-            const response = await DatabaseService.getInstance().getAll(
-                DatabaseTables.Collections
-            );
-
-            if (response.success) {
-                setData(response.data as CollectionEntity[]);
-            } else {
-                console.error(response.error);
+                // Supabase queries return { data, error } directly instead of response.success
+                if (response.error) {
+                    console.error(response.error);
+                } else if (response.data) {
+                    setData(response.data as CollectionEntity[]);
+                }
+            } catch (e) {
+                console.error(e);
             }
-        } catch (e) {
-            console.error(e);
         }
-    }
+
+        (async () => await fetchCollections())();
+    }, [currentDate.month, currentDate.year]);
 
     // Handlers to increment/decrement the active month
     const handlePrevMonth = () => {
