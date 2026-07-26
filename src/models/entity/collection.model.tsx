@@ -6,4 +6,5 @@ export default interface CollectionEntity {
     url: string;
     author: string;
     year: string;
+    created_at: string;
 }

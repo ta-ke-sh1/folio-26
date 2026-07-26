@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import "./layout.scss"
 
 interface LayoutWrapperProps {
     children: JSX.Element[] | JSX.Element;

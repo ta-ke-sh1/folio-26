@@ -12,7 +12,8 @@ import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 import "mantine-datatable/styles.layer.css";
 
-import "@fontsource/sen/400.css";
+import "@fontsource-variable/darker-grotesque";
+import "@fontsource-variable/darker-grotesque/wght.css";
 
 type RouteItem = {
     element: JSX.Element;
@@ -36,7 +37,7 @@ const routes: RouteItem[] = [
 
 export default function App() {
     const theme = createTheme({
-        fontFamily: "Sen",
+        fontFamily: "Darker Grotesque Variable",
     });
 
     return (

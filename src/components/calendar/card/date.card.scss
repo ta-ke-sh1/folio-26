@@ -1,0 +1,8 @@
+.date-card {
+  transition-duration: 0.3s;
+
+  &:hover {
+    background-color: #ffa94d;
+    border: 1px dashed rgb(255, 255, 255)
+  }
+}

@@ -2,20 +2,22 @@ import {Group, Text} from "@mantine/core";
 import "./date.card.scss"
 
 interface DateCardProps {
-    content: any
+    content: any,
+    data?: any
 }
 
-export function DateCard({ content }: DateCardProps) {
+export function DateCard({ content, data }: DateCardProps) {
+
     return (
         <Group
+            className={'date-card'}
             justify="center"
             style={{
-                height: "150px",
+                height: "15dvh",
                 borderRadius: 5,
-                borderStyle: "dashed",
-                border: "1px solid rgba(0,0,0,0.1)",
+                border: "1px dashed rgba(0,0,0,0.1)",
             }}>
-            <Text>{content}</Text>
+            <Text>{data.data.length > 0 ? data.name : content}</Text>
         </Group>
     );
 }
