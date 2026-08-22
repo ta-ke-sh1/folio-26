@@ -20,6 +20,7 @@
     "@tabler/icons-react": "^3.45.0",
     "dayjs": "^1.11.20",
     "gsap": "^3.15.0",
+    "js-cookie": "^3.0.8",
     "mantine-datatable": "^9.4.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
