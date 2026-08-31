@@ -88,9 +88,10 @@ export default function MainLayout() {
                 maxWidth: 700,
                 textAlign: "center",
                 lineHeight: "86px",
-                fontWeight: 1000,
+                fontWeight: 800,
                 fontSize: 96,
                 letterSpacing: -3,
+                fontFamily: "Plus Jakarta Sans Variable",
               }}
             >
               {currentLabel} COLLECTIONS

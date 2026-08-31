@@ -10,9 +10,12 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ZIndexLevel } from "../../enums/styles.enum";
+import { useNavigate } from "react-router";
 
 export default function NavigationBar() {
   const [opened, { toggle, close }] = useDisclosure(false);
+
+  const navigate = useNavigate();
 
   const navLinks = [
     { label: "About", href: "/about" },
@@ -38,7 +41,7 @@ export default function NavigationBar() {
         {/* Brand Logo / Title */}
         <Title
           onClick={() => {
-            window.location.href = "/";
+            navigate("/");
           }}
           style={{
             userSelect: "none",
@@ -57,7 +60,9 @@ export default function NavigationBar() {
             <Button
               key={link.label}
               component="a"
-              href={link.href}
+              onClick={() => {
+                navigate(link.href);
+              }}
               variant="subtle"
               color="gray"
             >

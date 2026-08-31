@@ -4,7 +4,7 @@ import type { JSX } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import AdminLayout from "./layouts/admin/admin.layout";
 import LoginLayout from "./layouts/login/login.layout";
-import MainLayout from "./layouts/main.layout";
+import MainLayout from "./layouts/homepage/main.layout.tsx";
 
 import "./styles/base.scss";
 import "@mantine/core/styles.css";
@@ -15,9 +15,14 @@ import "mantine-datatable/styles.layer.css";
 import "@fontsource-variable/inter"; // Defaults to wght axis
 import "@fontsource-variable/inter/wght.css"; // Specify axis
 
+import "@fontsource-variable/plus-jakarta-sans"; // Defaults to wght axis
+import "@fontsource-variable/plus-jakarta-sans/wght.css"; // Specify axis
+
 import CollectionDetailsLayout from "./layouts/collection/collectionDetails.layout.tsx";
 import NavigationBar from "./components/navigation/navBar.tsx";
 import CollectionsLayout from "./layouts/collection/collections.layout.tsx";
+import AboutLayout from "./layouts/about/about.layout.tsx";
+import ContactsLayout from "./layouts/contacts/contacts.layout.tsx";
 
 type RouteItem = {
   element: JSX.Element;
@@ -32,6 +37,14 @@ const routes: RouteItem[] = [
   {
     path: "/",
     element: <MainLayout />,
+  },
+  {
+    path: "/about",
+    element: <AboutLayout />,
+  },
+  {
+    path: "/contacts",
+    element: <ContactsLayout />,
   },
   {
     path: "/collections",
@@ -55,8 +68,8 @@ export default function App() {
   return (
     <MantineProvider theme={theme}>
       <Notifications />
-      <NavigationBar />
       <BrowserRouter>
+        <NavigationBar />
         <Routes>
           {routes.map((route: RouteItem, index: number) => {
             return (
