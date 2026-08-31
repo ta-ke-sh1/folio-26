@@ -1,4 +1,11 @@
-import { Group, Stack, Title, Text, Button } from "@mantine/core";
+import {
+  Group,
+  Stack,
+  Title,
+  Text,
+  Button,
+  SegmentedControl,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import Calendar from "../../components/calendar/calendar";
@@ -18,7 +25,12 @@ function formatMonthYear(year: number, monthIndex: number): string {
   return formatted.toUpperCase().replace(/^([A-Z]{3})\b/, "$1.");
 }
 
-export default function MainLayout() {
+enum ViewMode {
+  LIST = "List",
+  CALENDAR = "Calendar",
+}
+
+export default function CollectionsLayout() {
   const now = new Date();
 
   // Track both month and year so calendar controls wrap correctly (e.g. Dec -> Jan)
@@ -28,6 +40,8 @@ export default function MainLayout() {
   });
 
   const [data, setData] = useState<CollectionEntity[]>([]);
+
+  const [mode, setMode] = useState<ViewMode>(ViewMode.CALENDAR);
 
   useEffect(() => {
     async function fetchCollections(): Promise<void> {
@@ -98,52 +112,68 @@ export default function MainLayout() {
             </Title>
           </Stack>
         </Group>
-        <Group pr={"md"} pl={"md"} justify={"space-between"}>
-          <Group>
-            <Button
-              color="orange"
-              size={"lg"}
-              variant={"light"}
-              leftSection={<IconChevronLeft />}
-              onClick={handlePrevMonth}
-            >
-              <Text
-                style={{
-                  fontWeight: 400,
-                  fontSize: 24,
-                  letterSpacing: -1,
-                }}
-              >
-                {prevLabel}
-              </Text>
-            </Button>
-          </Group>
-          <Group>
-            <Button
-              color="orange"
-              size={"lg"}
-              variant={"light"}
-              rightSection={<IconChevronRight />}
-              onClick={handleNextMonth}
-            >
-              <Text
-                style={{
-                  fontWeight: 400,
-                  fontSize: 24,
-                  letterSpacing: -1,
-                }}
-              >
-                {nextLabel}
-              </Text>
-            </Button>
-          </Group>
+        <Group justify={"center"}>
+          <SegmentedControl
+            transitionDuration={300}
+            transitionTimingFunction="linear"
+            color="yellow"
+            data={Object.values(ViewMode)}
+            value={mode}
+            onChange={setMode}
+          />
         </Group>
+        {mode === ViewMode.CALENDAR ? (
+          <>
+            <Group pr={"md"} pl={"md"} justify={"space-between"}>
+              <Group>
+                <Button
+                  color="orange"
+                  size={"lg"}
+                  variant={"light"}
+                  leftSection={<IconChevronLeft />}
+                  onClick={handlePrevMonth}
+                >
+                  <Text
+                    style={{
+                      fontWeight: 400,
+                      fontSize: 24,
+                      letterSpacing: -1,
+                    }}
+                  >
+                    {prevLabel}
+                  </Text>
+                </Button>
+              </Group>
+              <Group>
+                <Button
+                  color="orange"
+                  size={"lg"}
+                  variant={"light"}
+                  rightSection={<IconChevronRight />}
+                  onClick={handleNextMonth}
+                >
+                  <Text
+                    style={{
+                      fontWeight: 400,
+                      fontSize: 24,
+                      letterSpacing: -1,
+                    }}
+                  >
+                    {nextLabel}
+                  </Text>
+                </Button>
+              </Group>
+            </Group>
 
-        <Calendar
-          data={data}
-          year={currentDate.year}
-          month={currentDate.month}
-        />
+            <Calendar
+              data={data}
+              year={currentDate.year}
+              month={currentDate.month}
+            />
+          </>
+        ) : (
+          <></>
+        )}
       </Stack>
       <Footer />
     </LayoutWrapper>
