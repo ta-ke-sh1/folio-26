@@ -1,7 +1,5 @@
-import type { DataTableColumn } from "mantine-datatable";
-
 export type CommonTableProps = {
   data: any[];
-  columns: DataTableColumn[];
+  columns: any[];
   defaultSortName: string;
 };

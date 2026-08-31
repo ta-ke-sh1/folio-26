@@ -37,7 +37,7 @@ export default function ViewTable({
 
   return (
     <DataTable
-      minHeight={550}
+      height="100%"
       withTableBorder
       withColumnBorders
       striped

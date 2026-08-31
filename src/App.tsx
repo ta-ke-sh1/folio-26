@@ -1,4 +1,6 @@
 import { createTheme, MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+
 import { Notifications } from "@mantine/notifications";
 import type { JSX } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
@@ -67,21 +69,23 @@ export default function App() {
 
   return (
     <MantineProvider theme={theme}>
-      <Notifications />
-      <BrowserRouter>
-        <NavigationBar />
-        <Routes>
-          {routes.map((route: RouteItem, index: number) => {
-            return (
-              <Route
-                key={`route-item-${index}-${route.path}`}
-                path={route.path}
-                element={route.element}
-              />
-            );
-          })}
-        </Routes>
-      </BrowserRouter>
+      <ModalsProvider>
+        <Notifications />
+        <BrowserRouter>
+          <NavigationBar />
+          <Routes>
+            {routes.map((route: RouteItem, index: number) => {
+              return (
+                <Route
+                  key={`route-item-${index}-${route.path}`}
+                  path={route.path}
+                  element={route.element}
+                />
+              );
+            })}
+          </Routes>
+        </BrowserRouter>
+      </ModalsProvider>
     </MantineProvider>
   );
 }

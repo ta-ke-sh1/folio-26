@@ -10,12 +10,17 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ZIndexLevel } from "../../enums/styles.enum";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 export default function NavigationBar() {
   const [opened, { toggle, close }] = useDisclosure(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  if (location.pathname.includes("/admin")) {
+    return;
+  }
 
   const navLinks = [
     { label: "About", href: "/about" },

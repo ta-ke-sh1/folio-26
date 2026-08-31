@@ -12,7 +12,6 @@ import {
   ThemeIcon,
   Timeline,
   Anchor,
-  Box,
 } from "@mantine/core";
 import {
   IconCpu,
@@ -157,7 +156,7 @@ export default function AboutLayout() {
         <Container size="md" pb={{ base: 40, sm: 80 }}>
           <Stack gap={40}>
             {/* --- ASCII TELEMETRY CARD & BIO --- */}
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl" align="center">
+            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
               <Stack gap="sm">
                 <Badge variant="light" color="blue" size="lg" radius="sm">
                   Back-End & Simulation Engineer

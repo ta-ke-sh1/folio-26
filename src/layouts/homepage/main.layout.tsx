@@ -17,8 +17,6 @@ import {
 import {
   IconCpu,
   IconTerminal2,
-  IconFlame,
-  IconArrowRight,
   IconCode,
   IconActivity,
   IconBinary,
