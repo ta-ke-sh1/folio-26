@@ -1,171 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { Container, Stack, Badge, Grid, Text, Box } from "@mantine/core";
+import { useRef } from "react";
+import {
+  Container,
+  Stack,
+  Badge,
+  Grid,
+  Text,
+  Box,
+  Image,
+  AspectRatio,
+  Group,
+} from "@mantine/core";
 
-interface AsciiCanvasProps {
-  type: "wave" | "matrix";
-  targetRef?: React.RefObject<HTMLDivElement | null>;
-  defaultHeight?: number;
-}
-
-function AsciiCanvas({
-  type,
-  targetRef,
-  defaultHeight = 120,
-}: AsciiCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [dynamicHeight, setDynamicHeight] = useState<number>(defaultHeight);
-
-  // Measure and track target text block height dynamically
-  useEffect(() => {
-    const targetEl = targetRef?.current;
-    if (!targetEl) return;
-
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const measuredHeight = entry.contentRect.height;
-        if (measuredHeight > 0) {
-          setDynamicHeight(measuredHeight);
-        }
-      }
-    });
-
-    observer.observe(targetEl);
-    setDynamicHeight(targetEl.getBoundingClientRect().height || defaultHeight);
-
-    return () => observer.disconnect();
-  }, [targetRef, defaultHeight]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let frame = 0;
-
-    const chars = type === "wave" ? " .:-=+*#%@" : "0101010101./\\|[]{}-+*#_";
-
-    const fontSize = 12;
-    let width = 0;
-    let cols = 0;
-    let rows = Math.floor(dynamicHeight / fontSize);
-    let drops: number[] = [];
-
-    let lastTime = performance.now();
-    const frameInterval = type === "wave" ? 50 : 80;
-
-    const updateDimensions = () => {
-      const rect = container.getBoundingClientRect();
-      width = rect.width;
-
-      if (width > 0 && dynamicHeight > 0) {
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = width * dpr;
-        canvas.height = dynamicHeight * dpr;
-
-        ctx.scale(dpr, dpr);
-
-        cols = Math.max(20, Math.floor(width / 8));
-        rows = Math.floor(dynamicHeight / fontSize);
-
-        if (drops.length !== cols) {
-          drops = Array(cols)
-            .fill(0)
-            .map(() => Math.floor(Math.random() * rows));
-        }
-      }
-    };
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateDimensions();
-    });
-
-    resizeObserver.observe(container);
-    updateDimensions();
-
-    const render = (now: number) => {
-      animationFrameId = requestAnimationFrame(render);
-
-      const elapsed = now - lastTime;
-      if (elapsed < frameInterval) return;
-      lastTime = now - (elapsed % frameInterval);
-
-      if (width === 0 || dynamicHeight === 0) return;
-
-      ctx.clearRect(0, 0, width, dynamicHeight);
-      ctx.font = `${fontSize}px monospace`;
-      ctx.fillStyle = "rgba(255, 119, 0, 0.45)";
-
-      frame += 0.015;
-
-      const charWidth = width / cols;
-
-      if (type === "wave") {
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const v = Math.sin(c * 0.12 + frame) + Math.cos(r * 0.25 + frame);
-            const charIdx = Math.floor(((v + 2) / 4) * (chars.length - 1));
-            const char =
-              chars[Math.max(0, Math.min(chars.length - 1, charIdx))];
-
-            ctx.fillText(char, c * charWidth, (r + 1) * fontSize);
-          }
-        }
-      } else {
-        for (let c = 0; c < cols; c++) {
-          const char = chars[Math.floor(Math.random() * chars.length)];
-          const x = c * charWidth;
-          const y = drops[c] * fontSize;
-
-          ctx.fillText(char, x, y);
-
-          if (y > dynamicHeight && Math.random() > 0.95) {
-            drops[c] = 0;
-          }
-          drops[c]++;
-        }
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(render);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      resizeObserver.disconnect();
-    };
-  }, [type, dynamicHeight]);
-
-  return (
-    <Box
-      ref={containerRef}
-      style={{
-        width: "100%",
-        height: `${dynamicHeight}px`,
-        display: "block",
-        overflow: "hidden",
-        opacity: 0.6,
-      }}
-    >
-      <canvas
-        ref={canvasRef}
-        style={{
-          display: "block",
-          width: "100%",
-          height: `${dynamicHeight}px`,
-        }}
-      />
-    </Box>
-  );
-}
-
-// --- Main Component ---
-export function Story() {
+export default function StorySection() {
   const storyTextRef = useRef<HTMLDivElement | null>(null);
-  const strategyTextRef = useRef<HTMLDivElement | null>(null);
+  const catTextRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <Container fluid mt="100px">
@@ -178,105 +26,258 @@ export function Story() {
             color="primaryOrange"
             style={{ width: "fit-content" }}
           >
-            I. About
+            I. Story
           </Badge>
 
-          <Grid align="flex-start">
-            {/* Story Heading Column */}
-            <Grid.Col
-              span={{ base: 12, md: 6 }}
-              style={{
-                position: "relative",
-              }}
-            >
-              <Text
-                size="xl"
-                c="white"
-                style={{
-                  fontSize: 20,
-                  fontWeight: 200,
-                  letterSpacing: "-1px",
-                  maxWidth: "50dvw",
-                  position: "absolute",
-                  left: 10,
-                  top: 10,
-                  zIndex: 2,
-                }}
-              >
-                {"I.a. Story"}
-              </Text>
-              {/* ASCII Wave Animation height matched to storyTextRef */}
-              <AsciiCanvas type="wave" targetRef={storyTextRef} />
-            </Grid.Col>
-
-            {/* Story Content Column */}
-            <Grid.Col
-              span={{ base: 12, md: 6 }}
-              style={{
-                position: "relative",
-              }}
-            >
+          <Grid align="stretch" gap="xl">
+            {/* --- Block I.a: TSDV & Simulation (Text Left, Visual Right) --- */}
+            <Grid.Col span={{ base: 12, md: 6 }}>
               <div ref={storyTextRef}>
                 <Text
                   size="xl"
                   c="white"
                   style={{
-                    fontSize: 64,
+                    fontSize: 48,
                     maxWidth: "50dvw",
-                    lineHeight: "60px",
+                    lineHeight: "52px",
+                    fontWeight: 300,
                   }}
                 >
-                  {`Mainly proficient in simulations, my development expertise focuses
-              on replicating life events and interactions into the programming
-              scene. I enjoy combining visual design with digital strategy.`.toUpperCase()}
+                  {`Member at TSDV specializing in simulation engineering and web development. Bridging complex mathematical models with responsive digital interfaces.`.toUpperCase()}
                 </Text>
               </div>
             </Grid.Col>
 
-            {/* Strategy Content Column */}
-            <Grid.Col span={{ base: 12, md: 6 }} mt="xl">
-              <div ref={strategyTextRef}>
+            {/* Visual Frame 1: Simulation / Tech Graphic with Hover Glow */}
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <Box
+                style={{
+                  position: "relative",
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  border: "1px solid rgba(255, 119, 0, 0.3)",
+                  transition: "all 0.4s ease",
+                  cursor: "pointer",
+                  "&:hover": {
+                    borderColor: "#FF7700",
+                    transform: "scale(1.01)",
+                    boxShadow: "0 0 25px rgba(255, 119, 0, 0.25)",
+                  },
+                }}
+              >
                 <Text
-                  size="xl"
+                  size="xs"
                   c="white"
+                  ff="monospace"
                   style={{
-                    fontSize: 64,
-                    maxWidth: "50dvw",
-                    lineHeight: "60px",
+                    position: "absolute",
+                    top: 14,
+                    left: 14,
+                    zIndex: 3,
+                    background: "rgba(0,0,0,0.75)",
+                    padding: "4px 10px",
+                    borderRadius: "4px",
+                    letterSpacing: "1px",
                   }}
                 >
-                  {`My works aims to serve its purposes while maintaining a certain degree
-              of personal aesthetic preferenes.`.toUpperCase()}
+                  I.a // TSDV & CONFIDENTIALITY
                 </Text>
-              </div>
+
+                <AspectRatio ratio={16 / 9}>
+                  <Image
+                    src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
+                    alt="System Architecture and Hardware Simulation"
+                    fallbackSrc="https://placehold.co/1200x675?text=System+Simulation"
+                    style={{
+                      filter: "brightness(0.7) contrast(1.1)",
+                      transition: "filter 0.4s ease, transform 0.6s ease",
+                    }}
+                  />
+                </AspectRatio>
+
+                <Box
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: "20px",
+                    background: "linear-gradient(transparent, rgba(0,0,0,0.9))",
+                    zIndex: 2,
+                  }}
+                >
+                  <Text size="xs" c="orange.4" ff="monospace" fw={700}>
+                    [ NDA CLASSIFIED ]
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    Enterprise simulation frameworks and proprietary codebases
+                    remain restricted under active NDA.
+                  </Text>
+                </Box>
+              </Box>
             </Grid.Col>
 
-            {/* Strategy Heading Column */}
-            <Grid.Col
-              span={{ base: 12, md: 6 }}
-              mt="xl"
-              style={{
-                position: "relative",
-              }}
-            >
+            {/* --- Block I.b: Photography & Videography (Image Left, Text Right) --- */}
+            <Grid.Col span={{ base: 12, md: 6 }} mt="xl">
+              <Box
+                style={{
+                  position: "relative",
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  transition: "all 0.4s ease",
+                  cursor: "pointer",
+                  "&:hover": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                    transform: "scale(1.01)",
+                  },
+                }}
+              >
+                <Text
+                  size="xs"
+                  c="white"
+                  ff="monospace"
+                  style={{
+                    position: "absolute",
+                    top: 14,
+                    left: 14,
+                    zIndex: 3,
+                    background: "rgba(0,0,0,0.75)",
+                    padding: "4px 10px",
+                    borderRadius: "4px",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  I.b // VISUAL MEDIA
+                </Text>
+
+                <AspectRatio ratio={16 / 9}>
+                  <Image
+                    src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80"
+                    alt="Camera Lens Photography"
+                    fallbackSrc="https://placehold.co/1200x675?text=Photography"
+                    style={{
+                      filter: "grayscale(0.6) brightness(0.8)",
+                      transition: "filter 0.4s ease, transform 0.6s ease",
+                    }}
+                  />
+                </AspectRatio>
+
+                <Group
+                  gap="xs"
+                  style={{
+                    position: "absolute",
+                    bottom: 14,
+                    right: 14,
+                    zIndex: 2,
+                    background: "rgba(0,0,0,0.7)",
+                    padding: "6px 12px",
+                    borderRadius: "20px",
+                  }}
+                >
+                  <Text size="xs" c="white" ff="monospace">
+                    50MM / FRAMING / MOTION
+                  </Text>
+                </Group>
+              </Box>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, md: 6 }} mt="xl">
               <Text
                 size="xl"
                 c="white"
                 style={{
-                  fontSize: 20,
-                  fontWeight: 200,
-                  letterSpacing: "-1px",
+                  fontSize: 48,
                   maxWidth: "50dvw",
-                  position: "absolute",
-                  left: 10,
-                  top: 10,
-                  zIndex: 2,
+                  lineHeight: "52px",
+                  fontWeight: 300,
                 }}
               >
-                {"I.b. Strategy"}
+                {`Outside software, I capture geometry, perspective, and lighting through photography and videography.`.toUpperCase()}
               </Text>
-              {/* ASCII Matrix Animation height matched to strategyTextRef */}
-              <AsciiCanvas type="matrix" targetRef={strategyTextRef} />
+            </Grid.Col>
+
+            {/* --- Block I.c: Companion Life / Cat Person (Text Left, Image Right) --- */}
+            <Grid.Col span={{ base: 12, md: 6 }} mt="xl">
+              <div ref={catTextRef}>
+                <Text
+                  size="xl"
+                  c="white"
+                  style={{
+                    fontSize: 48,
+                    maxWidth: "50dvw",
+                    lineHeight: "52px",
+                    fontWeight: 300,
+                  }}
+                >
+                  {`Passionate cat lover sharing life with 2 feline companions who keep my workspace creative and grounded.`.toUpperCase()}
+                </Text>
+              </div>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, md: 6 }} mt="xl">
+              <Box
+                style={{
+                  position: "relative",
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  border: "1px solid rgba(255, 119, 0, 0.3)",
+                  transition: "all 0.4s ease",
+                  cursor: "pointer",
+                  "&:hover": {
+                    borderColor: "#FF7700",
+                    transform: "scale(1.01)",
+                    boxShadow: "0 0 25px rgba(255, 119, 0, 0.2)",
+                  },
+                }}
+              >
+                <Text
+                  size="xs"
+                  c="white"
+                  ff="monospace"
+                  style={{
+                    position: "absolute",
+                    top: 14,
+                    left: 14,
+                    zIndex: 3,
+                    background: "rgba(0,0,0,0.75)",
+                    padding: "4px 10px",
+                    borderRadius: "4px",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  I.c // COMPANIONS (2 CATS)
+                </Text>
+
+                <AspectRatio ratio={16 / 9}>
+                  <Image
+                    src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=80"
+                    alt="Two Cats Workspace Companions"
+                    fallbackSrc="https://placehold.co/1200x675?text=2+Cats"
+                    style={{
+                      filter: "brightness(0.85) contrast(1.05)",
+                      transition: "filter 0.4s ease, transform 0.6s ease",
+                    }}
+                  />
+                </AspectRatio>
+
+                <Box
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: "16px 20px",
+                    background:
+                      "linear-gradient(transparent, rgba(0,0,0,0.85))",
+                    zIndex: 2,
+                  }}
+                >
+                  <Text size="xs" c="orange.4" ff="monospace">
+                    FELINE COMPANIONSHIP // 02 CATS
+                  </Text>
+                </Box>
+              </Box>
             </Grid.Col>
           </Grid>
         </Stack>

@@ -15,7 +15,8 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
-import { Story } from "./story.section";
+import { CapabilitySection } from "./capability.section";
+import StorySection from "./story.section";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -252,7 +253,7 @@ export default function AsciiLandingPage() {
             size="xl"
             color="white"
             variant="outline"
-            style={{ marginTop: 24 }}
+            style={{ marginTop: 24, fontFamily: "monospace", fontWeight: 200 }}
           >
             Scroll down
           </Badge>
@@ -285,7 +286,8 @@ export default function AsciiLandingPage() {
                 "linear-gradient(to bottom, transparent 0%, black 15%)",
             }}
           >
-            <Story />
+            <StorySection />
+            <CapabilitySection />
           </Box>
 
           {/* Footer (Fades in seamlessly on top of the Story section) */}

@@ -38,6 +38,7 @@ import {
   pitchBlack,
   primaryOrange,
 } from "./enums/colors.enum.ts";
+import { PageTransitionProvider } from "./components/transition/transition.tsx";
 
 type RouteItem = {
   element: JSX.Element;
@@ -98,18 +99,20 @@ export default function App() {
       <ModalsProvider>
         <Notifications />
         <BrowserRouter>
-          <NavigationBar />
-          <Routes>
-            {routes.map((route: RouteItem, index: number) => {
-              return (
-                <Route
-                  key={`route-item-${index}-${route.path}`}
-                  path={route.path}
-                  element={route.element}
-                />
-              );
-            })}
-          </Routes>
+          <PageTransitionProvider>
+            <NavigationBar />
+            <Routes>
+              {routes.map((route: RouteItem, index: number) => {
+                return (
+                  <Route
+                    key={`route-item-${index}-${route.path}`}
+                    path={route.path}
+                    element={route.element}
+                  />
+                );
+              })}
+            </Routes>
+          </PageTransitionProvider>
         </BrowserRouter>
       </ModalsProvider>
     </MantineProvider>
