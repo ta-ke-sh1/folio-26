@@ -22,6 +22,7 @@ import {
   IconMail,
   IconMapPin,
   IconCheck,
+  IconCpu,
 } from "@tabler/icons-react";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 
@@ -54,9 +55,9 @@ const sendingFrames = [
   `
  [ PACKET DISPATCHING ]
   +---------------------+
-  | >>------------->   |
+  | >>------------->    |
   |    ENCRYPTING...    |
-  | [=====>        ]   |
+  | [=====>        ]    |
   +---------------------+
   STATUS: TRANSMITTING
   `,
@@ -65,7 +66,7 @@ const sendingFrames = [
   +---------------------+
   |    ------------->>  |
   |    ENCRYPTING...    |
-  | [===========>  ]   |
+  | [===========>  ]    |
   +---------------------+
   STATUS: TRANSMITTING
   `,
@@ -74,7 +75,7 @@ const sendingFrames = [
   +---------------------+
   |   ------------->>>  |
   |    HANDSHAKE OK!    |
-  | [==============]   |
+  | [==============]    |
   +---------------------+
   STATUS: DELIVERED
   `,
@@ -88,13 +89,12 @@ function AsciiContactConsole({
   const [frameIdx, setFrameIdx] = useState(0);
 
   useEffect(() => {
-    const frames = status === "idle" ? idleFrames : sendingFrames;
-    const timer = setInterval(
-      () => {
-        setFrameIdx((prev) => (prev + 1) % frames.length);
-      },
-      status === "sending" ? 250 : 500,
-    );
+    if (status === "sent") return;
+
+    const intervalTime = status === "sending" ? 200 : 600;
+    const timer = setInterval(() => {
+      setFrameIdx((prev) => (prev + 1) % 2);
+    }, intervalTime);
 
     return () => clearInterval(timer);
   }, [status]);
@@ -103,15 +103,28 @@ function AsciiContactConsole({
     status === "sent"
       ? sendingFrames[2]
       : status === "sending"
-        ? sendingFrames[frameIdx % 2]
-        : idleFrames[frameIdx % 2];
+        ? sendingFrames[frameIdx]
+        : idleFrames[frameIdx];
 
   return (
-    <Paper p="md" radius="md" bg="dark.9" withBorder>
+    <Paper
+      p="md"
+      radius="md"
+      bg="dark.9"
+      style={{
+        border: "1px solid var(--mantine-color-orange-8)",
+        boxShadow: "0 0 15px rgba(255, 146, 43, 0.12)",
+      }}
+    >
       <Group justify="space-between" mb="xs">
         <Group gap={6}>
-          <IconTerminal2 size={16} color="var(--mantine-color-teal-4)" />
-          <Text fz="xs" c="teal.4" style={{ fontFamily: "monospace" }}>
+          <IconTerminal2 size={16} color="var(--mantine-color-orange-5)" />
+          <Text
+            fz="xs"
+            c="orange.5"
+            fw={700}
+            style={{ fontFamily: "monospace", letterSpacing: 0.5 }}
+          >
             COMMS_GATEWAY // ROUTER
           </Text>
         </Group>
@@ -119,12 +132,13 @@ function AsciiContactConsole({
           size="xs"
           color={
             status === "sent"
-              ? "green"
+              ? "orange"
               : status === "sending"
                 ? "yellow"
-                : "teal"
+                : "gray"
           }
-          variant="dot"
+          variant="outline"
+          style={{ fontFamily: "monospace" }}
         >
           {status.toUpperCase()}
         </Badge>
@@ -133,9 +147,9 @@ function AsciiContactConsole({
       <Code
         block
         bg="transparent"
-        c={status === "sent" ? "green.4" : "teal.3"}
+        c={status === "sent" ? "orange.4" : "orange.5"}
         fz={11}
-        lh={1.2}
+        lh={1.25}
         style={{ fontFamily: "monospace", whiteSpace: "pre" }}
       >
         {activeFrame}
@@ -144,14 +158,14 @@ function AsciiContactConsole({
       <Box
         pt="xs"
         mt="xs"
-        style={{ borderTop: "1px solid var(--mantine-color-dark-6)" }}
+        style={{ borderTop: "1px solid var(--mantine-color-dark-7)" }}
       >
         <Text fz={10} c="gray.6" style={{ fontFamily: "monospace" }}>
-          {status === "idle" && "> Waiting for form payload submission..."}
+          {status === "idle" && "> System status normal. Ready for payload..."}
           {status === "sending" &&
-            "> Constructing packet payloads & dispatching..."}
+            "> Encrypting payload & initiating TLS handshake..."}
           {status === "sent" &&
-            "> Packet successfully routed to Trung Ha's inbox!"}
+            "> Packet acknowledged. Output buffer verified."}
         </Text>
       </Box>
     </Paper>
@@ -177,32 +191,53 @@ export default function ContactsLayout() {
     e.preventDefault();
     setFormStatus("sending");
 
-    // Simulate backend submission process
     setTimeout(() => {
       setFormStatus("sent");
-    }, 1800);
+    }, 2200);
+  };
+
+  const inputStyles = {
+    input: {
+      backgroundColor: "var(--mantine-color-dark-8)",
+      borderColor: "var(--mantine-color-dark-5)",
+      color: "var(--mantine-color-gray-1)",
+      "&:focus": {
+        borderColor: "var(--mantine-color-orange-5)",
+      },
+    },
+    label: {
+      color: "var(--mantine-color-gray-4)",
+      fontFamily: "monospace",
+      fontSize: "11px",
+      letterSpacing: "0.5px",
+      marginBottom: "4px",
+    },
   };
 
   return (
     <LayoutWrapper>
+      {/* Dynamic Keyframes for VHS Glitch Effect */}
+
       <Stack gap="xl">
-        {/* --- HERO TITLE (Preserved exact styling) --- */}
-        <Group pt={"md"} justify={"center"}>
-          <Stack justify="center">
+        {/* --- HERO TITLE WITH VHS EFFECT --- */}
+        <Group pt="100" justify="center">
+          <Box className="vhs-title-container">
             <Title
+              className="vhs-title"
+              data-text="CONTACT ME"
               style={{
-                maxWidth: 700,
-                textAlign: "center",
-                lineHeight: "86px",
-                fontWeight: 1000,
-                fontSize: 96,
-                letterSpacing: -3,
-                fontFamily: "Plus Jakarta Sans Variable",
+                fontSize: "clamp(36px, 7vw, 84px)",
+                fontWeight: 900,
+                color: "#FF7700",
+                fontFamily: "monospace",
+                letterSpacing: "-2px",
+                lineHeight: 1,
+                textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
               }}
             >
               CONTACT ME
             </Title>
-          </Stack>
+          </Box>
         </Group>
 
         <Container size="md" pb={{ base: 40, sm: 80 }}>
@@ -210,41 +245,49 @@ export default function ContactsLayout() {
             {/* Left Column: Direct Info & ASCII Console */}
             <Stack gap="md">
               <Stack gap="xs">
-                <Text fz="lg" fw={700}>
-                  Let's Discuss Architecture & Simulation Systems
-                </Text>
+                <Group gap="xs">
+                  <IconCpu size={20} color="var(--mantine-color-orange-5)" />
+                  <Text fz="lg" fw={700}>
+                    Systems & Architecture
+                  </Text>
+                </Group>
                 <Text c="dimmed" fz="sm" lh={1.6}>
-                  Have a question about high-throughput backends, web service
-                  design, or simulation core solvers? Send a message and I'll
-                  get back to you shortly.
+                  Discussing high-throughput backends, security analysis, or
+                  simulation core engines? Send over a message payload or reach
+                  out directly.
                 </Text>
               </Stack>
 
-              {/* Animated ASCII Signal Dispatcher */}
+              {/* Animated ASCII Terminal Console */}
               <AsciiContactConsole status={formStatus} />
 
-              {/* Direct Details */}
+              {/* Direct Details Panel */}
               <Paper
                 p="md"
                 radius="md"
-                withBorder
-                bg="var(--mantine-color-gray-0)"
+                bg="dark.8"
+                style={{ border: "1px solid var(--mantine-color-dark-6)" }}
               >
-                <Stack gap="xs">
+                <Stack gap="sm">
                   <Group gap="sm">
                     <ThemeIcon
                       size={32}
                       radius="md"
                       variant="light"
-                      color="blue"
+                      color="orange"
                     >
                       <IconMail size={18} />
                     </ThemeIcon>
                     <Stack gap={0}>
-                      <Text fz={11} c="dimmed" fw={600}>
-                        DIRECT EMAIL
+                      <Text
+                        fz={10}
+                        c="gray.5"
+                        fw={700}
+                        style={{ fontFamily: "monospace" }}
+                      >
+                        DIRECT_EMAIL
                       </Text>
-                      <Text fz="xs" fw={700}>
+                      <Text fz="xs" fw={600} c="gray.2">
                         trung.ha@example.com
                       </Text>
                     </Stack>
@@ -255,15 +298,20 @@ export default function ContactsLayout() {
                       size={32}
                       radius="md"
                       variant="light"
-                      color="blue"
+                      color="orange"
                     >
                       <IconMapPin size={18} />
                     </ThemeIcon>
                     <Stack gap={0}>
-                      <Text fz={11} c="dimmed" fw={600}>
+                      <Text
+                        fz={10}
+                        c="gray.5"
+                        fw={700}
+                        style={{ fontFamily: "monospace" }}
+                      >
                         LOCATION
                       </Text>
-                      <Text fz="xs" fw={700}>
+                      <Text fz="xs" fw={600} c="gray.2">
                         Available for Remote Work & Consulting
                       </Text>
                     </Stack>
@@ -272,8 +320,14 @@ export default function ContactsLayout() {
               </Paper>
             </Stack>
 
-            {/* Right Column: Interactive Form */}
-            <Paper p="xl" radius="md" withBorder shadow="sm">
+            {/* Right Column: Interactive Dark Form */}
+            <Paper
+              p="xl"
+              radius="md"
+              bg="dark.8"
+              style={{ border: "1px solid var(--mantine-color-dark-5)" }}
+              shadow="md"
+            >
               {formStatus === "sent" ? (
                 <Stack
                   align="center"
@@ -281,24 +335,30 @@ export default function ContactsLayout() {
                   h="100%"
                   py="xl"
                   ta="center"
+                  gap="md"
                 >
                   <ThemeIcon
-                    size={56}
+                    size={60}
                     radius="xl"
-                    color="green"
+                    color="orange"
                     variant="light"
                   >
-                    <IconCheck size={32} />
+                    <IconCheck size={34} />
                   </ThemeIcon>
-                  <Title order={3}>Transmission Received!</Title>
-                  <Text fz="sm" c="dimmed" style={{ maxWidth: 300 }}>
-                    Thank you for reaching out. Your payload has been delivered
-                    to my inbox.
-                  </Text>
+                  <Stack gap={4}>
+                    <Title order={3} c="gray.1">
+                      Transmission Received
+                    </Title>
+                    <Text fz="sm" c="dimmed" style={{ maxWidth: 300 }}>
+                      Your message has been safely encrypted and routed to my
+                      inbox.
+                    </Text>
+                  </Stack>
                   <Button
-                    variant="default"
+                    variant="outline"
+                    color="orange"
                     size="xs"
-                    mt="sm"
+                    mt="xs"
                     onClick={() => {
                       setFormStatus("idle");
                       setFormData({
@@ -309,7 +369,7 @@ export default function ContactsLayout() {
                       });
                     }}
                   >
-                    Send Another Message
+                    Send Another Packet
                   </Button>
                 </Stack>
               ) : (
@@ -317,8 +377,9 @@ export default function ContactsLayout() {
                   <Stack gap="sm">
                     <TextInput
                       required
-                      label="Your Name"
+                      label="ORIGIN // NAME"
                       placeholder="e.g. Alex Mercer"
+                      styles={inputStyles}
                       value={formData.name}
                       onChange={(e) =>
                         setFormData({
@@ -331,8 +392,9 @@ export default function ContactsLayout() {
                     <TextInput
                       required
                       type="email"
-                      label="Your Email"
+                      label="RETURN_ADDRESS // EMAIL"
                       placeholder="alex@company.com"
+                      styles={inputStyles}
                       value={formData.email}
                       onChange={(e) =>
                         setFormData({
@@ -343,7 +405,8 @@ export default function ContactsLayout() {
                     />
 
                     <Select
-                      label="Project / Request Type"
+                      label="PAYLOAD // TYPE"
+                      styles={inputStyles}
                       data={[
                         "Backend Systems Design",
                         "Simulation Engine Core",
@@ -358,9 +421,10 @@ export default function ContactsLayout() {
 
                     <Textarea
                       required
-                      label="Message / System Specs"
-                      placeholder="Describe your system requirements or technical inquiry..."
+                      label="SPECIFICATION // MESSAGE"
+                      placeholder="Detail your system requirements or technical inquiry..."
                       minRows={4}
+                      styles={inputStyles}
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({
@@ -373,14 +437,15 @@ export default function ContactsLayout() {
                     <Button
                       type="submit"
                       size="md"
-                      color="blue"
+                      color="orange"
+                      variant="filled"
                       loading={formStatus === "sending"}
                       rightSection={<IconSend size={18} />}
                       mt="xs"
                     >
                       {formStatus === "sending"
-                        ? "Transmitting..."
-                        : "Send Request"}
+                        ? "Transmitting Payload..."
+                        : "Dispatch Signal"}
                     </Button>
                   </Stack>
                 </form>

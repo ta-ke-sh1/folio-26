@@ -133,22 +133,21 @@ export default function AboutLayout() {
     <LayoutWrapper>
       <Stack gap="xl">
         {/* --- HERO TITLE (Preserved exact styling) --- */}
-        <Group pt={"md"} justify={"center"}>
+        <Group pt={"90"} justify={"center"}>
           <Stack justify="center">
             <Title
               style={{
-                maxWidth: 700,
+                fontSize: "clamp(36px, 7vw, 84px)",
+                fontWeight: 900,
+                color: "#FF7700",
+                fontFamily: "monospace",
+                letterSpacing: "-2px",
+                lineHeight: 1,
                 textAlign: "center",
-                lineHeight: "86px",
-                fontWeight: 1000,
-                fontSize: 96,
-                letterSpacing: -3,
-                fontFamily: "Plus Jakarta Sans Variable",
+                textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
               }}
             >
-              ABOUT
-              <br />
-              TRUNG. HA
+              ABOUT ME
             </Title>
           </Stack>
         </Group>

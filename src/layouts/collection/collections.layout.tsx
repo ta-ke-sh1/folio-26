@@ -95,20 +95,22 @@ export default function CollectionsLayout() {
   return (
     <LayoutWrapper>
       <Stack>
-        <Group pt={"md"} justify={"center"}>
+        <Group pt={"60"} justify={"center"}>
           <Stack justify="center">
             <Title
               style={{
-                maxWidth: 700,
+                fontSize: "clamp(36px, 7vw, 84px)",
+                fontWeight: 900,
+                color: "#FF7700",
+                fontFamily: "monospace",
+                letterSpacing: "-2px",
+                lineHeight: 1,
+                textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
                 textAlign: "center",
-                lineHeight: "86px",
-                fontWeight: 800,
-                fontSize: 96,
-                letterSpacing: -3,
-                fontFamily: "Plus Jakarta Sans Variable",
               }}
             >
-              {currentLabel} COLLECTIONS
+              {currentLabel}
+              <br /> COLLECTIONS
             </Title>
           </Stack>
         </Group>

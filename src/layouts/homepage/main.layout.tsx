@@ -17,6 +17,7 @@ import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import { CapabilitySection } from "./capability.section";
 import StorySection from "./story.section";
+import MemoriesSection from "./memories.section";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -288,6 +289,7 @@ export default function AsciiLandingPage() {
           >
             <StorySection />
             <CapabilitySection />
+            <MemoriesSection />
           </Box>
 
           {/* Footer (Fades in seamlessly on top of the Story section) */}
