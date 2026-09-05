@@ -11,3 +11,14 @@ html {
   /* Hide scrollbar for IE and Legacy Edge */
   -ms-overflow-style: none;
 }
+
+html,
+body,
+button,
+a,
+input,
+textarea,
+select,
+[role="button"] {
+  cursor: none !important;
+}

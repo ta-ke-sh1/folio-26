@@ -6,38 +6,35 @@ import {
   Text,
   Stack,
   SimpleGrid,
+  Divider,
 } from "@mantine/core";
 import {
-  IconBrandTwitter,
   IconBrandGithub,
-  IconBrandLinkedin,
+  IconBrandFacebook,
+  IconBrandInstagram,
 } from "@tabler/icons-react";
 
 const footerData = [
   {
-    title: "Product",
+    title: "Connect",
     links: [
-      { label: "Features", link: "#" },
-      { label: "Pricing", link: "#" },
-      { label: "Integrations", link: "#" },
-      { label: "Updates", link: "#" },
+      { label: "Facebook", link: "#" },
+      { label: "Instagram", link: "#" },
+      { label: "Github", link: "#" },
+      { label: "trung.ha@folio.dev", link: "#" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Documentation", link: "#" },
-      { label: "API Reference", link: "#" },
-      { label: "Guides", link: "#" },
-      { label: "Community", link: "#" },
+      { label: "Collections", link: "#" },
+      { label: "Playground", link: "#" },
     ],
   },
   {
-    title: "Company",
+    title: "Contacts",
     links: [
-      { label: "About Us", link: "#" },
-      { label: "Careers", link: "#" },
-      { label: "Blog", link: "#" },
+      { label: "About", link: "#" },
       { label: "Contact", link: "#" },
     ],
   },
@@ -48,8 +45,8 @@ export default function Footer() {
     const links = group.links.map((link, index) => (
       <Anchor
         key={index}
+        c="white"
         href={link.link}
-        c="dimmed"
         lh={1}
         size="sm"
         underline="hover"
@@ -60,9 +57,10 @@ export default function Footer() {
 
     return (
       <Stack key={group.title} gap="xs">
-        <Text fw={600} size="sm">
+        <Text fw={600} size="md">
           {group.title}
         </Text>
+        <Divider color="rgba(255,255,255,0.2)" mb="sm" />
         {links}
       </Stack>
     );
@@ -72,32 +70,31 @@ export default function Footer() {
     <Container
       component="footer"
       fluid
-      mt="xl"
       pl="md"
       pr="md"
-      pt="lg"
+      pt="xl"
       pb="sm"
       style={{
-        height: "50dvh",
-        borderTop: "1px solid var(--mantine-color-gray-3)",
-        backgroundColor: "var(--mantine-color-body)",
+        position: "relative",
+        zIndex: 10,
+        backgroundColor: "#020202",
+        backgroundRepeat: "repeat, no-repeat, no-repeat, no-repeat, no-repeat",
+        overflow: "hidden",
+        opacity: 1,
       }}
     >
       <Stack
         justify="space-between"
-        style={{
-          height: "100%",
-        }}
+        style={{ minHeight: "400px", position: "relative", zIndex: 12 }}
       >
         {/* Top Section: Brand Info + Links */}
-        <Group justify="space-between" align="flex-start" mb="xl">
-          <Stack gap="xs" max-w={300}>
+        <Group justify="space-between" align="flex-start" mb="xl" mt="xl">
+          <Stack gap="xs" style={{ maxWidth: 300 }}>
             <Text fw={700} size="lg">
-              CollectionApp
+              Trung. Ha
             </Text>
             <Text size="sm" c="dimmed">
-              Organize, track, and share your entities and collections
-              seamlessly.
+              A developer's stash of visions, dreams, and escapes.
             </Text>
           </Stack>
 
@@ -107,24 +104,22 @@ export default function Footer() {
         </Group>
 
         {/* Bottom Section: Copyright + Social Icons */}
-        <Group
-          justify="space-between"
-          pt="md"
-          style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
-        >
+        <Group justify="space-between" pt="md">
           <Text c="dimmed" size="sm">
-            © {new Date().getFullYear()} CollectionApp. All rights reserved.
+            © {new Date().getFullYear()} folio. 26. All rights reserved.
           </Text>
 
           <Group gap="xs" justify="flex-end" wrap="nowrap">
             <ActionIcon size="lg" color="gray" variant="subtle" radius="xl">
-              <IconBrandTwitter size={18} stroke={1.5} />
+              <IconBrandFacebook size={18} stroke={1.5} />
             </ActionIcon>
+
+            <ActionIcon size="lg" color="gray" variant="subtle" radius="xl">
+              <IconBrandInstagram size={18} stroke={1.5} />
+            </ActionIcon>
+            <Divider orientation="vertical" />
             <ActionIcon size="lg" color="gray" variant="subtle" radius="xl">
               <IconBrandGithub size={18} stroke={1.5} />
-            </ActionIcon>
-            <ActionIcon size="lg" color="gray" variant="subtle" radius="xl">
-              <IconBrandLinkedin size={18} stroke={1.5} />
             </ActionIcon>
           </Group>
         </Group>

@@ -14,12 +14,11 @@ import { useLocation, useNavigate } from "react-router";
 
 export default function NavigationBar() {
   const [opened, { toggle, close }] = useDisclosure(false);
-
   const navigate = useNavigate();
   const location = useLocation();
 
   if (location.pathname.includes("/admin")) {
-    return;
+    return null;
   }
 
   const navLinks = [
@@ -59,31 +58,33 @@ export default function NavigationBar() {
           folio. 26
         </Title>
 
-        {/* Desktop Navigation Links */}
-        <Group gap="xs" visibleFrom="sm">
-          {navLinks.map((link) => (
-            <Button
-              key={link.label}
-              component="a"
-              onClick={() => {
-                navigate(link.href);
-              }}
-              variant="subtle"
-              color="gray"
-            >
-              {link.label}
-            </Button>
-          ))}
-        </Group>
+        {/* Right Group: Desktop Nav Links & Theme Toggle */}
+        <Group gap="xs">
+          <Group gap="xs" visibleFrom="sm">
+            {navLinks.map((link) => (
+              <Button
+                key={link.label}
+                component="a"
+                onClick={() => {
+                  navigate(link.href);
+                }}
+                variant="subtle"
+                color={"white"}
+              >
+                {link.label}
+              </Button>
+            ))}
+          </Group>
 
-        {/* Mobile Burger Icon */}
-        <Burger
-          opened={opened}
-          onClick={toggle}
-          hiddenFrom="sm"
-          size="sm"
-          aria-label="Toggle navigation menu"
-        />
+          {/* Mobile Burger Icon */}
+          <Burger
+            opened={opened}
+            onClick={toggle}
+            hiddenFrom="sm"
+            size="sm"
+            aria-label="Toggle navigation menu"
+          />
+        </Group>
       </Group>
 
       {/* Mobile Navigation Drawer */}

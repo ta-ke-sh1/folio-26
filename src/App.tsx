@@ -1,4 +1,8 @@
-import { createTheme, MantineProvider } from "@mantine/core";
+import {
+  createTheme,
+  MantineProvider,
+  type MantineColorsTuple,
+} from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 
 import { Notifications } from "@mantine/notifications";
@@ -25,6 +29,15 @@ import NavigationBar from "./components/navigation/navBar.tsx";
 import CollectionsLayout from "./layouts/collection/collections.layout.tsx";
 import AboutLayout from "./layouts/about/about.layout.tsx";
 import ContactsLayout from "./layouts/contacts/contacts.layout.tsx";
+import { ReactLenis } from "lenis/react";
+
+import "lenis/dist/lenis.css";
+import Cursor from "./components/cursor/cursor.tsx";
+import {
+  ColorPalette,
+  pitchBlack,
+  primaryOrange,
+} from "./enums/colors.enum.ts";
 
 type RouteItem = {
   element: JSX.Element;
@@ -65,10 +78,23 @@ const routes: RouteItem[] = [
 export default function App() {
   const theme = createTheme({
     fontFamily: "Inter Variable",
+    primaryColor: "primaryOrange",
+    primaryShade: 6,
+    black: ColorPalette.BlackPure,
+    colors: {
+      primaryOrange,
+      dark: pitchBlack,
+    },
   });
 
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider
+      theme={theme}
+      defaultColorScheme="dark"
+      forceColorScheme="dark"
+    >
+      <ReactLenis root />
+      <Cursor />
       <ModalsProvider>
         <Notifications />
         <BrowserRouter>
