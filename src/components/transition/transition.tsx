@@ -197,6 +197,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
           {/* Top Bar Terminal Header */}
           <Group justify="space-between" style={{ zIndex: 2 }}>
             <Text
+              mt="lg"
               size="xs"
               c="dimmed"
               style={{ fontFamily: "monospace", letterSpacing: "2px" }}
@@ -204,6 +205,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
               CH_NO: 26 // SIGNAL: LOCKED
             </Text>
             <Text
+              mt="lg"
               size="xs"
               c="primaryOrange"
               style={{ fontFamily: "monospace", fontWeight: 700 }}
@@ -264,10 +266,20 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
 
           {/* Bottom Bar Details */}
           <Group justify="space-between" style={{ zIndex: 2 }}>
-            <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+            <Text
+              mb="lg"
+              size="xs"
+              c="dimmed"
+              style={{ fontFamily: "monospace" }}
+            >
               NTSC 60Hz
             </Text>
-            <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+            <Text
+              mb="lg"
+              size="xs"
+              c="dimmed"
+              style={{ fontFamily: "monospace" }}
+            >
               PRELOADING VIRTUAL DOM...
             </Text>
           </Group>

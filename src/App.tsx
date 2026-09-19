@@ -1,8 +1,4 @@
-import {
-  createTheme,
-  MantineProvider,
-  type MantineColorsTuple,
-} from "@mantine/core";
+import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 
 import { Notifications } from "@mantine/notifications";

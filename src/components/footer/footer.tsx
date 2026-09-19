@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Anchor,
   Container,
@@ -8,11 +9,19 @@ import {
   SimpleGrid,
   Divider,
   Box,
+  TextInput,
+  Textarea,
+  Button,
+  Paper,
+  Grid,
 } from "@mantine/core";
 import {
   IconBrandGithub,
   IconBrandFacebook,
   IconBrandInstagram,
+  IconSend,
+  IconTerminal2,
+  IconCheck,
 } from "@tabler/icons-react";
 import { AsciiCanvas } from "../animations/ascii/ascii";
 import { AsciiTypes } from "../animations/ascii/types";
@@ -44,6 +53,25 @@ const footerData = [
 ];
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !message) return;
+
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSubmitted(true);
+      setEmail("");
+      setMessage("");
+      setTimeout(() => setSubmitted(false), 5000);
+    }, 1000);
+  };
+
   const groups = footerData.map((group) => {
     const links = group.links.map((link, index) => (
       <Anchor
@@ -92,7 +120,7 @@ export default function Footer() {
       component="footer"
       fluid
       px="xl"
-      pt="xxl"
+      pt="xl"
       pb="md"
       style={{
         position: "relative",
@@ -106,54 +134,199 @@ export default function Footer() {
         justify="space-between"
         style={{ minHeight: "360px", position: "relative", zIndex: 12 }}
       >
-        {/* Top Section: Brand Info + Dynamic Link Columns */}
-        <Group>
-          <AsciiCanvas type={AsciiTypes.BINARY_RAIN} defaultHeight={400} />
+        {/* Background ASCII Animation */}
+        <Group
+          style={{
+            opacity: 1,
+            width: "100%",
+            pointerEvents: "none",
+          }}
+        >
+          <AsciiCanvas type={AsciiTypes.BINARY_RAIN} defaultHeight={500} />
         </Group>
-        <Group justify="space-between" align="flex-start" mb="xl" mt="md">
-          <Stack gap="xs" style={{ maxWidth: 320 }}>
-            <Group gap="xs">
-              <Box
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  backgroundColor: "#FF7700",
-                  boxShadow: "0 0 8px #FF7700",
-                }}
-              />
-              <Text
-                fw={800}
-                size="lg"
-                style={{
-                  fontFamily: "monospace",
-                  color: "#FF7700",
-                  letterSpacing: "-0.5px",
-                  textShadow: "0 0 8px rgba(255, 119, 0, 0.5)",
-                }}
-              >
-                Trung. Ha
-              </Text>
-            </Group>
-            <Text
-              size="xs"
-              c="dimmed"
+
+        {/* Main Footer Layout: Navigation & Direct Contact Form */}
+        <Grid
+          gap="xl"
+          mb="xl"
+          mt="md"
+          style={{ position: "relative", zIndex: 13 }}
+        >
+          {/* Left Column: Brand Info & Quick Links */}
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Stack gap="xl">
+              <Stack gap="xs" style={{ maxWidth: 420 }}>
+                <Group gap="xs">
+                  <Box
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      backgroundColor: "#FF7700",
+                      boxShadow: "0 0 8px #FF7700",
+                    }}
+                  />
+                  <Text
+                    fw={800}
+                    size="lg"
+                    style={{
+                      fontFamily: "monospace",
+                      color: "#FF7700",
+                      letterSpacing: "-0.5px",
+                      textShadow: "0 0 8px rgba(255, 119, 0, 0.5)",
+                    }}
+                  >
+                    Trung. Ha
+                  </Text>
+                </Group>
+                <Text
+                  size="xs"
+                  c="dimmed"
+                  style={{
+                    fontFamily: "monospace",
+                    lineHeight: "1.6",
+                    color: "#909296",
+                  }}
+                >
+                  // A developer's stash of visions, architectures, and systems.
+                  <br />
+                  SYS_VER: 2026.09.05 // LOC: HAN
+                </Text>
+              </Stack>
+
+              <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="xl">
+                {groups}
+              </SimpleGrid>
+            </Stack>
+          </Grid.Col>
+
+          {/* Right Column: Terminal Contact Form */}
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Paper
+              p="md"
+              radius="md"
+              withBorder
               style={{
-                fontFamily: "monospace",
-                lineHeight: "1.6",
-                color: "#909296",
+                backgroundColor: "#0d0d0d",
+                borderColor: "rgba(255, 119, 0, 0.3)",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.8)",
               }}
             >
-              // A developer's stash of visions, dreams, and escapes.
-              <br />
-              SYS_VER: 2026.09.05 // LOC: HAN
-            </Text>
-          </Stack>
+              <Group gap="xs" mb="xs">
+                <IconTerminal2 size={18} color="#FF7700" />
+                <Text
+                  size="xs"
+                  fw={700}
+                  style={{
+                    fontFamily: "monospace",
+                    color: "#FF7700",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  [DISPATCH_MESSAGE]
+                </Text>
+              </Group>
+              <Divider color="rgba(255, 119, 0, 0.2)" mb="md" />
 
-          <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="xl">
-            {groups}
-          </SimpleGrid>
-        </Group>
+              {submitted ? (
+                <Paper
+                  p="sm"
+                  style={{
+                    backgroundColor: "rgba(255, 119, 0, 0.08)",
+                    border: "1px solid #FF7700",
+                  }}
+                >
+                  <Group gap="xs">
+                    <IconCheck size={18} color="#FF7700" />
+                    <Text
+                      size="xs"
+                      style={{ fontFamily: "monospace", color: "#FF7700" }}
+                    >
+                      STATUS: TRANSMISSION_SUCCESSFUL // ACK RECEIVED
+                    </Text>
+                  </Group>
+                </Paper>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <Stack gap="sm">
+                    <TextInput
+                      required
+                      placeholder="user@domain.com"
+                      label="SENDER_EMAIL"
+                      value={email}
+                      onChange={(e) => setEmail(e.currentTarget.value)}
+                      styles={{
+                        label: {
+                          fontFamily: "monospace",
+                          fontSize: "11px",
+                          color: "#FF7700",
+                          marginBottom: "4px",
+                        },
+                        input: {
+                          backgroundColor: "#050505",
+                          borderColor: "rgba(255, 119, 0, 0.3)",
+                          color: "#ffffff",
+                          fontFamily: "monospace",
+                          fontSize: "12px",
+                          "&:focus": {
+                            borderColor: "#FF7700",
+                          },
+                        },
+                      }}
+                    />
+
+                    <Textarea
+                      required
+                      placeholder="Type your message vector here..."
+                      label="PAYLOAD_DATA"
+                      minRows={3}
+                      maxRows={5}
+                      value={message}
+                      onChange={(e) => setMessage(e.currentTarget.value)}
+                      styles={{
+                        label: {
+                          fontFamily: "monospace",
+                          fontSize: "11px",
+                          color: "#FF7700",
+                          marginBottom: "4px",
+                        },
+                        input: {
+                          backgroundColor: "#050505",
+                          borderColor: "rgba(255, 119, 0, 0.3)",
+                          color: "#ffffff",
+                          fontFamily: "monospace",
+                          fontSize: "12px",
+                          "&:focus": {
+                            borderColor: "#FF7700",
+                          },
+                        },
+                      }}
+                    />
+
+                    <Button
+                      type="submit"
+                      loading={isSubmitting}
+                      fullWidth
+                      variant="outline"
+                      leftSection={<IconSend size={14} />}
+                      style={{
+                        borderColor: "#FF7700",
+                        color: "#FF7700",
+                        backgroundColor: "rgba(255, 119, 0, 0.05)",
+                        fontFamily: "monospace",
+                        fontSize: "12px",
+                        letterSpacing: "0.5px",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      $ TRANSMIT_MSG
+                    </Button>
+                  </Stack>
+                </form>
+              )}
+            </Paper>
+          </Grid.Col>
+        </Grid>
 
         {/* Bottom Bar: Copyright, Telemetry Status & Social Icons */}
         <Stack gap="xs">

@@ -1,16 +1,5 @@
-import { useEffect, useRef } from "react";
-import {
-  Title,
-  Group,
-  Stack,
-  Box,
-  Badge,
-  Text,
-  SimpleGrid,
-  ThemeIcon,
-  Container,
-  Grid,
-} from "@mantine/core";
+import { useEffect, useRef, useState } from "react";
+import { Title, Group, Stack, Box, Badge, Text, Loader } from "@mantine/core";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Footer from "../../components/footer/footer";
@@ -18,6 +7,7 @@ import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import { CapabilitySection } from "./capability.section";
 import StorySection from "./story.section";
 import MemoriesSection from "./memories.section";
+import { useAnimatedNavigate } from "../../components/transition/transition";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,11 +21,61 @@ export default function AsciiLandingPage() {
   const dynamicWordRef = useRef<HTMLSpanElement>(null);
   const fixedTitleRef = useRef<HTMLDivElement>(null);
   const storySectionRef = useRef<HTMLDivElement>(null);
+  const preloaderRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
+  const animatedNavigate = useAnimatedNavigate();
+
+  // Active section tracker (0, 1, or 2)
+  const [activeSection, setActiveSection] = useState<number>(0);
+  // Controls visibility of the indicator HUD (hides when scrolling into Story Section)
+  const [showIndicator, setShowIndicator] = useState<boolean>(true);
+
+  // Asset preloading state
+  const [loadedVideosCount, setLoadedVideosCount] = useState<number>(0);
+  const [isFullyLoaded, setIsFullyLoaded] = useState<boolean>(false);
 
   useEffect(() => {
+    animatedNavigate("/");
+  }, []);
+
+  // Track video loading progress
+  const handleVideoLoaded = () => {
+    setLoadedVideosCount((prev) => {
+      const nextCount = prev + 1;
+      if (nextCount >= VIDEOS.length) {
+        setIsFullyLoaded(true);
+      }
+      return nextCount;
+    });
+  };
+
+  // Initialize GSAP & start video playback ONLY after all videos are ready
+  useEffect(() => {
+    if (!isFullyLoaded) return;
+
+    // Trigger video playback for preloaded elements
+    videoRefs.current.forEach((video) => {
+      if (video) {
+        video.play().catch(() => {
+          // Fallback if browser restricts autoplay
+        });
+      }
+    });
+
     const ctx = gsap.context(() => {
       const videoElements = videoRefs.current.filter(Boolean);
+
+      // Fade out preloader overlay
+      gsap.to(preloaderRef.current, {
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        onComplete: () => {
+          if (preloaderRef.current) {
+            preloaderRef.current.style.display = "none";
+          }
+        },
+      });
 
       // 1. Cross-fade Background Videos
       videoElements.forEach((video, index) => {
@@ -88,22 +128,44 @@ export default function AsciiLandingPage() {
         }, 30);
       };
 
-      // 3. Section Triggers for Header Word Swaps
+      // 3. Section Triggers for Active State & Header Word Swaps
+      ScrollTrigger.create({
+        trigger: ".scroll-section-0",
+        start: "top center",
+        end: "bottom center",
+        onToggle: (self) => {
+          if (self.isActive) {
+            setActiveSection(0);
+            scrambleText(WORDS[0]);
+          }
+        },
+      });
+
       ScrollTrigger.create({
         trigger: ".scroll-section-1",
         start: "top center",
-        onEnter: () => scrambleText(WORDS[1]),
-        onLeaveBack: () => scrambleText(WORDS[0]),
+        end: "bottom center",
+        onToggle: (self) => {
+          if (self.isActive) {
+            setActiveSection(1);
+            scrambleText(WORDS[1]);
+          }
+        },
       });
 
       ScrollTrigger.create({
         trigger: ".scroll-section-2",
         start: "top center",
-        onEnter: () => scrambleText(WORDS[2]),
-        onLeaveBack: () => scrambleText(WORDS[1]),
+        end: "bottom center",
+        onToggle: (self) => {
+          if (self.isActive) {
+            setActiveSection(2);
+            scrambleText(WORDS[2]);
+          }
+        },
       });
 
-      // 4. Fade out pinned Hero Header when reaching Story section
+      // 4. Fade out pinned Hero Header & HUD when reaching Story section
       gsap.to(fixedTitleRef.current, {
         opacity: 0,
         ease: "none",
@@ -112,6 +174,9 @@ export default function AsciiLandingPage() {
           start: "top 80%",
           end: "top 30%",
           scrub: true,
+          onUpdate: (self) => {
+            setShowIndicator(self.progress < 0.5);
+          },
         },
       });
 
@@ -131,7 +196,7 @@ export default function AsciiLandingPage() {
         },
       );
 
-      // 7. Story Cards Reveal
+      // 6. Story Cards Reveal
       gsap.from(".story-card", {
         scrollTrigger: {
           trigger: storySectionRef.current,
@@ -146,7 +211,19 @@ export default function AsciiLandingPage() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isFullyLoaded]);
+
+  // Smooth scroll click handler for section navigation
+  const scrollToSection = (index: number) => {
+    const targetSection = document.querySelector(`.scroll-section-${index}`);
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const progressPercentage = Math.round(
+    (loadedVideosCount / VIDEOS.length) * 100,
+  );
 
   return (
     <Box
@@ -157,6 +234,120 @@ export default function AsciiLandingPage() {
         backgroundColor: "#020202",
       }}
     >
+      {/* --- PRELOADER OVERLAY --- */}
+      <Box
+        ref={preloaderRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "#020202",
+          zIndex: 200,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Stack align="center" gap="md">
+          <Loader size="md" color="orange" type="dots" />
+          <Text
+            fz="xs"
+            fw={700}
+            c="orange.5"
+            style={{ fontFamily: "monospace", letterSpacing: 2 }}
+          >
+            BUFFERING_ASSETS // {progressPercentage}%
+          </Text>
+          <Box
+            style={{
+              width: 200,
+              height: 2,
+              backgroundColor: "var(--mantine-color-dark-6)",
+              borderRadius: 2,
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              style={{
+                height: "100%",
+                width: `${progressPercentage}%`,
+                backgroundColor: "var(--mantine-color-orange-5)",
+                transition: "width 0.2s ease",
+              }}
+            />
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* --- HUD SIDE NAV / SECTION INDICATOR --- */}
+      <Box
+        style={{
+          position: "fixed",
+          right: "32px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 100,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: "16px",
+          pointerEvents: showIndicator ? "auto" : "none",
+          opacity: showIndicator ? 1 : 0,
+          transition: "opacity 0.4s ease, transform 0.4s ease",
+        }}
+      >
+        {WORDS.map((word, idx) => {
+          const isActive = activeSection === idx;
+          return (
+            <Group
+              key={word}
+              gap="xs"
+              onClick={() => scrollToSection(idx)}
+              style={{
+                cursor: "pointer",
+                userSelect: "none",
+                transition: "all 0.3s ease",
+              }}
+            >
+              {/* Word label - appears expanded on active */}
+              <Text
+                fz="xs"
+                fw={700}
+                style={{
+                  fontFamily: "monospace",
+                  letterSpacing: "1px",
+                  color: isActive
+                    ? "var(--mantine-color-orange-5, #ff5500)"
+                    : "rgba(255, 255, 255, 0.3)",
+                  transition: "color 0.3s ease, transform 0.3s ease",
+                  transform: isActive ? "translateX(0)" : "translateX(8px)",
+                }}
+              >
+                0{idx + 1} // {word}
+              </Text>
+
+              {/* Indicator Dot / Line */}
+              <Box
+                style={{
+                  width: isActive ? "28px" : "12px",
+                  height: "2px",
+                  backgroundColor: isActive
+                    ? "var(--mantine-color-orange-5, #ff5500)"
+                    : "rgba(255, 255, 255, 0.2)",
+                  boxShadow: isActive
+                    ? "0 0 8px rgba(255, 85, 0, 0.8)"
+                    : "none",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+              />
+            </Group>
+          );
+        })}
+      </Box>
+
       {/* Background Videos Stack */}
       <Box
         style={{
@@ -187,10 +378,11 @@ export default function AsciiLandingPage() {
             ref={(el) => {
               videoRefs.current[idx] = el;
             }}
-            autoPlay
             loop
             muted
             playsInline
+            onCanPlayThrough={handleVideoLoaded}
+            onLoadedData={handleVideoLoaded}
             src={src}
             style={{
               position: "absolute",
@@ -242,7 +434,7 @@ export default function AsciiLandingPage() {
               ref={dynamicWordRef}
               style={{
                 display: "inline-block",
-                color: "var(--mantine-color-primaryOrange-6, #ff5500)",
+                color: "var(--mantine-color-orange-5, #ff5500)",
                 minWidth: "350px",
                 textAlign: "left",
               }}
@@ -256,7 +448,7 @@ export default function AsciiLandingPage() {
             variant="outline"
             style={{ marginTop: 24, fontFamily: "monospace", fontWeight: 200 }}
           >
-            Scroll down
+            SCROLL DOWN
           </Badge>
         </Stack>
       </Box>

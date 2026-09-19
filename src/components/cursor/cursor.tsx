@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ZIndexLevel } from "../../enums/styles.enum";
 
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -141,7 +142,7 @@ export default function Cursor() {
           backgroundColor: "#ff7300",
           borderRadius: "50%",
           pointerEvents: "none",
-          zIndex: 9999,
+          zIndex: ZIndexLevel.HIGHEST + 2,
           transform: "translate(-100px, -100px)",
           willChange: "transform",
         }}
@@ -159,7 +160,7 @@ export default function Cursor() {
           border: "1.5px solid rgba(255, 255, 255, 0.6)",
           borderRadius: "50%",
           pointerEvents: "none",
-          zIndex: 9998,
+          zIndex: ZIndexLevel.HIGHEST + 1,
           mixBlendMode: "difference",
           transform: "translate(-100px, -100px)",
           willChange: "transform, border-radius",

@@ -174,7 +174,7 @@ export default function MemoriesSection() {
             }}
           >
             {marqueeItems.map((item, idx) => {
-              const baseRotation = ROTATIONS[idx % ROTATIONS.length];
+              const baseRotation = 0;
 
               return (
                 <Card

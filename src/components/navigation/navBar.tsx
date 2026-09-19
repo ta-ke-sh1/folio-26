@@ -75,7 +75,7 @@ export default function NavigationBar() {
           top: 0,
           left: 0,
           width: "100dvw",
-          zIndex: ZIndexLevel.HIGH,
+          zIndex: ZIndexLevel.HIGHEST,
           backgroundColor: "rgba(5, 5, 5, 0.85)",
           backdropFilter: "blur(8px)",
           borderBottom: "1px solid rgba(255, 119, 0, 0.2)",
