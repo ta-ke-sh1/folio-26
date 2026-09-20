@@ -316,6 +316,8 @@ export default function NavigationBar() {
           </Group>
         </Group>
       </Container>
+      <div className="tv-noise-overlay" />
+      <div className="tv-scanlines" />
     </>
   );
 }

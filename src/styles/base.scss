@@ -22,3 +22,65 @@ select,
 [role="button"] {
   cursor: none !important;
 }
+
+/* 1. Animated Scanlines & Vignette */
+.tv-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  /* Pure CSS horizontal scanlines + corner vignette */
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%),
+    radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
+  background-size:
+    100% 4px,
+    100% 100%;
+  opacity: 0.3;
+  /* Animates the fine scanlines downward */
+  animation: scanline-scroll 0.3s linear infinite;
+  overflow: hidden;
+}
+
+/* 2. Soft Moving CRT Rolling Bar */
+.tv-scanlines::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 25%; /* Height of the moving scanline band */
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(0, 0, 0, 0.12) 80%,
+    transparent 100%
+  );
+  /* Animates the rolling bar from top to bottom */
+  animation: roll-bar 6s linear infinite;
+}
+
+/* Move the fine scanline pattern continuously */
+@keyframes scanline-scroll {
+  0% {
+    background-position:
+      0 0,
+      0 0;
+  }
+  100% {
+    background-position:
+      0 4px,
+      0 0;
+  }
+}
+
+/* Move the CRT tracking line down the screen */
+@keyframes roll-bar {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(500%);
+  }
+}
