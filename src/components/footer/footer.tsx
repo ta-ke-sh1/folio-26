@@ -85,12 +85,6 @@ export default function Footer() {
           textDecoration: "none",
           transition: "color 0.2s ease, transform 0.2s ease",
         }}
-        sx={{
-          "&:hover": {
-            color: "#FF7700 !important",
-            transform: "translateX(4px)",
-          },
-        }}
       >
         {`> ${link.label}`}
       </Anchor>

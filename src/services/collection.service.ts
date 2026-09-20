@@ -1,6 +1,6 @@
 import DatabaseService from "../services/database.service";
 import { DatabaseTables } from "../enums/database.enums";
-import type CollectionEntity from "../models/entity/collection.model";
+import type { CollectionEntity } from "../models/entity/collection.model";
 
 // Omit auto-generated fields for creation payloads
 export type CreateCollectionDto = Omit<CollectionEntity, "id" | "created_at">;

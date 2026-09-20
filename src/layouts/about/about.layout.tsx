@@ -365,7 +365,7 @@ export default function AboutPage() {
               alignItems: "center",
             }}
           >
-            <Grid gutter={50} align="center" style={{ width: "100%" }}>
+            <Grid gap={50} align="center" style={{ width: "100%" }}>
               <Grid.Col span={{ base: 12, lg: 7 }}>
                 <Stack gap="xl">
                   <Group gap="xs">
@@ -928,7 +928,7 @@ export default function AboutPage() {
               <Stack gap="xs">
                 {/* Capability Row 1 */}
                 <Box className="editorial-row-divider" p="lg">
-                  <Grid align="center" gutter="md">
+                  <Grid align="center" gap="md">
                     <Grid.Col span={{ base: 12, md: 4 }}>
                       <Group gap="sm">
                         <IconCpu size={24} color="#FF7700" />
@@ -965,7 +965,7 @@ export default function AboutPage() {
 
                 {/* Capability Row 2 */}
                 <Box className="editorial-row-divider" p="lg">
-                  <Grid align="center" gutter="md">
+                  <Grid align="center" gap="md">
                     <Grid.Col span={{ base: 12, md: 4 }}>
                       <Group gap="sm">
                         <IconShieldLock size={24} color="#FF7700" />
@@ -1002,7 +1002,7 @@ export default function AboutPage() {
 
                 {/* Capability Row 3 */}
                 <Box className="editorial-row-divider" p="lg">
-                  <Grid align="center" gutter="md">
+                  <Grid align="center" gap="md">
                     <Grid.Col span={{ base: 12, md: 4 }}>
                       <Group gap="sm">
                         <IconDatabase size={24} color="#FF7700" />
@@ -1039,7 +1039,7 @@ export default function AboutPage() {
 
                 {/* Capability Row 4 */}
                 <Box className="editorial-row-divider" p="lg">
-                  <Grid align="center" gutter="md">
+                  <Grid align="center" gap="md">
                     <Grid.Col span={{ base: 12, md: 4 }}>
                       <Group gap="sm">
                         <IconLayersIntersect size={24} color="#FF7700" />
@@ -1133,8 +1133,7 @@ export default function AboutPage() {
                       </Group>
                       <Title
                         order={3}
-                        color="#FFF"
-                        style={{ fontSize: "24px" }}
+                        style={{ fontSize: "24px", color: "#FFF" }}
                       >
                         AEGIS-WAF // API SECURITY GATEWAY
                       </Title>
@@ -1204,8 +1203,7 @@ export default function AboutPage() {
                       </Group>
                       <Title
                         order={3}
-                        color="#FFF"
-                        style={{ fontSize: "24px" }}
+                        style={{ fontSize: "24px", color: "#FFF" }}
                       >
                         NEXUS STREAM // FINANCIAL EVENT BUS
                       </Title>
@@ -1275,8 +1273,7 @@ export default function AboutPage() {
                       </Group>
                       <Title
                         order={3}
-                        color="#FFF"
-                        style={{ fontSize: "24px" }}
+                        style={{ fontSize: "24px", color: "#FFF" }}
                       >
                         SENTINEL AUTH // PASSWORDLESS IDENTITY PROVIDER
                       </Title>
@@ -1404,7 +1401,7 @@ export default function AboutPage() {
         <Box py={100} style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           <Container size="xl">
             <Stack gap={30}>
-              <Box justify="space-between">
+              <Group justify="space-between">
                 <Text
                   className="mono-font"
                   color="#FF7700"
@@ -1424,7 +1421,7 @@ export default function AboutPage() {
                 >
                   LIVE OPERATIVE TELEMETRY CONSOLE
                 </Title>
-              </Box>
+              </Group>
 
               <Paper
                 p="lg"
@@ -1582,7 +1579,7 @@ export default function AboutPage() {
           }}
         >
           <Container size="xl">
-            <Grid gutter={50} align="center">
+            <Grid gap={50} align="center">
               <Grid.Col span={{ base: 12, md: 7 }}>
                 <Stack gap="lg">
                   <Text

@@ -10,11 +10,11 @@ import {
 } from "@mantine/core";
 import { IconTerminal, IconArrowUpRight } from "@tabler/icons-react";
 import { useState, useMemo, useEffect } from "react";
+import { useAnimatedNavigate } from "../transition/transition";
 import type {
   CollectionItemEntity,
   CollectionEntity,
-} from "../../layouts/admin/admin.types";
-import { useAnimatedNavigate } from "../transition/transition";
+} from "../../models/entity/collection.model";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
 
