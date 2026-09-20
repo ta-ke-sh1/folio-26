@@ -5,27 +5,24 @@ export interface CategoryEntity {
   created_at: Date | string;
 }
 
-export interface CollectionItemEntity {
-  id: number;
-  name: string;
-  tags: string[];
-  url: string;
-  author: string;
-  collection_id: number;
-  category_id: number;
-  year: string;
-  created_at: string;
-}
-
-export interface CollectionEntity {
-  id: number;
-  date: string;
-  name: string;
-  created_at: string;
-}
-
 export interface TagEntity {
   id: number;
   name: string;
   created_at: Date | string;
 }
+
+export type ActiveTab = "items" | "collections" | "categories" | "tags";
+
+export const TABLE_MAP: Record<ActiveTab, string> = {
+  items: "collection_items",
+  collections: "collections",
+  categories: "categories",
+  tags: "tags",
+};
+
+export const TAB_TITLES: Record<ActiveTab, string> = {
+  items: "Collection Items",
+  collections: "Collections",
+  categories: "Categories",
+  tags: "Tags",
+};

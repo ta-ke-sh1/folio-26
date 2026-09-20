@@ -8,11 +8,12 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import Calendar from "../../components/calendar/calendar";
+import Calendar from "./calendar/calendar";
 import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import CollectionService from "../../services/collection.service";
-import type CollectionEntity from "../../models/entity/collection.model.tsx";
+import ListMap from "./list/list.tsx";
+import type { CollectionEntity } from "../../models/entity/collection.model.tsx";
 
 /** Helper function to format a Date object or month/year pair into "JUL. 2026" format */
 function formatMonthYear(year: number, monthIndex: number): string {
@@ -40,8 +41,11 @@ export default function CollectionsLayout() {
   });
 
   const [data, setData] = useState<CollectionEntity[]>([]);
-
   const [mode, setMode] = useState<ViewMode>(ViewMode.CALENDAR);
+
+  // Button Hover States
+  const [isPrevHovered, setIsPrevHovered] = useState(false);
+  const [isNextHovered, setIsNextHovered] = useState(false);
 
   useEffect(() => {
     async function fetchCollections(): Promise<void> {
@@ -52,7 +56,6 @@ export default function CollectionsLayout() {
             currentDate.month,
           );
 
-        // Supabase queries return { data, error } directly instead of response.success
         if (response.error) {
           console.error(response.error);
         } else if (response.data) {
@@ -94,7 +97,7 @@ export default function CollectionsLayout() {
 
   return (
     <LayoutWrapper>
-      <Stack>
+      <Stack mb={100}>
         <Group pt={"60"} justify={"center"}>
           <Stack justify="center">
             <Title
@@ -114,67 +117,126 @@ export default function CollectionsLayout() {
             </Title>
           </Stack>
         </Group>
-        <Group justify={"center"}>
+
+        {/* Terminal View Mode Switcher */}
+        <Group pr={"md"} pl={"md"} justify={"space-between"}>
+          <Group>
+            <Button
+              size="md"
+              leftSection={<IconChevronLeft size={18} color="#FF7700" />}
+              onClick={handlePrevMonth}
+              onMouseEnter={() => setIsPrevHovered(true)}
+              onMouseLeave={() => setIsPrevHovered(false)}
+              style={{
+                backgroundColor: isPrevHovered
+                  ? "rgba(255, 119, 0, 0.15)"
+                  : "#0A0A0A",
+                border: isPrevHovered
+                  ? "1px solid #FF9933"
+                  : "1px solid #FF7700",
+                borderRadius: "6px",
+                boxShadow: isPrevHovered
+                  ? "0 0 18px rgba(255, 119, 0, 0.5)"
+                  : "0 0 10px rgba(255, 119, 0, 0.15)",
+                transform: isPrevHovered ? "translateY(-2px)" : "translateY(0)",
+                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                padding: "8px 18px",
+                cursor: "pointer",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#FF7700",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                }}
+              >
+                [ {prevLabel} ]
+              </Text>
+            </Button>
+          </Group>
+
           <SegmentedControl
-            transitionDuration={300}
-            transitionTimingFunction="linear"
-            color="yellow"
+            transitionDuration={200}
             data={Object.values(ViewMode)}
             value={mode}
-            onChange={setMode}
+            onChange={(val) => setMode(val as ViewMode)}
+            styles={{
+              root: {
+                backgroundColor: "#0A0A0A",
+                border: "1px solid #262626",
+                borderRadius: "6px",
+                padding: "3px",
+              },
+              indicator: {
+                backgroundColor: "#FF7700",
+                borderRadius: "4px",
+                boxShadow: "0 0 12px rgba(255, 119, 0, 0.5)",
+              },
+              label: {
+                fontFamily: "monospace",
+                color: "#737373",
+                fontWeight: 700,
+                fontSize: "12px",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                padding: "6px 16px",
+                borderRadius: "4px",
+                cursor: "pointer",
+              },
+            }}
           />
+
+          <Group>
+            <Button
+              size="md"
+              rightSection={<IconChevronRight size={18} color="#FF7700" />}
+              onClick={handleNextMonth}
+              onMouseEnter={() => setIsNextHovered(true)}
+              onMouseLeave={() => setIsNextHovered(false)}
+              style={{
+                backgroundColor: isNextHovered
+                  ? "rgba(255, 119, 0, 0.15)"
+                  : "#0A0A0A",
+                border: isNextHovered
+                  ? "1px solid #FF9933"
+                  : "1px solid #FF7700",
+                borderRadius: "6px",
+                boxShadow: isNextHovered
+                  ? "0 0 18px rgba(255, 119, 0, 0.5)"
+                  : "0 0 10px rgba(255, 119, 0, 0.15)",
+                transform: isNextHovered ? "translateY(-2px)" : "translateY(0)",
+                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                padding: "8px 18px",
+                cursor: "pointer",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#FF7700",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                }}
+              >
+                [ {nextLabel} ]
+              </Text>
+            </Button>
+          </Group>
         </Group>
         {mode === ViewMode.CALENDAR ? (
-          <>
-            <Group pr={"md"} pl={"md"} justify={"space-between"}>
-              <Group>
-                <Button
-                  color="orange"
-                  size={"lg"}
-                  variant={"light"}
-                  leftSection={<IconChevronLeft />}
-                  onClick={handlePrevMonth}
-                >
-                  <Text
-                    style={{
-                      fontWeight: 400,
-                      fontSize: 24,
-                      letterSpacing: -1,
-                    }}
-                  >
-                    {prevLabel}
-                  </Text>
-                </Button>
-              </Group>
-              <Group>
-                <Button
-                  color="orange"
-                  size={"lg"}
-                  variant={"light"}
-                  rightSection={<IconChevronRight />}
-                  onClick={handleNextMonth}
-                >
-                  <Text
-                    style={{
-                      fontWeight: 400,
-                      fontSize: 24,
-                      letterSpacing: -1,
-                    }}
-                  >
-                    {nextLabel}
-                  </Text>
-                </Button>
-              </Group>
-            </Group>
-
-            <Calendar
-              data={data}
-              year={currentDate.year}
-              month={currentDate.month}
-            />
-          </>
+          <Calendar
+            data={data}
+            year={currentDate.year}
+            month={currentDate.month}
+          />
         ) : (
-          <></>
+          <ListMap data={data} />
         )}
       </Stack>
       <Footer />

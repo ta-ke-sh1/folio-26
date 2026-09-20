@@ -1,7 +1,7 @@
 import { Grid, Stack } from "@mantine/core";
-import { DateCard } from "../card/date.card.tsx";
-import type CollectionEntity from "../../models/entity/collection.model.tsx";
 import { type JSX } from "react";
+import { DateCard } from "../../../components/card/date.card";
+import type { CollectionEntity } from "../../../models/entity/collection.model";
 
 interface CalendarProps {
   data: CollectionEntity[];
@@ -46,12 +46,12 @@ export default function Calendar({
         };
       }
       const dateStr = formatDateString(year, month, dayNumber);
-      const matching = data.filter((d) => d.created_at.startsWith(dateStr));
+      const matching = data.find((d) => d.date.startsWith(dateStr));
 
       return {
         value: String(dayNumber),
         date: dateStr,
-        data: matching || [],
+        data: matching || undefined,
       };
     });
 
@@ -61,9 +61,7 @@ export default function Calendar({
         {datamap.map((data, index: number) => {
           return (
             <Grid.Col key={`calendar-card-${index}`} span={1}>
-              {index > dayOfWeekIndex - 1 && (
-                <DateCard data={data} content={index + 1 - dayOfWeekIndex} />
-              )}
+              {index > dayOfWeekIndex - 1 && <DateCard data={data} />}
             </Grid.Col>
           );
         })}

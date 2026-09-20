@@ -59,12 +59,12 @@ const routes: RouteItem[] = [
     element: <ContactsLayout />,
   },
   {
-    path: "/collections",
-    element: <CollectionsLayout />,
-  },
-  {
     path: "/collections/:id",
     element: <CollectionDetailsLayout />,
+  },
+  {
+    path: "/collections",
+    element: <CollectionsLayout />,
   },
   {
     path: "/admin",
