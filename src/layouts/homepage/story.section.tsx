@@ -15,7 +15,7 @@ const STORY_SLIDES = [
   {
     id: "a",
     tag: "I.a // TSDV & CONFIDENTIALITY",
-    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+    src: "/pictures/1.jpg",
     alt: "System Architecture and Hardware Simulation",
     badgeText: "[ NDA CLASSIFIED ]",
     badgeColor: "orange.4",
@@ -27,7 +27,7 @@ const STORY_SLIDES = [
   {
     id: "b",
     tag: "I.b // VISUAL MEDIA",
-    src: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80",
+    src: "/pictures/2.jpg",
     alt: "Camera Lens Photography",
     badgeText: "50MM / FRAMING / MOTION",
     badgeColor: "white",
@@ -39,7 +39,7 @@ const STORY_SLIDES = [
   {
     id: "c",
     tag: "I.c // COMPANIONS (2 CATS)",
-    src: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=80",
+    src: "/pictures/3.jpg",
     alt: "Two Cats Workspace Companions",
     badgeText: "FELINE COMPANIONSHIP // 02 CATS",
     badgeColor: "orange.4",

@@ -11,7 +11,7 @@ import { useAnimatedNavigate } from "../../components/transition/transition";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const VIDEOS = ["/videos/1.mov", "/videos/2.mov", "/videos/3.mov"];
+const VIDEOS = ["/videos/1.mp4", "/videos/2.mp4", "/videos/3.mp4"];
 const WORDS = ["VISIONS", "DREAMS", "ESCAPES"];
 const CHARS = "ABCDEF0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/";
 

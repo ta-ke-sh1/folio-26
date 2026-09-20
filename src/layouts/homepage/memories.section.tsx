@@ -26,7 +26,7 @@ const MEMORIES_DATA: MemoryItem[] = [
   {
     id: "1",
     type: "image",
-    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+    src: "/pictures/1.jpg",
     title: "System Architecture Lab",
     date: "2025.11",
     link: "/memories/system-architecture",
@@ -34,9 +34,8 @@ const MEMORIES_DATA: MemoryItem[] = [
   {
     id: "2",
     type: "video",
-    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80",
+    src: "/pictures/2.jpg",
+    poster: "/pictures/4.jpg",
     title: "Cinematic Framing & Motion Test",
     date: "2026.02",
     link: "/memories/motion-framing",
@@ -44,7 +43,7 @@ const MEMORIES_DATA: MemoryItem[] = [
   {
     id: "3",
     type: "image",
-    src: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80",
+    src: "/pictures/3.jpg",
     title: "Workspace Co-Pilots",
     date: "2026.04",
     link: "/memories/workspace-companions",
@@ -52,7 +51,7 @@ const MEMORIES_DATA: MemoryItem[] = [
   {
     id: "4",
     type: "image",
-    src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+    src: "/pictures/2.jpg",
     title: "Frontend Interface Deployment",
     date: "2026.06",
     link: "/memories/frontend-deploy",
