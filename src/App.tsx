@@ -24,7 +24,6 @@ import CollectionDetailsLayout from "./layouts/collection/collectionDetails.layo
 import NavigationBar from "./components/navigation/navBar.tsx";
 import CollectionsLayout from "./layouts/collection/collections.layout.tsx";
 import AboutLayout from "./layouts/about/about.layout.tsx";
-import ContactsLayout from "./layouts/contacts/contacts.layout.tsx";
 import { ReactLenis } from "lenis/react";
 
 import "lenis/dist/lenis.css";
@@ -35,6 +34,8 @@ import {
   primaryOrange,
 } from "./enums/colors.enum.ts";
 import { PageTransitionProvider } from "./components/transition/transition.tsx";
+import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
+import PlaygroundLayout from "./components/playground/playground.layout.tsx";
 
 type RouteItem = {
   element: JSX.Element;
@@ -55,8 +56,12 @@ const routes: RouteItem[] = [
     element: <AboutLayout />,
   },
   {
-    path: "/contacts",
-    element: <ContactsLayout />,
+    path: "/gallery",
+    element: <GalleryLayout />,
+  },
+  {
+    path: "/playground",
+    element: <PlaygroundLayout />,
   },
   {
     path: "/collections/:id",
@@ -85,11 +90,7 @@ export default function App() {
   });
 
   return (
-    <MantineProvider
-      theme={theme}
-      defaultColorScheme="dark"
-      forceColorScheme="dark"
-    >
+    <MantineProvider theme={theme} defaultColorScheme="dark">
       <ReactLenis root />
       <Cursor />
       <ModalsProvider>
