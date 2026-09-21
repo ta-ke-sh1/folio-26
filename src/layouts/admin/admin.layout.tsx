@@ -5,7 +5,7 @@ import { CategoriesTab } from "./tabs/admin.categories.tab";
 import { CollectionsTab } from "./tabs/admin.collection.tab";
 import { ItemsTab } from "./tabs/admin.collectionItem.tab";
 import { TagsTab } from "./tabs/admin.tags.tab";
-import type { ActiveTab } from "./admin.types";
+import { type ActiveTab } from "./admin.types";
 
 export default function AdminLayout() {
   const [opened, { toggle }] = useDisclosure(true);

@@ -170,7 +170,25 @@ export default function NavigationBar() {
           onClose={close}
           size="100%"
           padding="xl"
-          title={
+          hiddenFrom="sm"
+          zIndex={1000}
+          withCloseButton={false}
+          styles={{
+            content: {
+              backgroundColor: "#050505",
+              color: "#FFF",
+              borderLeft: "1px solid rgba(255, 119, 0, 0.3)",
+            },
+
+            close: {
+              color: "#FF7700",
+              "&:hover": {
+                backgroundColor: "rgba(255, 119, 0, 0.15)",
+              },
+            },
+          }}
+        >
+          <Stack gap="md" mt="xl">
             <Group gap="xs">
               <Text
                 size="xs"
@@ -180,29 +198,6 @@ export default function NavigationBar() {
                 {"> TERMINAL_MENU"}
               </Text>
             </Group>
-          }
-          hiddenFrom="sm"
-          zIndex={1000}
-          styles={{
-            content: {
-              backgroundColor: "#050505",
-              color: "#FFF",
-              borderLeft: "1px solid rgba(255, 119, 0, 0.3)",
-            },
-            header: {
-              backgroundColor: "#050505",
-              borderBottom: "1px solid rgba(255, 119, 0, 0.2)",
-              paddingBottom: "16px",
-            },
-            close: {
-              color: "#FF7700",
-              "&:hover": {
-                backgroundColor: "rgba(255, 119, 0, 0.15)",
-              },
-            },
-          }}
-        >
-          <Stack gap="md" mt="md">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.href;
               return (
@@ -232,7 +227,7 @@ export default function NavigationBar() {
           <Box
             style={{
               position: "absolute",
-              bottom: "32px",
+              bottom: "62px",
               left: "24px",
               right: "24px",
               paddingTop: "16px",

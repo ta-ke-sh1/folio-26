@@ -123,7 +123,7 @@ export default function MemoriesSection() {
   };
 
   return (
-    <Container fluid mt="100px" p={0}>
+    <Container fluid mt="100px" p={0} className="homepage-memories-section">
       <Stack gap={60}>
         {/* Section Header */}
         <Stack gap="md" mt="60px" px="var(--mantine-spacing-md)">

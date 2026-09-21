@@ -86,7 +86,12 @@ export default function StorySection() {
   const currentVisual = STORY_SLIDES[activeSlide];
 
   return (
-    <Container fluid mt="100px" style={{ overflow: "visible" }}>
+    <Container
+      fluid
+      mt="100px"
+      className="homepage-story-section"
+      style={{ overflow: "visible" }}
+    >
       <Stack gap={60}>
         <Badge
           size="lg"
@@ -244,6 +249,7 @@ export default function StorySection() {
 
                 {/* Caption Overlay */}
                 <Box
+                  className="homepage-story-visual"
                   style={{
                     position: "absolute",
                     bottom: 0,

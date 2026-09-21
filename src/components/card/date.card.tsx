@@ -4,6 +4,7 @@ import { IconTerminal, IconArrowUpRight } from "@tabler/icons-react";
 
 import "./date.card.scss";
 import { useAnimatedNavigate } from "../transition/transition";
+import { getRandomNumber } from "../../services/utils.service";
 
 interface DateCardProps {
   data?: any;
@@ -78,7 +79,7 @@ export function DateCard({ data }: DateCardProps) {
 
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % itemCount);
-    }, 600);
+    }, getRandomNumber(50, 70) * 10);
 
     return () => clearInterval(interval);
   }, [itemCount, isPreloaded]);

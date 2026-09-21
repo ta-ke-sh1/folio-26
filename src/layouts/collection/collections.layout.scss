@@ -1,0 +1,35 @@
+@media (max-width: 48em) {
+  .collections-toolbar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .collections-toolbar__modes {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+  }
+
+  .collections-toolbar__previous,
+  .collections-toolbar__next {
+    width: 100%;
+  }
+
+  .collections-toolbar__next {
+    justify-content: flex-end;
+  }
+
+  .collections-toolbar__button {
+    width: 100%;
+    padding-inline: 10px !important;
+  }
+
+  .collections-toolbar__button .mantine-Text-root {
+    overflow: hidden;
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

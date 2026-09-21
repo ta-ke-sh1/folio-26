@@ -852,6 +852,7 @@ export default function AboutPage() {
         {openWindows.map((item) => {
           const itemIndex = ITEMS.findIndex((i) => i.id === item.id);
           const zIndex = zIndices[item.id] || 1000;
+          console.log(topZIndex);
 
           return (
             <DraggableWindow

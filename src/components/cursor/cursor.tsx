@@ -133,6 +133,7 @@ export default function Cursor() {
       {/* Center Small Dot */}
       <div
         ref={dotRef}
+        className="custom-cursor"
         style={{
           position: "fixed",
           top: 0,
@@ -151,6 +152,7 @@ export default function Cursor() {
       {/* Outer Spring Ring */}
       <div
         ref={ringRef}
+        className="custom-cursor"
         style={{
           position: "fixed",
           top: 0,

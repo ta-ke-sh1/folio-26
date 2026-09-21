@@ -23,6 +23,23 @@ select,
   cursor: none !important;
 }
 
+@media (hover: none), (pointer: coarse) {
+  .custom-cursor {
+    display: none;
+  }
+
+  html,
+  body,
+  button,
+  a,
+  input,
+  textarea,
+  select,
+  [role="button"] {
+    cursor: auto !important;
+  }
+}
+
 /* 1. Animated Scanlines & Vignette */
 .tv-scanlines {
   position: fixed;

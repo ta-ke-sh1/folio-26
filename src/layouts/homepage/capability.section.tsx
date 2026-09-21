@@ -9,7 +9,7 @@ export function CapabilitySection() {
   const strategyTextRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <Container fluid mt="100px">
+    <Container fluid mt="100px" className="homepage-capability-section">
       <Stack gap={60}>
         {/* Section Header */}
         <Stack gap="md" mt="60px">
@@ -60,7 +60,7 @@ export function CapabilitySection() {
                 position: "relative",
               }}
             >
-              <div ref={storyTextRef}>
+              <div ref={storyTextRef} className="homepage-capability-copy">
                 <Text
                   size="xl"
                   c="white"
@@ -79,7 +79,7 @@ export function CapabilitySection() {
 
             {/* Strategy Content Column */}
             <Grid.Col span={{ base: 12, md: 6 }} mt="xl">
-              <div ref={strategyTextRef}>
+              <div ref={strategyTextRef} className="homepage-capability-copy">
                 <Text
                   size="xl"
                   c="white"

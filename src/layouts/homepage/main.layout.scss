@@ -1,0 +1,55 @@
+.ascii-landing-page {
+  overflow-x: hidden;
+}
+
+@media (max-width: 48em) {
+  .homepage-hud {
+    right: 12px !important;
+    gap: 10px !important;
+  }
+
+  .homepage-hud .mantine-Text-root {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .homepage-fixed-title {
+    padding: 0 20px;
+  }
+
+  .homepage-hero-title {
+    max-width: 100% !important;
+    font-size: clamp(40px, 12vw, 64px) !important;
+    line-height: 0.95 !important;
+    letter-spacing: -1px !important;
+  }
+
+  .homepage-hero-title span {
+    min-width: 0 !important;
+    text-align: center !important;
+  }
+
+  .homepage-content {
+    padding-top: 96px !important;
+    padding-bottom: 72px !important;
+  }
+
+  .homepage-story-visual {
+    position: static !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin-top: 24px;
+  }
+
+  .homepage-capability-copy .mantine-Text-root {
+    max-width: 100% !important;
+    font-size: clamp(32px, 9vw, 48px) !important;
+    line-height: 1 !important;
+  }
+
+  .ascii-landing-page .scroll-section-0,
+  .ascii-landing-page .scroll-section-1,
+  .ascii-landing-page .scroll-section-2 {
+    min-height: 78vh !important;
+  }
+}

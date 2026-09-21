@@ -1,7 +1,7 @@
 import { Grid, Stack } from "@mantine/core";
 import { type JSX } from "react";
 import { DateCard } from "../../../components/card/date.card";
-import type { CollectionEntity } from "../../../models/entity/collection.model";
+import { type CollectionEntity } from "../../../models/entity/collection.model";
 
 interface CalendarProps {
   data: CollectionEntity[];
@@ -60,7 +60,7 @@ export default function Calendar({
       <Grid columns={7}>
         {datamap.map((data, index: number) => {
           return (
-            <Grid.Col key={`calendar-card-${index}`} span={1}>
+            <Grid.Col key={`calendar-card-${index}`} span={{ base: 7, sm: 3.5, lg: 1 }}>
               {index > dayOfWeekIndex - 1 && <DateCard data={data} />}
             </Grid.Col>
           );

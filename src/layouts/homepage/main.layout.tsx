@@ -8,6 +8,7 @@ import { CapabilitySection } from "./capability.section";
 import StorySection from "./story.section";
 import MemoriesSection from "./memories.section";
 import { useAnimatedNavigate } from "../../components/transition/transition";
+import "./main.layout.scss";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -228,6 +229,7 @@ export default function AsciiLandingPage() {
   return (
     <Box
       ref={containerRef}
+      className="ascii-landing-page"
       style={{
         position: "relative",
         minHeight: "100vh",
@@ -284,6 +286,7 @@ export default function AsciiLandingPage() {
 
       {/* --- HUD SIDE NAV / SECTION INDICATOR --- */}
       <Box
+        className="homepage-hud"
         style={{
           position: "fixed",
           right: "32px",
@@ -402,6 +405,7 @@ export default function AsciiLandingPage() {
       {/* Fixed Sticky Dynamic Title */}
       <Box
         ref={fixedTitleRef}
+        className="homepage-fixed-title"
         style={{
           position: "fixed",
           top: 0,
@@ -418,6 +422,7 @@ export default function AsciiLandingPage() {
       >
         <Stack justify="center" align="center">
           <Title
+            className="homepage-hero-title"
             style={{
               maxWidth: 850,
               textAlign: "center",
@@ -464,6 +469,7 @@ export default function AsciiLandingPage() {
           {/* New Story & Approach Section (Fades in over video with top gradient fade) */}
           <Box
             ref={storySectionRef}
+            className="homepage-content"
             pt={160}
             pb={120}
             style={{

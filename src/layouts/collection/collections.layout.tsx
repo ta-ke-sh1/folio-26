@@ -14,6 +14,7 @@ import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import CollectionService from "../../services/collection.service";
 import ListMap from "./list/list.tsx";
 import type { CollectionEntity } from "../../models/entity/collection.model.tsx";
+import "./collections.layout.scss";
 
 /** Helper function to format a Date object or month/year pair into "JUL. 2026" format */
 function formatMonthYear(year: number, monthIndex: number): string {
@@ -119,9 +120,15 @@ export default function CollectionsLayout() {
         </Group>
 
         {/* Terminal View Mode Switcher */}
-        <Group pr={"md"} pl={"md"} justify={"space-between"}>
-          <Group>
+        <Group
+          className="collections-toolbar"
+          pr="md"
+          pl="md"
+          justify="space-between"
+        >
+          <Group className="collections-toolbar__previous">
             <Button
+              className="collections-toolbar__button"
               size="md"
               leftSection={<IconChevronLeft size={18} color="#FF7700" />}
               onClick={handlePrevMonth}
@@ -160,6 +167,7 @@ export default function CollectionsLayout() {
           </Group>
 
           <SegmentedControl
+            className="collections-toolbar__modes"
             transitionDuration={200}
             data={Object.values(ViewMode)}
             value={mode}
@@ -190,8 +198,9 @@ export default function CollectionsLayout() {
             }}
           />
 
-          <Group>
+          <Group className="collections-toolbar__next">
             <Button
+              className="collections-toolbar__button"
               size="md"
               rightSection={<IconChevronRight size={18} color="#FF7700" />}
               onClick={handleNextMonth}
