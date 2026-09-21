@@ -54,8 +54,8 @@ export default function NavigationBar() {
   const navLinks = [
     { label: "ABOUT", href: "/about" },
     { label: "COLLECTIONS", href: "/collections" },
-    { label: "GALLERY", href: "/gallery" },
-    { label: "PLAYGROUND", href: "/playground" },
+    // { label: "GALLERY", href: "/gallery" },
+    // { label: "PLAYGROUND", href: "/playground" },
   ];
 
   const handleNavigation = (href: string) => {

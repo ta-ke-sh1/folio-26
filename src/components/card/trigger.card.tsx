@@ -1,4 +1,6 @@
+import { useState, useEffect, useRef } from "react";
 import { Image, Text, Box, Group, Badge } from "@mantine/core";
+import { shuffleText } from "../../services/utils.service";
 
 // --- REUSABLE TRIGGER CARD COMPONENT ---
 interface TriggerCardProps {
@@ -26,9 +28,54 @@ export default function TriggerCard({
   maxWidth,
   flex,
 }: TriggerCardProps) {
+  const [displayCategory, setDisplayCategory] = useState(category);
+  const [displayLabel, setDisplayLabel] = useState(label);
+  const intervalRef = useRef<any>(null);
+
+  // Sync state if props change externally
+  useEffect(() => {
+    setDisplayCategory(category);
+    setDisplayLabel(label);
+  }, [category, label]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    let iteration = 0;
+    const maxIterations = Math.max(category.length, label.length) * 3;
+
+    intervalRef.current = setInterval(() => {
+      setDisplayCategory(shuffleText(category, iteration));
+      setDisplayLabel(shuffleText(label, iteration));
+
+      if (iteration >= maxIterations) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        setDisplayCategory(category);
+        setDisplayLabel(label);
+      }
+
+      iteration += 1;
+    }, 30);
+  };
+
+  const handleMouseLeave = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setDisplayCategory(category);
+    setDisplayLabel(label);
+  };
+
   return (
     <Box
       onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={{
         width,
         maxWidth,
@@ -94,7 +141,7 @@ export default function TriggerCard({
                 textTransform: "uppercase",
               }}
             >
-              {category}
+              {displayCategory}
             </Text>
 
             <Text
@@ -108,7 +155,7 @@ export default function TriggerCard({
                 marginTop: "2px",
               }}
             >
-              {label}
+              {displayLabel}
             </Text>
 
             <Badge
