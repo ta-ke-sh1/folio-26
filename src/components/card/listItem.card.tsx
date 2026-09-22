@@ -107,8 +107,8 @@ export default function CollectionCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
-        backgroundColor: isHovered ? "rgba(255, 119, 0, 0.04)" : "#0A0A0A",
-        border: isHovered ? "1px solid #FF7700" : "1px solid #262626",
+        backgroundColor: isHovered ? "var(--folio-card-hover)" : "var(--folio-card)",
+        border: isHovered ? "1px solid #FF7700" : "1px solid var(--folio-card-border)",
         borderRadius: "8px",
         transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
         boxShadow: isHovered
@@ -129,14 +129,14 @@ export default function CollectionCard({
                     <Group gap="xs">
                       <IconTerminal
                         size={16}
-                        color={isHovered ? "#FF7700" : "#737373"}
+                        color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
                       />
                       <Text
                         style={{
                           fontFamily: "monospace",
                           fontSize: "12px",
                           fontWeight: 700,
-                          color: isHovered ? "#FF7700" : "#737373",
+                          color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
                           letterSpacing: "1px",
                         }}
                       >
@@ -149,8 +149,10 @@ export default function CollectionCard({
                       variant="outline"
                       style={{
                         fontFamily: "monospace",
-                        borderColor: isHovered ? "#FF7700" : "#333333",
-                        color: isHovered ? "#FF7700" : "#A3A3A3",
+                        borderColor: isHovered
+                          ? "var(--folio-accent)"
+                          : "var(--folio-card-border)",
+                        color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
                         backgroundColor: isHovered
                           ? "rgba(255, 119, 0, 0.08)"
                           : "transparent",
@@ -166,7 +168,7 @@ export default function CollectionCard({
                     style={{
                       fontSize: "clamp(22px, 3vw, 32px)",
                       fontWeight: 900,
-                      color: isHovered ? "#FFFFFF" : "#E5E5E5",
+                      color: "var(--folio-text)",
                       fontFamily: "monospace",
                       letterSpacing: "-1px",
                       lineHeight: 1.1,
@@ -186,7 +188,7 @@ export default function CollectionCard({
                     style={{
                       fontFamily: "monospace",
                       fontSize: "12px",
-                      color: "#737373",
+                      color: "var(--folio-muted)",
                     }}
                   >
                     DATE: {collection.date}
@@ -198,7 +200,7 @@ export default function CollectionCard({
                         fontFamily: "monospace",
                         fontSize: "12px",
                         fontWeight: 700,
-                        color: isHovered ? "#FF7700" : "#525252",
+                        color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
                         letterSpacing: "0.5px",
                         transition: "color 0.2s ease",
                       }}
@@ -207,7 +209,7 @@ export default function CollectionCard({
                     </Text>
                     <IconArrowUpRight
                       size={18}
-                      color={isHovered ? "#FF7700" : "#525252"}
+                      color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
                       style={{
                         transform: isHovered ? "translate(2px, -2px)" : "none",
                         transition: "transform 0.2s ease, color 0.2s ease",

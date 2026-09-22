@@ -1,3 +1,49 @@
+:root {
+  --folio-accent: #ff7700;
+  --folio-accent-hover: #ff9933;
+  --folio-accent-soft: rgba(255, 119, 0, 0.12);
+  --folio-on-accent: #050505;
+  --folio-media-text: #ffffff;
+  --folio-media-muted: rgba(255, 255, 255, 0.55);
+  --folio-media-line: rgba(255, 255, 255, 0.24);
+  --folio-page-bg: #020202;
+  --folio-surface: #050505;
+  --folio-card: #0d0d0d;
+  --folio-card-hover: #141414;
+  --folio-card-border: #262626;
+  --folio-header-bg: rgba(5, 5, 5, 0.86);
+  --folio-text: #ffffff;
+  --folio-muted: #a6a7ab;
+  --folio-border: rgba(255, 119, 0, 0.22);
+  --folio-grid: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-mantine-color-scheme="light"] {
+  --folio-page-bg: #f6f6f4;
+  --folio-surface: #ffffff;
+  --folio-card: #ffffff;
+  --folio-card-hover: #fff5ec;
+  --folio-card-border: rgba(25, 23, 20, 0.16);
+  --folio-header-bg: rgba(255, 255, 255, 0.92);
+  --folio-text: #151515;
+  --folio-muted: #626262;
+  --folio-border: rgba(190, 75, 0, 0.24);
+  --folio-grid: rgba(0, 0, 0, 0.08);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--folio-page-bg);
+  color: var(--folio-text);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
 /* Replace .element-class with your actual class name */
 html {
   /* Hide scrollbar for Chrome, Safari, and Opera */

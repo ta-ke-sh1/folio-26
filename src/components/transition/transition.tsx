@@ -175,7 +175,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
             left: 0,
             width: "100vw",
             height: "100vh",
-            backgroundColor: "#050505",
+            backgroundColor: "var(--folio-page-bg)",
             zIndex: ZIndexLevel.HIGH + 1000,
             display: "flex",
             flexDirection: "column",

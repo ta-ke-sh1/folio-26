@@ -1,9 +1,12 @@
 import { Text, Paper, Group, ActionIcon, Box } from "@mantine/core";
 import { IconGripHorizontal, IconX } from "@tabler/icons-react";
 import { useState, useRef, useEffect } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import CollaborationForm from "../../layouts/about/forms/collaboration.form";
 import EmailDirectForm from "../../layouts/about/forms/email.form";
 import TalkContactsForm from "../../layouts/about/forms/talk.form";
+import "./draggableWindow.modal.scss";
 
 export interface FormWindowItem {
   id: "collaboration" | "say-hi" | "email-me";
@@ -15,6 +18,8 @@ interface DraggableFormWindowProps {
   item: FormWindowItem;
   itemIndex: number;
   zIndex: number;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  isClosing: boolean;
   onClose: () => void;
   onFocus: () => void;
 }
@@ -23,11 +28,15 @@ export function DraggableFormWindow({
   item,
   itemIndex,
   zIndex,
+  containerRef,
+  isClosing,
   onClose,
   onFocus,
 }: DraggableFormWindowProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const windowRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{
     startX: number;
     startY: number;
@@ -42,32 +51,73 @@ export function DraggableFormWindow({
 
   const width = 800;
 
-  // Calculate random initial position constrained to viewport bounds on mount
+  useGSAP(
+    () => {
+      if (!windowRef.current) return;
+      if (isClosing) {
+        gsap.to(windowRef.current, {
+          autoAlpha: 0,
+          scale: 0.94,
+          y: 18,
+          duration: 0.24,
+          ease: "power2.in",
+          overwrite: "auto",
+        });
+        return;
+      }
+
+      gsap.fromTo(
+        windowRef.current,
+        { autoAlpha: 0, scale: 0.92, y: 18 },
+        {
+          autoAlpha: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.42,
+          ease: "back.out(1.35)",
+          clearProps: "transform,opacity,visibility",
+        },
+      );
+    },
+    { scope: windowRef, dependencies: [isClosing] },
+  );
+
   useEffect(() => {
-    const padding = 20;
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-
-    // Computed rendered width accounting for CSS clamp(320px, 90vw, 800px)
-    const computedWidth = Math.min(Math.max(320, windowWidth * 0.9), width);
-    const estimatedHeight = 520; // Estimated height of form window
-
-    // Available bounds inside screen padding
-    const maxX = Math.max(padding, windowWidth - computedWidth - padding);
-    const maxY = Math.max(padding, windowHeight - estimatedHeight - padding);
-
-    const randomX = Math.floor(
-      padding + Math.random() * Math.max(1, maxX - padding),
-    );
-    const randomY = Math.floor(
-      padding + Math.random() * Math.max(1, maxY - padding),
-    );
-
-    setPosition({ x: randomX, y: randomY });
+    const mediaQuery = window.matchMedia("(max-width: 48em)");
+    const updateMobile = () => setIsMobile(mediaQuery.matches);
+    updateMobile();
+    mediaQuery.addEventListener("change", updateMobile);
+    return () => mediaQuery.removeEventListener("change", updateMobile);
   }, []);
+
+  useEffect(() => {
+    const updatePosition = () => {
+      const container = containerRef.current;
+      const windowElement = windowRef.current;
+      if (!container || !windowElement) return;
+
+      const maxX = Math.max(0, container.clientWidth - windowElement.offsetWidth);
+      const maxY = Math.max(0, container.clientHeight - windowElement.offsetHeight);
+      const offset = itemIndex * 28;
+      const centeredX = (container.clientWidth - windowElement.offsetWidth) / 2 + offset;
+      const centeredY = (container.clientHeight - windowElement.offsetHeight) / 2 + offset;
+      setPosition({
+        x: Math.min(Math.max(12, centeredX), maxX),
+        y: Math.min(Math.max(12, centeredY), maxY),
+      });
+    };
+
+    const frame = requestAnimationFrame(updatePosition);
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [containerRef, itemIndex]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     onFocus();
+    if (isMobile) return;
     setIsDragging(true);
     dragRef.current = {
       startX: e.clientX,
@@ -82,9 +132,14 @@ export function DraggableFormWindow({
       if (!isDragging) return;
       const dx = e.clientX - dragRef.current.startX;
       const dy = e.clientY - dragRef.current.startY;
+      const container = containerRef.current;
+      const windowElement = windowRef.current;
+      if (!container || !windowElement) return;
+      const maxX = Math.max(0, container.clientWidth - windowElement.offsetWidth);
+      const maxY = Math.max(0, container.clientHeight - windowElement.offsetHeight);
       setPosition({
-        x: Math.max(10, dragRef.current.initialX + dx),
-        y: Math.max(10, dragRef.current.initialY + dy),
+        x: Math.min(Math.max(0, dragRef.current.initialX + dx), maxX),
+        y: Math.min(Math.max(0, dragRef.current.initialY + dy), maxY),
       });
     };
 
@@ -107,45 +162,34 @@ export function DraggableFormWindow({
 
   return (
     <Paper
+      ref={windowRef}
+      className="instrument-window instrument-window--active"
       shadow="xl"
       onMouseDown={onFocus}
       style={{
-        position: "fixed",
+        position: "absolute",
         top: position.y,
         left: position.x,
-        width: `clamp(320px, 90vw, ${width}px)`,
-        backgroundColor: "#0d0d0d",
-        border: "1px solid #FF7700",
-        boxShadow:
-          "0 0 25px rgba(255, 119, 0, 0.25), 0 10px 40px rgba(0,0,0,0.85)",
-        borderRadius: "8px",
+        width: `clamp(320px, 82vw, ${width}px)`,
         zIndex: zIndex,
-        overflow: "hidden",
         userSelect: isDragging ? "none" : "auto",
       }}
     >
       {/* Draggable Title Bar */}
       <Group
+        className="instrument-window__titlebar"
         justify="space-between"
         px="md"
-        py="xs"
         onMouseDown={handleMouseDown}
         style={{
-          backgroundColor: "#171717",
-          borderBottom: "1px solid #262626",
           cursor: isDragging ? "grabbing" : "grab",
         }}
       >
         <Group gap="xs">
+          <span className="instrument-window__signal" />
           <HeaderIcon size={16} color="#FF7700" />
           <Text
-            fz="xs"
-            fw={700}
-            style={{
-              fontFamily: "monospace",
-              color: "#e5e5e5",
-              letterSpacing: "1px",
-            }}
+            className="instrument-window__title"
           >
             {item.title}
           </Text>
@@ -154,6 +198,7 @@ export function DraggableFormWindow({
         <Group gap="xs">
           <IconGripHorizontal size={16} color="#525252" />
           <ActionIcon
+            className="instrument-window__close"
             size="sm"
             variant="subtle"
             color="gray"
@@ -165,8 +210,10 @@ export function DraggableFormWindow({
         </Group>
       </Group>
 
+      <div className="instrument-window__ruler" aria-hidden="true" />
+
       {/* Render Specific Form Component Based On ID */}
-      <Box p="md">
+      <Box className="instrument-window__body" p="md">
         {item.id === "collaboration" && <CollaborationForm />}
         {item.id === "say-hi" && <TalkContactsForm />}
         {item.id === "email-me" && <EmailDirectForm />}

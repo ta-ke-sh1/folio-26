@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import {
   Container,
   Stack,
@@ -10,6 +13,8 @@ import {
   AspectRatio,
   Group,
 } from "@mantine/core";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const STORY_SLIDES = [
   {
@@ -30,7 +35,7 @@ const STORY_SLIDES = [
     src: "/pictures/2.jpg",
     alt: "Camera Lens Photography",
     badgeText: "50MM / FRAMING / MOTION",
-    badgeColor: "white",
+    badgeColor: "var(--folio-media-text)",
     caption:
       "Capturing architecture, lighting dynamics, and cinematic framing.",
     filter: "grayscale(0.6) brightness(0.8)",
@@ -55,6 +60,30 @@ export default function StorySection() {
   const blockRef0 = useRef<HTMLDivElement | null>(null);
   const blockRef1 = useRef<HTMLDivElement | null>(null);
   const blockRef2 = useRef<HTMLDivElement | null>(null);
+  const visualColumnRef = useRef<HTMLDivElement | null>(null);
+  const visualTrackRef = useRef<HTMLDivElement | null>(null);
+
+  useGSAP(
+    () => {
+      if (!visualColumnRef.current || !visualTrackRef.current) return;
+
+      const media = gsap.matchMedia();
+      media.add("(min-width: 48em)", () => {
+        ScrollTrigger.create({
+          trigger: visualColumnRef.current,
+          pin: visualTrackRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          pinSpacing: false,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        });
+      });
+
+      return () => media.revert();
+    },
+    { scope: visualColumnRef },
+  );
 
   useEffect(() => {
     const refs = [blockRef0, blockRef1, blockRef2];
@@ -121,7 +150,7 @@ export default function StorySection() {
                   </Text>
                   <Text
                     size="xl"
-                    c="white"
+                    c="var(--folio-text)"
                     style={{
                       fontSize: "clamp(28px, 3.5vw, 44px)",
                       lineHeight: "1.2",
@@ -143,12 +172,12 @@ export default function StorySection() {
                 }}
               >
                 <Stack gap="md">
-                  <Text size="xs" c="white" ff="monospace" fw={700}>
+                  <Text size="xs" c="var(--folio-text)" ff="monospace" fw={700}>
                     // 02. PHOTOGRAPHY & VISUAL MEDIA
                   </Text>
                   <Text
                     size="xl"
-                    c="white"
+                    c="var(--folio-text)"
                     style={{
                       fontSize: "clamp(28px, 3.5vw, 44px)",
                       lineHeight: "1.2",
@@ -175,7 +204,7 @@ export default function StorySection() {
                   </Text>
                   <Text
                     size="xl"
-                    c="white"
+                    c="var(--folio-text)"
                     style={{
                       fontSize: "clamp(28px, 3.5vw, 44px)",
                       lineHeight: "1.2",
@@ -190,16 +219,21 @@ export default function StorySection() {
           </Grid.Col>
 
           {/* ================= RIGHT COLUMN: STICKY VISUAL ================= */}
-          <Grid.Col span={{ base: 12, md: 6 }} style={{ position: "relative" }}>
+          <Grid.Col
+            ref={visualColumnRef}
+            span={{ base: 12, md: 6 }}
+            style={{ position: "relative" }}
+          >
             <Box
+              ref={visualTrackRef}
               style={{
-                position: "sticky",
-                top: "60px",
-                height: "calc(100dvh - 120px)",
+                position: "relative",
+                height: "100dvh",
+                padding: "60px 0",
+                boxSizing: "border-box",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                willChange: "position",
               }}
             >
               <Box
@@ -216,14 +250,14 @@ export default function StorySection() {
                 {/* Tag */}
                 <Text
                   size="xs"
-                  c="white"
+                  c="var(--folio-media-text)"
                   ff="monospace"
                   style={{
                     position: "absolute",
                     top: 14,
                     left: 14,
                     zIndex: 3,
-                    background: "rgba(0,0,0,0.85)",
+                    background: "rgba(192, 26, 26, 0.85)",
                     padding: "4px 10px",
                     borderRadius: "4px",
                     letterSpacing: "1px",

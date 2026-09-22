@@ -27,7 +27,9 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
           height: "24dvh",
           minHeight: "100px",
           borderRadius: "6px",
-          border: isHovered ? "1px solid #FF7700" : "1px solid #262626",
+          border: isHovered
+            ? "1px solid var(--folio-accent)"
+            : "1px solid var(--folio-card-border)",
           boxShadow: isHovered ? "0 0 20px rgba(255, 119, 0, 0.2)" : "none",
           cursor: data?.id ? "pointer" : "default",
           transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -64,7 +66,7 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
           >
             <IconArrowUpRight
               size={20}
-              color={isHovered ? "#FF7700" : "#525252"}
+              color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
               style={{
                 transform: isHovered ? "translate(3px, -3px)" : "none",
                 transition: "transform 0.2s ease, color 0.2s ease",

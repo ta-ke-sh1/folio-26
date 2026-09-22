@@ -58,14 +58,12 @@ const CONTACT_LIST: ContactChannel[] = [
 
 export default function TalkContactsForm() {
   return (
-    <Stack gap="sm" style={{}}>
+    <Stack className="instrument-form" gap="sm">
       {/* Decorative ASCII Radar / Satellite Graphic */}
       <Box
+        className="instrument-form__beacon"
         p="xs"
         style={{
-          backgroundColor: "#050505",
-          border: "1px border #262626",
-          borderRadius: "4px",
           textAlign: "center",
         }}
       >
@@ -86,6 +84,7 @@ export default function TalkContactsForm() {
       </Box>
 
       <Text
+        className="instrument-form__intro"
         fz="xs"
         style={{
           fontFamily: "monospace",
@@ -102,22 +101,17 @@ export default function TalkContactsForm() {
           const ChannelIcon = contact.icon;
           return (
             <Paper
+              className="instrument-contact"
               key={i}
               p="xs"
-              style={{
-                backgroundColor: "#141414",
-                border: "1px solid #262626",
-                borderRadius: "4px",
-              }}
             >
               <Group justify="space-between" align="center" wrap="nowrap">
                 <Group gap="sm" wrap="nowrap">
                   <Box
+                    className="instrument-contact__icon"
                     style={{
                       width: 32,
                       height: 32,
-                      borderRadius: "4px",
-                      backgroundColor: "#1f1f1f",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -132,7 +126,10 @@ export default function TalkContactsForm() {
                       <Text
                         fz="xs"
                         fw={700}
-                        style={{ fontFamily: "monospace", color: "#ffffff" }}
+                        style={{
+                          fontFamily: "monospace",
+                          color: "var(--folio-text)",
+                        }}
                       >
                         {contact.name}
                       </Text>
@@ -146,6 +143,7 @@ export default function TalkContactsForm() {
                       </Badge>
                     </Group>
                     <Text
+                      className="instrument-contact__handle"
                       fz="11px"
                       style={{
                         fontFamily: "monospace",

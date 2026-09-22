@@ -38,7 +38,7 @@ export default function CollaborationForm() {
 
   if (formStatus === "sent") {
     return (
-      <Stack align="center" justify="center" py="xl" gap="sm">
+      <Stack className="instrument-form instrument-form__success" align="center" justify="center" py="xl" gap="sm">
         <Badge size="lg" color="orange" variant="filled">
           <Group gap={4}>
             <IconCheck size={14} />
@@ -69,16 +69,14 @@ export default function CollaborationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="instrument-form" onSubmit={handleSubmit}>
       <Stack gap="sm">
         {/* Decorative ASCII Banner */}
         <Box
+          className="instrument-form__beacon"
           p="xs"
           style={{
-            backgroundColor: "#050505",
-            border: "1px border #262626",
             borderLeft: "3px solid #FF7700",
-            borderRadius: "4px",
           }}
         >
           <Text
@@ -146,6 +144,7 @@ export default function CollaborationForm() {
         />
 
         <Button
+          className="instrument-form__submit"
           type="submit"
           size="md"
           color="orange"

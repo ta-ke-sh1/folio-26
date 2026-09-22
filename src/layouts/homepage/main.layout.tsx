@@ -233,7 +233,7 @@ export default function AsciiLandingPage() {
       style={{
         position: "relative",
         minHeight: "100vh",
-        backgroundColor: "#020202",
+        backgroundColor: "var(--folio-page-bg)",
       }}
     >
       {/* --- PRELOADER OVERLAY --- */}
@@ -245,7 +245,7 @@ export default function AsciiLandingPage() {
           left: 0,
           width: "100vw",
           height: "100vh",
-          backgroundColor: "#020202",
+          backgroundColor: "var(--folio-page-bg)",
           zIndex: 200,
           display: "flex",
           alignItems: "center",
@@ -431,7 +431,7 @@ export default function AsciiLandingPage() {
               fontSize: 96,
               letterSpacing: -3,
               fontFamily: "Plus Jakarta Sans Variable",
-              color: "#ffffff",
+              color: "var(--folio-media-text)",
             }}
           >
             A DEVELOPER STASH OF <br />
@@ -449,9 +449,14 @@ export default function AsciiLandingPage() {
           </Title>
           <Badge
             size="xl"
-            color="white"
             variant="outline"
-            style={{ marginTop: 24, fontFamily: "monospace", fontWeight: 200 }}
+            style={{
+              marginTop: 24,
+              color: "var(--folio-media-text)",
+              borderColor: "var(--folio-media-line)",
+              fontFamily: "monospace",
+              fontWeight: 200,
+            }}
           >
             SCROLL DOWN
           </Badge>
@@ -459,7 +464,7 @@ export default function AsciiLandingPage() {
       </Box>
 
       {/* Foreground Scrolling Content Layer */}
-      <Box style={{ position: "relative", zIndex: 3, color: "#fff" }}>
+      <Box style={{ position: "relative", zIndex: 3, color: "var(--folio-text)" }}>
         <LayoutWrapper>
           {/* Video Scroll Trigger Sections */}
           <Group className="scroll-section-0" style={{ minHeight: "100vh" }} />
@@ -473,7 +478,7 @@ export default function AsciiLandingPage() {
             pt={160}
             pb={120}
             style={{
-              backgroundColor: "#020202",
+              backgroundColor: "var(--folio-page-bg)",
               position: "relative",
               zIndex: 10,
               pointerEvents: "auto",

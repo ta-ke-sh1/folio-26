@@ -81,8 +81,8 @@ export default function TriggerCard({
         maxWidth,
         flex,
         padding: "14px 18px",
-        backgroundColor: isOpen ? "#141414" : "#0a0a0a",
-        border: isOpen ? "1px solid #FF7700" : "1px solid #262626",
+        backgroundColor: isOpen ? "var(--folio-card-hover)" : "var(--folio-card)",
+        border: isOpen ? "1px solid #FF7700" : "1px solid var(--folio-card-border)",
         borderRadius: "16px",
         cursor: "pointer",
         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -101,10 +101,10 @@ export default function TriggerCard({
               width: 44,
               height: 44,
               borderRadius: "10px",
-              backgroundColor: "#171717",
+              backgroundColor: "var(--folio-surface)",
               border: isOpen
-                ? "1px solid #FF7700"
-                : "1px solid rgba(255, 255, 255, 0.12)",
+                ? "1px solid var(--folio-accent)"
+                : "1px solid var(--folio-card-border)",
               boxShadow:
                 "0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
               display: "flex",
@@ -125,7 +125,10 @@ export default function TriggerCard({
                 fallbackSrc="https://cdn-icons-png.flaticon.com/512/565/565547.png"
               />
             ) : Icon ? (
-              <Icon size={24} color={isOpen ? "#FF7700" : "#ffffff"} />
+              <Icon
+                size={24}
+                color={isOpen ? "var(--folio-accent)" : "var(--folio-text)"}
+              />
             ) : null}
           </Box>
 
@@ -136,7 +139,7 @@ export default function TriggerCard({
               fw={700}
               style={{
                 fontFamily: "monospace",
-                color: isOpen ? "#FF7700" : "#737373",
+                color: isOpen ? "var(--folio-accent)" : "var(--folio-muted)",
                 letterSpacing: "0.5px",
                 textTransform: "uppercase",
               }}
@@ -149,7 +152,7 @@ export default function TriggerCard({
               fz="sm"
               style={{
                 fontFamily: "monospace",
-                color: "#ffffff",
+                color: "var(--folio-text)",
                 letterSpacing: "-0.3px",
                 lineHeight: 1.2,
                 marginTop: "2px",

@@ -58,8 +58,6 @@ const MEMORIES_DATA: MemoryItem[] = [
   },
 ];
 
-const ROTATIONS = [-3.2, 2.5, -1.8, 3.0, -2.4, 1.9, -3.0, 2.2];
-
 export default function MemoriesSection() {
   const navigate = useNavigate();
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -94,8 +92,6 @@ export default function MemoriesSection() {
       y: -12,
       scale: 1.04,
       borderColor: "rgba(255, 119, 0, 0.6)",
-      boxShadow:
-        "0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 119, 0, 0.25)",
       duration: 0.35,
       ease: "power2.out",
       zIndex: 10,
@@ -157,7 +153,7 @@ export default function MemoriesSection() {
               pointerEvents: "none",
               zIndex: 3,
               background:
-                "linear-gradient(90deg, rgba(10,10,10,1) 0%, rgba(10,10,10,0) 8%, rgba(10,10,10,0) 92%, rgba(10,10,10,1) 100%)",
+                "light-dark(linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 92%, rgba(255,255,255,1) 100%), linear-gradient(90deg, rgba(10,10,10,1) 0%, rgba(10,10,10,0) 8%, rgba(10,10,10,0) 92%, rgba(10,10,10,1) 100%))",
             }}
           />
 
@@ -186,8 +182,10 @@ export default function MemoriesSection() {
                     maxWidth: "300px",
                     minHeight: "440px",
                     cursor: "pointer",
-                    backgroundColor: "rgba(20, 20, 20, 0.85)",
+                    backgroundColor:
+                      "light-dark(rgba(255, 255, 255, 0.85), rgba(20, 20, 20, 0.85))",
                     border: "1px solid rgba(255, 255, 255, 0.12)",
+                    borderColor: "rgba(255, 119, 0, 0.32)",
                     borderRadius: "16px",
                     overflow: "hidden",
                     flexShrink: 0,
@@ -229,7 +227,12 @@ export default function MemoriesSection() {
                     <Text size="xs" c="orange.4" ff="monospace" fw={700} mb={4}>
                       {item.date || "// MEMORY"}
                     </Text>
-                    <Text size="sm" c="white" fw={500} lineClamp={1}>
+                    <Text
+                      size="sm"
+                      c="var(--folio-text)"
+                      fw={500}
+                      lineClamp={1}
+                    >
                       {item.title}
                     </Text>
                   </Box>

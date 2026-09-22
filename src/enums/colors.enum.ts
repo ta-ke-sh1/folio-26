@@ -8,8 +8,8 @@ export enum ColorPalette {
   Orange200 = "#FFBF99",
   Orange300 = "#FF9C66",
   Orange400 = "#FF7E33",
-  Orange500 = "#FF670D",
-  Orange600 = "#FF5500", // Core Brand Accent
+  Orange500 = "#FF7700", // Core Brand Accent
+  Orange600 = "#FF5F00",
   Orange700 = "#E64A00",
   Orange800 = "#CC3E00",
   Orange900 = "#B33300",

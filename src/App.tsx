@@ -35,7 +35,7 @@ import {
 } from "./enums/colors.enum.ts";
 import { PageTransitionProvider } from "./components/transition/transition.tsx";
 import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
-import PlaygroundLayout from "./components/playground/playground.layout.tsx";
+import PlaygroundLayout from "./layouts/playground/playground.layout.tsx";
 
 type RouteItem = {
   element: JSX.Element;
@@ -81,7 +81,7 @@ export default function App() {
   const theme = createTheme({
     fontFamily: "Inter Variable",
     primaryColor: "primaryOrange",
-    primaryShade: 6,
+    primaryShade: 5,
     black: ColorPalette.BlackPure,
     colors: {
       primaryOrange,
