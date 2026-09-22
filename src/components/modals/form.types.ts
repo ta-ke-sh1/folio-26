@@ -1,19 +1,21 @@
 // --- SHARED INPUT STYLES ---
 export const commonInputStyles = {
   input: {
-    backgroundColor: "var(--mantine-color-dark-8)",
-    borderColor: "var(--mantine-color-dark-5)",
-    color: "var(--mantine-color-gray-1)",
+    backgroundColor: "var(--folio-surface)",
+    borderColor: "var(--folio-card-border)",
+    borderRadius: "3px",
+    color: "var(--folio-text)",
     fontFamily: "monospace",
     "&:focus": {
-      borderColor: "var(--mantine-color-orange-5)",
+      borderColor: "var(--folio-accent)",
+      boxShadow: "0 0 0 1px rgba(255, 119, 0, 0.18)",
     },
   },
   label: {
-    color: "var(--mantine-color-gray-4)",
+    color: "var(--folio-muted)",
     fontFamily: "monospace",
-    fontSize: "11px",
-    letterSpacing: "0.5px",
+    fontSize: "9px",
+    letterSpacing: "1px",
     marginBottom: "4px",
   },
 };

@@ -35,7 +35,7 @@ export default function EmailDirectForm() {
 
   if (formStatus === "sent") {
     return (
-      <Stack align="center" justify="center" py="xl" gap="sm">
+      <Stack className="instrument-form instrument-form__success" align="center" justify="center" py="xl" gap="sm">
         <Badge size="lg" color="orange" variant="filled">
           <Group gap={4}>
             <IconCheck size={14} />
@@ -66,15 +66,13 @@ export default function EmailDirectForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="instrument-form" onSubmit={handleSubmit}>
       <Stack gap="xs">
         {/* Decorative ASCII Envelope Graphic */}
         <Box
+          className="instrument-form__beacon"
           p="xs"
           style={{
-            backgroundColor: "#050505",
-            border: "1px border #262626",
-            borderRadius: "4px",
             textAlign: "center",
           }}
         >
@@ -107,15 +105,14 @@ export default function EmailDirectForm() {
 
         {/* Email Form Wrapper with Fixed Prefix & Postfix */}
         <Box
+          className="instrument-form__message-shell"
           p="xs"
           style={{
-            backgroundColor: "var(--mantine-color-dark-9)",
-            border: "1px solid var(--mantine-color-dark-5)",
-            borderRadius: "4px",
           }}
         >
           {/* PREFIX */}
           <Text
+            className="instrument-form__protocol"
             fz="11px"
             fw={700}
             style={{ fontFamily: "monospace", color: "#FF7700" }}
@@ -138,7 +135,7 @@ export default function EmailDirectForm() {
               input: {
                 backgroundColor: "transparent",
                 border: "none",
-                color: "#e5e5e5",
+                color: "var(--folio-text)",
                 fontFamily: "monospace",
                 fontSize: "13px",
                 padding: 0,
@@ -151,6 +148,7 @@ export default function EmailDirectForm() {
 
           {/* POSTFIX */}
           <Text
+            className="instrument-form__protocol"
             fz="11px"
             fw={700}
             style={{ fontFamily: "monospace", color: "#FF7700" }}
@@ -162,6 +160,7 @@ export default function EmailDirectForm() {
         </Box>
 
         <Button
+          className="instrument-form__submit"
           type="submit"
           size="md"
           color="orange"

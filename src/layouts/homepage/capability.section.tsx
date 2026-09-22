@@ -32,7 +32,7 @@ export function CapabilitySection() {
             >
               <Text
                 size="xl"
-                c="white"
+                c="var(--folio-text)"
                 style={{
                   fontSize: 20,
                   fontWeight: 200,
@@ -63,7 +63,7 @@ export function CapabilitySection() {
               <div ref={storyTextRef} className="homepage-capability-copy">
                 <Text
                   size="xl"
-                  c="white"
+                  c="var(--folio-text)"
                   style={{
                     fontSize: 64,
                     maxWidth: "50dvw",
@@ -82,7 +82,7 @@ export function CapabilitySection() {
               <div ref={strategyTextRef} className="homepage-capability-copy">
                 <Text
                   size="xl"
-                  c="white"
+                  c="var(--folio-text)"
                   style={{
                     fontSize: 64,
                     maxWidth: "50dvw",
@@ -105,7 +105,7 @@ export function CapabilitySection() {
             >
               <Text
                 size="xl"
-                c="white"
+                c="var(--folio-text)"
                 style={{
                   fontSize: 20,
                   fontWeight: 200,

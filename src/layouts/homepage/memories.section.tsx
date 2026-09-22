@@ -229,7 +229,7 @@ export default function MemoriesSection() {
                     <Text size="xs" c="orange.4" ff="monospace" fw={700} mb={4}>
                       {item.date || "// MEMORY"}
                     </Text>
-                    <Text size="sm" c="white" fw={500} lineClamp={1}>
+                    <Text size="sm" c="var(--folio-text)" fw={500} lineClamp={1}>
                       {item.title}
                     </Text>
                   </Box>

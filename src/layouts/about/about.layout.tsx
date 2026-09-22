@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Box, Group, Stack, Title, Text, Grid } from "@mantine/core";
 import {
   type InteractiveItem,
@@ -21,6 +21,9 @@ export default function AboutPage() {
   const [focusedWindowId, setFocusedWindowId] = useState<string | null>(null);
   const [topZIndex, setTopZIndex] = useState<number>(1000);
   const [zIndices, setZIndices] = useState<Record<string, number>>({});
+  const [closingWindowIds, setClosingWindowIds] = useState<string[]>([]);
+  const [closingFormIds, setClosingFormIds] = useState<string[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Bring specified window to the front layer
   const bringToFront = (id: string) => {
@@ -38,7 +41,7 @@ export default function AboutPage() {
 
     if (isOpen) {
       if (focusedWindowId === item.id) {
-        handleCloseWindow(item.id);
+        requestCloseWindow(item.id);
       } else {
         bringToFront(item.id);
       }
@@ -48,11 +51,13 @@ export default function AboutPage() {
     }
   };
 
-  const handleCloseWindow = (id: string) => {
-    setOpenWindows((prev) => prev.filter((w) => w.id !== id));
-    if (focusedWindowId === id) {
-      setFocusedWindowId(null);
-    }
+  const requestCloseWindow = (id: string) => {
+    setClosingWindowIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    window.setTimeout(() => {
+      setOpenWindows((prev) => prev.filter((w) => w.id !== id));
+      setClosingWindowIds((prev) => prev.filter((closingId) => closingId !== id));
+      if (focusedWindowId === id) setFocusedWindowId(null);
+    }, 260);
   };
 
   const handleToggleForm = (item: FormWindowItem) => {
@@ -60,7 +65,7 @@ export default function AboutPage() {
 
     if (isOpen) {
       if (focusedFormId === item.id) {
-        handleCloseForm(item.id);
+        requestCloseForm(item.id);
       } else {
         bringToFront(item.id);
       }
@@ -70,11 +75,13 @@ export default function AboutPage() {
     }
   };
 
-  const handleCloseForm = (id: string) => {
-    setOpenForms((prev) => prev.filter((f) => f.id !== id));
-    if (focusedFormId === id) {
-      setFocusedFormId(null);
-    }
+  const requestCloseForm = (id: string) => {
+    setClosingFormIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    window.setTimeout(() => {
+      setOpenForms((prev) => prev.filter((f) => f.id !== id));
+      setClosingFormIds((prev) => prev.filter((closingId) => closingId !== id));
+      if (focusedFormId === id) setFocusedFormId(null);
+    }, 260);
   };
 
   // Keyboard shortcut listener: pressing Escape closes the currently focused top window
@@ -82,9 +89,9 @@ export default function AboutPage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (focusedWindowId) {
-          handleCloseWindow(focusedWindowId);
+          requestCloseWindow(focusedWindowId);
         } else if (focusedFormId) {
-          handleCloseForm(focusedFormId);
+          requestCloseForm(focusedFormId);
         }
       }
     };
@@ -104,15 +111,16 @@ export default function AboutPage() {
       }}
     >
       <Stack
+        ref={containerRef}
         ml="lg"
         mr="lg"
         pl="xl"
         pr="xl"
         style={{
-          border: "1px solid #ff770036",
+          border: "1px solid var(--folio-border)",
           height: "100%",
           position: "relative",
-          backgroundColor: "#0e0600",
+          backgroundColor: "var(--folio-page-bg)",
           overflowX: "hidden",
           borderRadius: 10,
         }}
@@ -167,7 +175,7 @@ export default function AboutPage() {
                       style={{
                         fontSize: "clamp(24px, 6vw, 44px)",
                         fontWeight: 400,
-                        color: "white",
+                        color: "var(--folio-text)",
                         letterSpacing: "-1.5px",
                         lineHeight: 1.1,
                         maxWidth: "600px",
@@ -187,7 +195,7 @@ export default function AboutPage() {
                       style={{
                         fontSize: "clamp(12px, 3.5vw, 15px)",
                         fontWeight: 400,
-                        color: "white",
+                        color: "var(--folio-text)",
                         fontFamily: "monospace",
                         letterSpacing: "-1px",
                         lineHeight: 1.4,
@@ -305,7 +313,9 @@ export default function AboutPage() {
               item={item}
               itemIndex={itemIndex}
               zIndex={zIndex}
-              onClose={() => handleCloseWindow(item.id)}
+              containerRef={containerRef}
+              isClosing={closingWindowIds.includes(item.id)}
+              onClose={() => requestCloseWindow(item.id)}
               onFocus={() => bringToFront(item.id)}
             />
           );
@@ -321,7 +331,9 @@ export default function AboutPage() {
               item={item}
               itemIndex={index}
               zIndex={zIndex}
-              onClose={() => handleCloseForm(item.id)}
+              containerRef={containerRef}
+              isClosing={closingFormIds.includes(item.id)}
+              onClose={() => requestCloseForm(item.id)}
               onFocus={() => bringToFront(item.id)}
             />
           );

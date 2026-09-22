@@ -1,8 +1,10 @@
 import { useRef, useEffect } from "react";
+import { useComputedColorScheme } from "@mantine/core";
 
 export default // --- LIGHTWEIGHT ANIMATED ASCII & WAVE BACKGROUND ---
 function AsciiWaveBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const colorScheme = useComputedColorScheme("dark");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -28,7 +30,7 @@ function AsciiWaveBackground() {
 
     const draw = () => {
       time += 0.015;
-      ctx.fillStyle = "#0e0600"; // Deep dark background with warm orange baseline
+      ctx.fillStyle = colorScheme === "dark" ? "#020202" : "#f6f6f4";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Layer 1: Smooth Sine Waves
@@ -37,21 +39,21 @@ function AsciiWaveBackground() {
           amplitude: 45,
           frequency: 0.008,
           speed: 0.02,
-          color: "rgba(255, 119, 0, 0.22)",
+          color: `rgba(255, 119, 0, ${colorScheme === "dark" ? 0.22 : 0.12})`,
           yOffset: 0.35,
         },
         {
           amplitude: 60,
           frequency: 0.005,
           speed: 0.015,
-          color: "rgba(255, 146, 43, 0.18)",
+          color: `rgba(255, 153, 51, ${colorScheme === "dark" ? 0.18 : 0.1})`,
           yOffset: 0.55,
         },
         {
           amplitude: 35,
           frequency: 0.012,
           speed: 0.025,
-          color: "rgba(230, 107, 0, 0.25)",
+          color: `rgba(230, 107, 0, ${colorScheme === "dark" ? 0.25 : 0.12})`,
           yOffset: 0.75,
         },
       ];
@@ -110,7 +112,7 @@ function AsciiWaveBackground() {
       cancelAnimationFrame(animationFrameId);
       observer.disconnect();
     };
-  }, []);
+  }, [colorScheme]);
 
   return (
     <canvas

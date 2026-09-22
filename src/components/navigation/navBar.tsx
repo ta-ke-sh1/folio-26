@@ -10,14 +10,19 @@ import {
   Stack,
   Text,
   Box,
+  useComputedColorScheme,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 import { ZIndexLevel } from "../../enums/styles.enum";
 import { useLocation } from "react-router";
 import { useAnimatedNavigate } from "../transition/transition";
 
 export default function NavigationBar() {
   const [opened, { toggle, close }] = useDisclosure(false);
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme("dark");
   const animatedNavigate = useAnimatedNavigate();
   const location = useLocation();
 
@@ -63,6 +68,10 @@ export default function NavigationBar() {
     animatedNavigate(href);
   };
 
+  const toggleColorScheme = () => {
+    setColorScheme(computedColorScheme === "dark" ? "light" : "dark");
+  };
+
   return (
     <>
       {/* Top Header Navigation */}
@@ -77,9 +86,9 @@ export default function NavigationBar() {
           left: 0,
           width: "100dvw",
           zIndex: ZIndexLevel.HIGHEST,
-          backgroundColor: "rgba(5, 5, 5, 0.85)",
+          backgroundColor: "var(--folio-header-bg)",
           backdropFilter: "blur(8px)",
-          borderBottom: "1px solid rgba(255, 119, 0, 0.2)",
+          borderBottom: "1px solid var(--folio-border)",
         }}
       >
         <Group justify="space-between" h="100%">
@@ -94,8 +103,8 @@ export default function NavigationBar() {
                 width: 8,
                 height: 8,
                 borderRadius: "50%",
-                backgroundColor: "#FF7700",
-                boxShadow: "0 0 8px #FF7700",
+                backgroundColor: "var(--folio-accent)",
+                boxShadow: "0 0 8px var(--folio-accent)",
               }}
             />
             <Title
@@ -105,7 +114,7 @@ export default function NavigationBar() {
                 fontSize: 16,
                 fontWeight: 800,
                 fontFamily: "monospace",
-                color: "#FF7700",
+                color: "var(--folio-accent)",
                 letterSpacing: "-0.5px",
                 textShadow: "0 0 8px rgba(255, 119, 0, 0.5)",
               }}
@@ -138,7 +147,7 @@ export default function NavigationBar() {
                       fontFamily: "monospace",
                       letterSpacing: "1px",
                       fontWeight: isActive ? 700 : 500,
-                      color: isActive ? "#FF7700" : "#C1C2C5",
+                      color: isActive ? "var(--folio-accent)" : "var(--folio-muted)",
                       backgroundColor: isActive
                         ? "rgba(255, 119, 0, 0.12)"
                         : "transparent",
@@ -153,13 +162,25 @@ export default function NavigationBar() {
               })}
             </Group>
 
+            <Button
+              variant="subtle"
+              color="orange"
+              size="compact-xs"
+              onClick={toggleColorScheme}
+              aria-label={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
+              title={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
+              px={6}
+            >
+              {computedColorScheme === "dark" ? <IconSun size={16} /> : <IconMoon size={16} />}
+            </Button>
+
             {/* Mobile CRT Burger Icon */}
             <Burger
               opened={opened}
               onClick={toggle}
               hiddenFrom="sm"
               size="sm"
-              color="#FF7700"
+              color="var(--folio-accent)"
               aria-label="Toggle navigation menu"
             />
           </Group>
@@ -176,13 +197,13 @@ export default function NavigationBar() {
           withCloseButton={false}
           styles={{
             content: {
-              backgroundColor: "#050505",
-              color: "#FFF",
-              borderLeft: "1px solid rgba(255, 119, 0, 0.3)",
+              backgroundColor: "var(--folio-surface)",
+              color: "var(--folio-text)",
+              borderLeft: "1px solid var(--folio-border)",
             },
 
             close: {
-              color: "#FF7700",
+              color: "var(--folio-accent)",
               "&:hover": {
                 backgroundColor: "rgba(255, 119, 0, 0.15)",
               },
@@ -210,12 +231,12 @@ export default function NavigationBar() {
                     fontFamily: "monospace",
                     fontSize: "18px",
                     fontWeight: 700,
-                    color: isActive ? "#FF7700" : "#C1C2C5",
+                    color: isActive ? "var(--folio-accent)" : "var(--folio-muted)",
                     backgroundColor: isActive
                       ? "rgba(255, 119, 0, 0.1)"
                       : "transparent",
                     borderLeft: isActive
-                      ? "3px solid #FF7700"
+                      ? "3px solid var(--folio-accent)"
                       : "3px solid transparent",
                     borderRadius: "2px",
                     padding: "12px 16px",
@@ -259,9 +280,9 @@ export default function NavigationBar() {
           left: 0,
           width: "100dvw",
           zIndex: ZIndexLevel.HIGHEST,
-          backgroundColor: "rgba(5, 5, 5, 0.85)",
+          backgroundColor: "var(--folio-header-bg)",
           backdropFilter: "blur(8px)",
-          borderTop: "1px solid rgba(255, 119, 0, 0.2)",
+          borderTop: "1px solid var(--folio-border)",
           display: "flex",
           alignItems: "center",
         }}

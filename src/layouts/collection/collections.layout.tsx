@@ -137,7 +137,7 @@ export default function CollectionsLayout() {
               style={{
                 backgroundColor: isPrevHovered
                   ? "rgba(255, 119, 0, 0.15)"
-                  : "#0A0A0A",
+                  : "var(--folio-card)",
                 border: isPrevHovered
                   ? "1px solid #FF9933"
                   : "1px solid #FF7700",
@@ -174,8 +174,8 @@ export default function CollectionsLayout() {
             onChange={(val) => setMode(val as ViewMode)}
             styles={{
               root: {
-                backgroundColor: "#0A0A0A",
-                border: "1px solid #262626",
+                backgroundColor: "var(--folio-card)",
+                border: "1px solid var(--folio-card-border)",
                 borderRadius: "6px",
                 padding: "3px",
               },
@@ -209,7 +209,7 @@ export default function CollectionsLayout() {
               style={{
                 backgroundColor: isNextHovered
                   ? "rgba(255, 119, 0, 0.15)"
-                  : "#0A0A0A",
+                  : "var(--folio-card)",
                 border: isNextHovered
                   ? "1px solid #FF9933"
                   : "1px solid #FF7700",

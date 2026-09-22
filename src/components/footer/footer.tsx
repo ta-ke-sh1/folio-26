@@ -119,8 +119,8 @@ export default function Footer() {
       style={{
         position: "relative",
         zIndex: 10,
-        backgroundColor: "#050505",
-        borderTop: "1px solid rgba(255, 119, 0, 0.25)",
+        backgroundColor: "var(--folio-surface)",
+        borderTop: "1px solid var(--folio-border)",
         overflow: "hidden",
       }}
     >
@@ -201,7 +201,7 @@ export default function Footer() {
               radius="md"
               withBorder
               style={{
-                backgroundColor: "#0d0d0d",
+                backgroundColor: "var(--folio-card)",
                 borderColor: "rgba(255, 119, 0, 0.3)",
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.8)",
               }}
@@ -257,9 +257,9 @@ export default function Footer() {
                           marginBottom: "4px",
                         },
                         input: {
-                          backgroundColor: "#050505",
+                          backgroundColor: "var(--folio-surface)",
                           borderColor: "rgba(255, 119, 0, 0.3)",
-                          color: "#ffffff",
+                          color: "var(--folio-text)",
                           fontFamily: "monospace",
                           fontSize: "12px",
                           "&:focus": {
@@ -285,9 +285,9 @@ export default function Footer() {
                           marginBottom: "4px",
                         },
                         input: {
-                          backgroundColor: "#050505",
+                          backgroundColor: "var(--folio-surface)",
                           borderColor: "rgba(255, 119, 0, 0.3)",
-                          color: "#ffffff",
+                          color: "var(--folio-text)",
                           fontFamily: "monospace",
                           fontSize: "12px",
                           "&:focus": {

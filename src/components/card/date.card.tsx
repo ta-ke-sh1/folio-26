@@ -97,8 +97,8 @@ export function DateCard({ data }: DateCardProps) {
         height: "18dvh",
         minHeight: "100px",
         borderRadius: "6px",
-        backgroundColor: isHovered ? "#121212" : "#0a0a0a",
-        border: isHovered ? "1px solid #FF7700" : "1px solid #262626",
+        backgroundColor: isHovered ? "var(--folio-card-hover)" : "var(--folio-card)",
+        border: isHovered ? "1px solid #FF7700" : "1px solid var(--folio-card-border)",
         boxShadow: isHovered ? "0 0 20px rgba(255, 119, 0, 0.2)" : "none",
         cursor: data?.id ? "pointer" : "default",
         transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -127,7 +127,7 @@ export function DateCard({ data }: DateCardProps) {
           <Group gap={6}>
             <IconTerminal
               size={14}
-              color={isHovered ? "#FF7700" : "#666666"}
+              color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
               style={{ transition: "color 0.2s ease" }}
             />
             <Text
@@ -135,7 +135,7 @@ export function DateCard({ data }: DateCardProps) {
               fw={700}
               style={{
                 fontFamily: "monospace",
-                color: isHovered ? "#FF7700" : "#737373",
+                color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
                 letterSpacing: "1px",
                 textTransform: "uppercase",
               }}
@@ -150,8 +150,10 @@ export function DateCard({ data }: DateCardProps) {
               variant="outline"
               style={{
                 fontFamily: "monospace",
-                borderColor: isHovered ? "#FF7700" : "#333333",
-                color: isHovered ? "#FF7700" : "#a3a3a3",
+                borderColor: isHovered
+                  ? "var(--folio-accent)"
+                  : "var(--folio-card-border)",
+                color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
                 backgroundColor: isHovered
                   ? "rgba(255, 119, 0, 0.08)"
                   : "transparent",
@@ -174,7 +176,7 @@ export function DateCard({ data }: DateCardProps) {
             fz="lg"
             style={{
               fontFamily: "monospace",
-              color: isHovered ? "#ffffff" : "#d4d4d4",
+              color: "var(--folio-text)",
               transition: "color 0.2s ease",
               letterSpacing: "-0.5px",
             }}
@@ -184,7 +186,7 @@ export function DateCard({ data }: DateCardProps) {
 
           <IconArrowUpRight
             size={20}
-            color={isHovered ? "#FF7700" : "#525252"}
+            color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
             style={{
               transform: isHovered ? "translate(3px, -3px)" : "none",
               transition: "transform 0.2s ease, color 0.2s ease",
