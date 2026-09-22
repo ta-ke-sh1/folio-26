@@ -59,7 +59,7 @@ export default function NavigationBar() {
   const navLinks = [
     { label: "ABOUT", href: "/about" },
     { label: "COLLECTIONS", href: "/collections" },
-    // { label: "GALLERY", href: "/gallery" },
+    { label: "GALLERY", href: "/gallery" },
     // { label: "PLAYGROUND", href: "/playground" },
   ];
 
@@ -147,7 +147,9 @@ export default function NavigationBar() {
                       fontFamily: "monospace",
                       letterSpacing: "1px",
                       fontWeight: isActive ? 700 : 500,
-                      color: isActive ? "var(--folio-accent)" : "var(--folio-muted)",
+                      color: isActive
+                        ? "var(--folio-accent)"
+                        : "var(--folio-muted)",
                       backgroundColor: isActive
                         ? "rgba(255, 119, 0, 0.12)"
                         : "transparent",
@@ -171,7 +173,11 @@ export default function NavigationBar() {
               title={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
               px={6}
             >
-              {computedColorScheme === "dark" ? <IconSun size={16} /> : <IconMoon size={16} />}
+              {computedColorScheme === "dark" ? (
+                <IconSun size={16} />
+              ) : (
+                <IconMoon size={16} />
+              )}
             </Button>
 
             {/* Mobile CRT Burger Icon */}
@@ -231,7 +237,9 @@ export default function NavigationBar() {
                     fontFamily: "monospace",
                     fontSize: "18px",
                     fontWeight: 700,
-                    color: isActive ? "var(--folio-accent)" : "var(--folio-muted)",
+                    color: isActive
+                      ? "var(--folio-accent)"
+                      : "var(--folio-muted)",
                     backgroundColor: isActive
                       ? "rgba(255, 119, 0, 0.1)"
                       : "transparent",

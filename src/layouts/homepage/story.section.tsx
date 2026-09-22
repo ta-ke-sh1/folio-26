@@ -257,7 +257,7 @@ export default function StorySection() {
                     top: 14,
                     left: 14,
                     zIndex: 3,
-                    background: "rgba(0,0,0,0.85)",
+                    background: "rgba(192, 26, 26, 0.85)",
                     padding: "4px 10px",
                     borderRadius: "4px",
                     letterSpacing: "1px",
