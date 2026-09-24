@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Modal, Stack, TextInput, Group, Button } from "@mantine/core";
+import { Modal, Stack, TextInput, Group } from "@mantine/core";
+import { ShuffleButton as Button } from "../../../components/animations/shuffle.button";
 import { useForm } from "@mantine/form";
 
 export interface CollectionFormValues {

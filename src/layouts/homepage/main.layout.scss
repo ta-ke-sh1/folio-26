@@ -1,16 +1,26 @@
 .ascii-landing-page {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @media (max-width: 48em) {
   .homepage-hud {
-    right: 12px !important;
+    top: auto !important;
+    right: 50% !important;
+    bottom: 18px !important;
+    transform: translateX(50%) !important;
+    flex-direction: row !important;
+    align-items: center !important;
     gap: 10px !important;
   }
 
   .homepage-hud .mantine-Text-root {
-    font-size: 9px;
+    font-size: 8px;
     letter-spacing: 0;
+  }
+
+  .homepage-hud .mantine-Group-root {
+    gap: 4px !important;
+    white-space: nowrap;
   }
 
   .homepage-fixed-title {
@@ -30,21 +40,127 @@
   }
 
   .homepage-content {
-    padding-top: 96px !important;
     padding-bottom: 72px !important;
   }
 
   .homepage-story-visual {
-    position: static !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin-top: 24px;
+    display: none;
+  }
+
+  .homepage-story-grid {
+    display: block;
+  }
+
+  .homepage-story-copy {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .homepage-story-block {
+    min-height: clamp(260px, 54dvh, 440px) !important;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 2px solid rgba(255, 119, 0, 0.7);
+    border-radius: 8px;
+    background: rgba(8, 8, 8, 0.66);
+    backdrop-filter: blur(6px);
+  }
+
+  .homepage-story-copy > .mantine-Stack-root {
+    gap: clamp(28px, 6dvh, 52px) !important;
+    padding-bottom: 10dvh !important;
+  }
+
+  .homepage-story-visual-column {
+    position: absolute !important;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    max-width: none;
+    padding: 0 !important;
+    pointer-events: none;
+  }
+
+  .homepage-story-visual-track {
+    position: sticky !important;
+    top: 0;
+    height: 100dvh !important;
+    padding: 0 !important;
+  }
+
+  .homepage-story-visual-card {
+    width: 100%;
+    height: 100%;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background-attachment: scroll;
+  }
+
+  .homepage-story-visual-card .mantine-AspectRatio-root {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto !important;
+    opacity: 0;
+  }
+
+  .homepage-story-visual-card .mantine-AspectRatio-root::before {
+    display: none;
+  }
+
+  .homepage-story-visual-card .mantine-AspectRatio-root > * {
+    width: 100%;
+    height: 100%;
+  }
+
+  .homepage-story-visual-card .mantine-Image-root {
+    object-fit: cover;
+  }
+
+  .homepage-memories-track {
+    gap: 18px !important;
+  }
+
+  .homepage-memory-card {
+    min-width: min(78vw, 280px) !important;
+    max-width: min(78vw, 280px) !important;
+    min-height: 390px !important;
+  }
+
+  .homepage-memory-card .mantine-AspectRatio-root {
+    height: 300px !important;
+  }
+
+  .homepage-footer-ascii {
+    position: absolute !important;
+    inset: 0 0 auto;
+    height: 240px;
+    overflow: hidden;
   }
 
   .homepage-capability-copy .mantine-Text-root {
     max-width: 100% !important;
     font-size: clamp(32px, 9vw, 48px) !important;
     line-height: 1 !important;
+  }
+
+  .homepage-capability-overview-heading {
+    order: 1 !important;
+  }
+
+  .homepage-capability-overview-content {
+    order: 2 !important;
+  }
+
+  .homepage-capability-strategy-heading {
+    order: 3 !important;
+  }
+
+  .homepage-capability-strategy-content {
+    order: 4 !important;
   }
 
   .ascii-landing-page .scroll-section-0,

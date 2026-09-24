@@ -11,10 +11,10 @@ import {
   Box,
   TextInput,
   Textarea,
-  Button,
   Paper,
   Grid,
 } from "@mantine/core";
+import { ShuffleButton as Button } from "../animations/shuffle.button";
 import {
   IconBrandGithub,
   IconBrandFacebook,
@@ -130,6 +130,7 @@ export default function Footer() {
       >
         {/* Background ASCII Animation */}
         <Group
+          className="homepage-footer-ascii"
           style={{
             opacity: 1,
             width: "100%",

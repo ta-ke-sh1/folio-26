@@ -117,7 +117,6 @@ export default function StorySection() {
   return (
     <Container
       fluid
-      mt="100px"
       className="homepage-story-section"
       style={{ overflow: "visible" }}
     >
@@ -131,13 +130,22 @@ export default function StorySection() {
           I. Story
         </Badge>
 
-        <Grid align="stretch" gap="xl" style={{ position: "relative" }}>
+        <Grid
+          align="stretch"
+          gap="xl"
+          className="homepage-story-grid"
+          style={{ position: "relative" }}
+        >
           {/* ================= LEFT COLUMN: SCROLLABLE TEXT BLOCKS ================= */}
-          <Grid.Col span={{ base: 12, md: 6 }}>
+          <Grid.Col
+            span={{ base: 12, md: 6 }}
+            className="homepage-story-copy"
+          >
             <Stack gap={100} style={{ paddingBottom: "30vh" }}>
               {/* Block I.a */}
               <Box
                 ref={blockRef0}
+                className="homepage-story-block"
                 style={{
                   minHeight: "70vh",
                   display: "flex",
@@ -165,6 +173,7 @@ export default function StorySection() {
               {/* Block I.b */}
               <Box
                 ref={blockRef1}
+                className="homepage-story-block"
                 style={{
                   minHeight: "70vh",
                   display: "flex",
@@ -192,6 +201,7 @@ export default function StorySection() {
               {/* Block I.c */}
               <Box
                 ref={blockRef2}
+                className="homepage-story-block"
                 style={{
                   minHeight: "70vh",
                   display: "flex",
@@ -222,10 +232,12 @@ export default function StorySection() {
           <Grid.Col
             ref={visualColumnRef}
             span={{ base: 12, md: 6 }}
+            className="homepage-story-visual-column"
             style={{ position: "relative" }}
           >
             <Box
               ref={visualTrackRef}
+              className="homepage-story-visual-track"
               style={{
                 position: "relative",
                 height: "100dvh",
@@ -237,6 +249,7 @@ export default function StorySection() {
               }}
             >
               <Box
+                className="homepage-story-visual-card"
                 style={{
                   width: "100%",
                   position: "relative",
@@ -245,6 +258,9 @@ export default function StorySection() {
                   border: `1px solid ${currentVisual.borderColor}`,
                   transition: "border-color 0.4s ease, box-shadow 0.4s ease",
                   boxShadow: "0 0 30px rgba(0, 0, 0, 0.5)",
+                  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.68)), url("${currentVisual.src}")`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
                 {/* Tag */}

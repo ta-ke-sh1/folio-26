@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Stack, Text, Title } from "@mantine/core";
+import { ActionIcon, Box, Group, Stack, Text } from "@mantine/core";
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -6,6 +6,7 @@ import {
   IconRefresh,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { ShuffleText } from "../../components/animations/shuffle.text";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import "./gallery.layout.scss";
 
@@ -433,9 +434,10 @@ export default function GalleryLayout() {
                     <Text>ROLL 026 // 09 EXPOSURES</Text>
                     <button
                       type="button"
+                      aria-label="Eject roll"
                       onClick={() => setIsCanisterLoaded(false)}
                     >
-                      EJECT ROLL
+                      <ShuffleText text="EJECT ROLL" />
                     </button>
                   </div>
                   <div
@@ -456,13 +458,17 @@ export default function GalleryLayout() {
                         aria-pressed={shot.id === activeShot.id}
                       >
                         <span className="film-strip__index">
-                          {String(index + 1).padStart(2, "0")}
+                          <ShuffleText
+                            text={String(index + 1).padStart(2, "0")}
+                          />
                         </span>
                         <span className="film-strip__image">
                           <img src={`/pictures/${shot.id}.jpg`} alt="" />
                         </span>
                         <span className="film-strip__code">
-                          26A-{String(shot.id).padStart(2, "0")}
+                          <ShuffleText
+                            text={`26A-${String(shot.id).padStart(2, "0")}`}
+                          />
                         </span>
                       </button>
                     ))}
@@ -482,11 +488,11 @@ export default function GalleryLayout() {
                     <span className="film-canister__spool" aria-hidden="true">
                       <span className="film-canister__label">
                         <img src="/pictures/1.jpg" alt="" />
-                        <span>026</span>
+                          <ShuffleText text="026" />
                       </span>
                     </span>
                     <span className="film-canister__name">
-                      ROLL 026 // 09 EXP
+                      <ShuffleText text="ROLL 026 // 09 EXP" />
                     </span>
                   </button>
                   <div className="canister-rack__manifest">

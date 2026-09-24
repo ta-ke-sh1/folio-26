@@ -26,6 +26,7 @@ export function CapabilitySection() {
             {/* Story Heading Column */}
             <Grid.Col
               span={{ base: 12, md: 6 }}
+              className="homepage-capability-overview-heading"
               style={{
                 position: "relative",
               }}
@@ -56,6 +57,7 @@ export function CapabilitySection() {
             {/* Story Content Column */}
             <Grid.Col
               span={{ base: 12, md: 6 }}
+              className="homepage-capability-overview-content"
               style={{
                 position: "relative",
               }}
@@ -78,7 +80,11 @@ export function CapabilitySection() {
             </Grid.Col>
 
             {/* Strategy Content Column */}
-            <Grid.Col span={{ base: 12, md: 6 }} mt="xl">
+            <Grid.Col
+              span={{ base: 12, md: 6 }}
+              mt="xl"
+              className="homepage-capability-strategy-content"
+            >
               <div ref={strategyTextRef} className="homepage-capability-copy">
                 <Text
                   size="xl"
@@ -99,6 +105,7 @@ export function CapabilitySection() {
             <Grid.Col
               span={{ base: 12, md: 6 }}
               mt="xl"
+              className="homepage-capability-strategy-heading"
               style={{
                 position: "relative",
               }}

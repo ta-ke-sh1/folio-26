@@ -26,6 +26,11 @@ export interface InteractiveItem {
   icon: React.ElementType;
   appIconUrl?: string;
   tag: string;
+  photo?: {
+    src: string;
+    alt: string;
+    caption: string;
+  };
   content: {
     title: string;
     subtitle: string;
@@ -44,6 +49,34 @@ interface DraggableWindowProps {
   isClosing: boolean;
   onClose: () => void;
   onFocus: () => void;
+}
+
+function PolaroidStack({ item, className }: { item: InteractiveItem; className: string }) {
+  if (!item.photo) return null;
+
+  return (
+    <div
+      className={`instrument-detail__photo-stage ${className}`}
+      role="group"
+      aria-label={`Photo: ${item.photo.alt}`}
+    >
+      <div
+        className="instrument-detail__postcard instrument-detail__postcard--back instrument-detail__postcard--back-one"
+        aria-hidden="true"
+      />
+      <div
+        className="instrument-detail__postcard instrument-detail__postcard--back instrument-detail__postcard--back-two"
+        aria-hidden="true"
+      />
+      <figure className="instrument-detail__postcard instrument-detail__polaroid">
+        <img src={item.photo.src} alt={item.photo.alt} />
+        <figcaption>{item.photo.caption}</figcaption>
+      </figure>
+      <span className="instrument-detail__photo-hint" aria-hidden="true">
+        HOVER TO REVEAL PHOTO
+      </span>
+    </div>
+  );
 }
 
 export function DraggableWindow({
@@ -181,19 +214,23 @@ export function DraggableWindow({
   const ItemIcon = item.icon;
 
   return (
+    <div
+      ref={windowRef}
+      className="instrument-window-frame"
+      style={{
+        position: "absolute",
+        top: position.y,
+        left: position.x,
+        width: "clamp(320px, 76vw, 520px)",
+        zIndex,
+        userSelect: isDragging ? "none" : "auto",
+      }}
+    >
+      <PolaroidStack item={item} className="instrument-detail__photo-stage--desktop" />
       <Paper
-        ref={windowRef}
         className="instrument-window instrument-window--active"
         shadow="xl"
         onMouseDown={onFocus}
-        style={{
-          position: "absolute",
-          top: position.y,
-          left: position.x,
-          width: "clamp(320px, 76vw, 520px)",
-          zIndex: zIndex,
-          userSelect: isDragging ? "none" : "auto",
-        }}
       >
         {/* Draggable Title Bar */}
         <Group
@@ -277,6 +314,7 @@ export function DraggableWindow({
           <Text className="instrument-detail__description" fz="sm">
             {item.content.description}
           </Text>
+          <PolaroidStack item={item} className="instrument-detail__photo-stage--mobile" />
 
           {/* Highlights List */}
           <Box
@@ -353,5 +391,6 @@ export function DraggableWindow({
           </Group>
         </Stack>
       </Paper>
+    </div>
   );
 }

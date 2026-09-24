@@ -11,6 +11,7 @@ import {
 import AsciiWaveBackground from "./background/ascii.background";
 import { FORM_TYPES, ITEMS } from "./about.type";
 import TriggerCard from "../../components/card/trigger.card";
+import "./about.layout.scss";
 
 // --- MAIN PAGE COMPONENT ---
 export default function AboutPage() {
@@ -101,6 +102,7 @@ export default function AboutPage() {
 
   return (
     <Stack
+      className="about-page"
       pt={60}
       pb={60}
       style={{
@@ -111,6 +113,7 @@ export default function AboutPage() {
       }}
     >
       <Stack
+        className="about-page__stage"
         ref={containerRef}
         ml="lg"
         mr="lg"
@@ -144,6 +147,7 @@ export default function AboutPage() {
         >
           {/* Left Column: Hero Headers & Interactive Form Cards */}
           <Grid.Col
+            className="about-story-column"
             span={{ base: 12, md: 7, lg: 6 }}
             style={{
               display: "flex",
@@ -152,6 +156,7 @@ export default function AboutPage() {
             }}
           >
             <Stack
+              className="about-story-layout"
               justify="space-between"
               pb="25"
               style={{
@@ -211,7 +216,7 @@ export default function AboutPage() {
               </Stack>
 
               {/* Form Trigger Cards */}
-              <Stack gap={5}>
+              <Stack className="about-desktop-contacts" gap={5}>
                 <Group justify="start" mr={5}>
                   <Text
                     style={{
@@ -248,10 +253,56 @@ export default function AboutPage() {
                 </Group>
               </Stack>
             </Stack>
+
+            <section className="about-mobile-controls" aria-label="Contacts and information">
+              <Text className="about-mobile-controls__heading">
+                [ CONTACTS // PERSONAL INFO ]
+              </Text>
+              <div className="about-mobile-controls__grid">
+                {FORM_TYPES.map((item) => {
+                  const isOpen = openForms.some((form) => form.id === item.id);
+                  return (
+                    <TriggerCard
+                      key={item.id}
+                      className="about-mobile-controls__card"
+                      category="SYS_FORM"
+                      label={
+                        item.id === "collaboration"
+                          ? "COLLABORATION"
+                          : item.id === "say-hi"
+                            ? "SAY HI"
+                            : "EMAIL ME"
+                      }
+                      icon={item.icon}
+                      isOpen={isOpen}
+                      isFocused={focusedFormId === item.id}
+                      onClick={() => handleToggleForm(item)}
+                    />
+                  );
+                })}
+                {ITEMS.map((item) => {
+                  const isOpen = openWindows.some((windowItem) => windowItem.id === item.id);
+                  return (
+                    <TriggerCard
+                      key={item.id}
+                      className="about-mobile-controls__card"
+                      category={item.category}
+                      label={item.label}
+                      icon={item.icon}
+                      appIconUrl={item.appIconUrl}
+                      isOpen={isOpen}
+                      isFocused={focusedWindowId === item.id}
+                      onClick={() => handleToggleWindow(item)}
+                    />
+                  );
+                })}
+              </div>
+            </section>
           </Grid.Col>
 
           {/* Right Column: Interactive Deck Trigger Cards */}
           <Grid.Col
+            className="about-information-column"
             span={{ base: 12, md: 5, lg: 6 }}
             style={{
               display: "flex",

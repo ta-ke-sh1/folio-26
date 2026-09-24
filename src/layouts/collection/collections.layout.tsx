@@ -3,12 +3,13 @@ import {
   Stack,
   Title,
   Text,
-  Button,
   SegmentedControl,
 } from "@mantine/core";
+import { ShuffleButton as Button } from "../../components/animations/shuffle.button";
 import { useEffect, useState } from "react";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import Calendar from "./calendar/calendar";
+import { ShuffleText } from "../../components/animations/shuffle.text";
 import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import CollectionService from "../../services/collection.service";
@@ -161,7 +162,7 @@ export default function CollectionsLayout() {
                   textTransform: "uppercase",
                 }}
               >
-                [ {prevLabel} ]
+                <ShuffleText text={`[ ${prevLabel} ]`} />
               </Text>
             </Button>
           </Group>
@@ -233,7 +234,7 @@ export default function CollectionsLayout() {
                   textTransform: "uppercase",
                 }}
               >
-                [ {nextLabel} ]
+                <ShuffleText text={`[ ${nextLabel} ]`} />
               </Text>
             </Button>
           </Group>

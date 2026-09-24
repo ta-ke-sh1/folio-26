@@ -14,6 +14,7 @@ interface TriggerCardProps {
   width?: string | number;
   maxWidth?: string | number;
   flex?: string;
+  className?: string;
 }
 
 export default function TriggerCard({
@@ -27,6 +28,7 @@ export default function TriggerCard({
   width,
   maxWidth,
   flex,
+  className,
 }: TriggerCardProps) {
   const [displayCategory, setDisplayCategory] = useState(category);
   const [displayLabel, setDisplayLabel] = useState(label);
@@ -73,6 +75,7 @@ export default function TriggerCard({
 
   return (
     <Box
+      className={className}
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -97,6 +100,7 @@ export default function TriggerCard({
         <Group gap="md" wrap="nowrap" align="center">
           {/* Desktop Application Icon Box */}
           <Box
+            className={className ? `${className}__icon` : undefined}
             style={{
               width: 44,
               height: 44,
@@ -133,7 +137,7 @@ export default function TriggerCard({
           </Box>
 
           {/* Labels and Metadata */}
-          <Box>
+          <Box className={className ? `${className}__content` : undefined}>
             <Text
               fz="10px"
               fw={700}

@@ -6,13 +6,13 @@ import {
   Select,
   TagsInput,
   Group,
-  Button,
   LoadingOverlay,
   Text,
   Image,
   ActionIcon,
   Box,
 } from "@mantine/core";
+import { ShuffleButton as Button } from "../../../components/animations/shuffle.button";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { IconUpload, IconPhoto, IconX, IconTrash } from "@tabler/icons-react";

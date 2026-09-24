@@ -1,0 +1,443 @@
+.technology-section {
+  --network-orange: #ff7700;
+  --network-ink: rgba(5, 5, 5, 0.82);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100dvh;
+  min-height: 620px;
+  padding: clamp(28px, 5vh, 58px) clamp(12px, 2vw, 24px);
+  overflow: hidden;
+  border-block: 1px solid rgba(255, 119, 0, 0.16);
+  background:
+    radial-gradient(ellipse at 50% 52%, rgba(255, 119, 0, 0.065), transparent 48%),
+    linear-gradient(rgba(255, 119, 0, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 119, 0, 0.025) 1px, transparent 1px),
+    var(--folio-page-bg);
+  background-size: auto, 36px 36px, 36px 36px, auto;
+  isolation: isolate;
+}
+
+.technology-section::before,
+.technology-section::after {
+  position: absolute;
+  z-index: -1;
+  width: min(34vw, 420px);
+  aspect-ratio: 1;
+  content: "";
+  border: 1px solid rgba(255, 119, 0, 0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.technology-section::before {
+  top: 16%;
+  left: -18%;
+  box-shadow: 0 0 0 36px rgba(255, 119, 0, 0.018), 0 0 0 72px rgba(255, 119, 0, 0.012);
+}
+
+.technology-section::after {
+  right: -18%;
+  bottom: 8%;
+  box-shadow: 0 0 0 36px rgba(255, 119, 0, 0.018), 0 0 0 72px rgba(255, 119, 0, 0.012);
+}
+
+.technology-section__header {
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.technology-section__title {
+  margin-top: 14px;
+  color: var(--folio-text);
+  font-family: "Plus Jakarta Sans Variable", sans-serif;
+  font-size: clamp(25px, 4vw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.technology-section__instruction {
+  padding-bottom: 5px;
+  color: var(--folio-muted);
+  font-family: monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-align: right;
+}
+
+.technology-graph {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-height: 0;
+  margin-top: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 119, 0, 0.14);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at center, rgba(14, 13, 11, 0.5), rgba(3, 3, 3, 0.92) 75%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(255, 255, 255, 0.025) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, rgba(255, 255, 255, 0.025) 39px 40px);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55), 0 24px 80px rgba(0, 0, 0, 0.24);
+  touch-action: pan-y;
+}
+
+.technology-flow {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  --xy-edge-stroke: rgba(255, 119, 0, 0.4);
+  --xy-edge-stroke-selected: #ff9a42;
+  --xy-controls-button-background-color: rgba(11, 11, 10, 0.96);
+  --xy-controls-button-color: #ff9a42;
+  --xy-controls-button-border-color: rgba(255, 119, 0, 0.36);
+  --xy-controls-button-background-color-hover: rgba(57, 30, 10, 0.98);
+}
+
+.technology-flow .react-flow__pane {
+  cursor: grab;
+}
+
+.technology-flow .react-flow__pane:active {
+  cursor: grabbing;
+}
+
+.technology-flow .react-flow__node {
+  cursor: grab;
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+.technology-flow .react-flow__node:active {
+  cursor: grabbing;
+}
+
+.technology-flow .react-flow__edge-path {
+  stroke: rgba(255, 119, 0, 0.38);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4 7;
+  vector-effect: non-scaling-stroke;
+}
+
+.technology-flow .react-flow__edge.animated .react-flow__edge-path {
+  animation: technology-data-flow 18s linear infinite;
+}
+
+.technology-flow .react-flow__edge--hub .react-flow__edge-path {
+  stroke: rgba(255, 119, 0, 0.56);
+  stroke-width: 1.8px;
+  stroke-dasharray: 2 5;
+}
+
+.technology-flow .react-flow__node.is-branch-dimmed,
+.technology-flow .react-flow__edge.is-branch-dimmed {
+  opacity: 0.2;
+}
+
+.technology-flow .react-flow__node.is-branch-active {
+  z-index: 8 !important;
+  filter: drop-shadow(0 0 9px rgba(255, 119, 0, 0.25));
+}
+
+.technology-flow .react-flow__node.is-branch-active .technology-node {
+  border-color: #ffad66;
+  background: rgba(68, 35, 12, 0.98);
+  box-shadow: 0 0 18px rgba(255, 119, 0, 0.32), inset 0 0 18px rgba(255, 119, 0, 0.08);
+}
+
+.technology-flow .react-flow__node.is-branch-active .technology-node__icon {
+  color: #ffd1a8;
+  filter: drop-shadow(0 0 4px rgba(255, 154, 66, 0.7));
+}
+
+.technology-flow .react-flow__edge.is-branch-active {
+  opacity: 1;
+}
+
+.technology-flow .react-flow__edge.is-branch-active .react-flow__edge-path {
+  stroke: #ffad66;
+  stroke-width: 2.8px;
+  stroke-dasharray: 5 5;
+}
+
+.technology-flow .react-flow__handle {
+  width: 2px;
+  height: 2px;
+  min-width: 2px;
+  min-height: 2px;
+  opacity: 0;
+  border: 0;
+  background: transparent;
+}
+
+.technology-node {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 200px;
+  min-height: 50px;
+  gap: 8px;
+  padding: 8px 11px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 119, 0, 0.4);
+  border-radius: 7px;
+  background: rgba(11, 11, 10, 0.96);
+  color: var(--folio-text);
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.technology-node--category {
+  width: 250px;
+  min-height: 62px;
+  padding-inline: 11px;
+  border-color: rgba(255, 119, 0, 0.76);
+  border-radius: 8px;
+  background: rgba(30, 18, 9, 0.97);
+}
+
+.technology-node--hub {
+  flex-direction: column;
+  justify-content: center;
+  width: 112px;
+  height: 112px;
+  min-height: 112px;
+  gap: 5px;
+  padding: 12px;
+  border-color: rgba(255, 119, 0, 0.8);
+  border-radius: 50%;
+  background: rgba(16, 12, 8, 0.98);
+  box-shadow: 0 0 28px rgba(255, 119, 0, 0.22), inset 0 0 22px rgba(255, 119, 0, 0.08);
+  text-align: center;
+}
+
+.technology-flow--mobile .technology-node--hub {
+  width: 64px;
+  height: 64px;
+  min-height: 64px;
+  gap: 2px;
+  padding: 5px;
+}
+
+.technology-flow--mobile .technology-node--hub .technology-node__icon {
+  width: 13px;
+  height: 13px;
+  flex-basis: 13px;
+}
+
+.technology-flow--mobile .technology-node__hub-heading {
+  gap: 3px;
+}
+
+.technology-flow--mobile .technology-node__hub-mark {
+  font-size: 7px;
+}
+
+.technology-flow--mobile .technology-node__hub-label {
+  font-size: 8px;
+}
+
+.technology-flow .react-flow__node:hover .technology-node,
+.technology-flow .react-flow__node:focus-visible .technology-node,
+.technology-flow .react-flow__node.selected .technology-node {
+  border-color: #ff9a42;
+  background: rgba(57, 30, 10, 0.98);
+  box-shadow: 0 0 14px rgba(255, 119, 0, 0.24);
+}
+
+.technology-node__mark {
+  flex: 0 0 45px;
+  overflow: hidden;
+  color: #ff9a42;
+  font-family: monospace;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: -0.65px;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.technology-node--category .technology-node__mark {
+  flex-basis: 54px;
+  color: #ff7700;
+  font-size: 8px;
+  filter: drop-shadow(0 0 3px rgba(255, 119, 0, 0.65));
+}
+
+.technology-node__icon {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  color: #ff9a42;
+  transition: color 180ms ease, filter 180ms ease;
+}
+
+.technology-node__label {
+  min-width: 0;
+  color: var(--folio-text);
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.technology-node--category .technology-node__label {
+  color: #ff9a42;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.45px;
+}
+
+.technology-node__hub-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.technology-node__hub-mark {
+  color: #a88c73;
+  font-family: monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.technology-node__hub-label {
+  color: #ff9a42;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.technology-graph__legend {
+  position: absolute;
+  z-index: 4;
+  right: 18px;
+  bottom: 14px;
+  left: 18px;
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.42);
+  font-family: monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.technology-graph__legend span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.technology-graph__legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--network-orange);
+  box-shadow: 0 0 7px var(--network-orange);
+}
+
+@keyframes technology-data-flow {
+  to { stroke-dashoffset: -88; }
+}
+
+@media (max-width: 48em) {
+  .technology-section {
+    min-height: 600px;
+    padding: 28px 12px;
+  }
+
+  .technology-section__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .technology-section__title {
+    max-width: 14ch;
+    font-size: clamp(26px, 7vw, 38px);
+    line-height: 0.98;
+  }
+
+  .technology-section__instruction {
+    text-align: left;
+  }
+
+  .technology-graph {
+    touch-action: pan-y;
+  }
+
+  .technology-flow--mobile .react-flow__pane,
+  .technology-flow--mobile .react-flow__node {
+    cursor: default;
+  }
+
+  .technology-node {
+    width: 128px;
+    min-height: 34px;
+    gap: 5px;
+    padding: 5px 7px;
+  }
+
+  .technology-node--category {
+    width: 205px;
+    min-height: 48px;
+    gap: 6px;
+    padding: 5px 8px;
+  }
+
+  .technology-node__icon {
+    width: 14px;
+    height: 14px;
+    flex-basis: 14px;
+  }
+
+  .technology-node__mark {
+    flex-basis: 34px;
+    font-size: 7px;
+  }
+
+  .technology-node--category .technology-node__mark {
+    flex-basis: 48px;
+    font-size: 7px;
+  }
+
+  .technology-node__label {
+    font-size: 8px;
+  }
+
+  .technology-node--category .technology-node__label {
+    font-size: 8px;
+  }
+
+  .technology-graph__legend {
+    right: 12px;
+    bottom: 10px;
+    left: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .technology-flow .react-flow__edge.animated .react-flow__edge-path {
+    animation: none !important;
+  }
+
+  .technology-node {
+    transition-duration: 0.01ms !important;
+  }
+
+  .technology-flow .react-flow__node {
+    transition-duration: 0.01ms !important;
+  }
+}
