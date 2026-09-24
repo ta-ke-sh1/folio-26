@@ -1,126 +1,38 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import {
-  Container,
-  Stack,
-  Badge,
-  Grid,
-  Text,
-  Box,
-  Image,
-  AspectRatio,
-  Group,
-} from "@mantine/core";
+import { Container, Stack, Badge } from "@mantine/core";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STORY_SLIDES = [
-  {
-    id: "a",
-    tag: "I.a // TSDV & CONFIDENTIALITY",
-    src: "/pictures/1.jpg",
-    alt: "System Architecture and Hardware Simulation",
-    badgeText: "[ NDA CLASSIFIED ]",
-    badgeColor: "orange.4",
-    caption:
-      "Enterprise simulation frameworks and proprietary codebases remain restricted under active NDA.",
-    filter: "brightness(0.7) contrast(1.1)",
-    borderColor: "rgba(255, 119, 0, 0.3)",
-  },
-  {
-    id: "b",
-    tag: "I.b // VISUAL MEDIA",
-    src: "/pictures/2.jpg",
-    alt: "Camera Lens Photography",
-    badgeText: "50MM / FRAMING / MOTION",
-    badgeColor: "var(--folio-media-text)",
-    caption:
-      "Capturing architecture, lighting dynamics, and cinematic framing.",
-    filter: "grayscale(0.6) brightness(0.8)",
-    borderColor: "rgba(255, 255, 255, 0.2)",
-  },
-  {
-    id: "c",
-    tag: "I.c // COMPANIONS (2 CATS)",
-    src: "/pictures/3.jpg",
-    alt: "Two Cats Workspace Companions",
-    badgeText: "FELINE COMPANIONSHIP // 02 CATS",
-    badgeColor: "orange.4",
-    caption: "Creative studio co-pilots maintaining focus and energy.",
-    filter: "brightness(0.85) contrast(1.05)",
-    borderColor: "rgba(255, 119, 0, 0.3)",
-  },
-];
-
 export default function StorySection() {
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  const blockRef0 = useRef<HTMLDivElement | null>(null);
-  const blockRef1 = useRef<HTMLDivElement | null>(null);
-  const blockRef2 = useRef<HTMLDivElement | null>(null);
-  const visualColumnRef = useRef<HTMLDivElement | null>(null);
-  const visualTrackRef = useRef<HTMLDivElement | null>(null);
-
-  useGSAP(
-    () => {
-      if (!visualColumnRef.current || !visualTrackRef.current) return;
-
-      const media = gsap.matchMedia();
-      media.add("(min-width: 48em)", () => {
-        ScrollTrigger.create({
-          trigger: visualColumnRef.current,
-          pin: visualTrackRef.current,
-          start: "top top",
-          end: "bottom bottom",
-          pinSpacing: false,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        });
-      });
-
-      return () => media.revert();
-    },
-    { scope: visualColumnRef },
-  );
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const refs = [blockRef0, blockRef1, blockRef2];
-
-    const observerOptions = {
-      root: null,
-      rootMargin: "-30% 0px -30% 0px",
-      threshold: 0.2,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = refs.findIndex((ref) => ref.current === entry.target);
-          if (index !== -1) {
-            setActiveSlide(index);
-          }
-        }
+    const ctx = gsap.context(() => {
+      gsap.to(containerRef.current, {
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top", // Fading begins when the top of the section hits the top of the viewport
+          end: "center top", // Reaches 0 opacity when the middle of the section leaves the top
+          scrub: true, // Syncs the opacity transition directly to scroll position
+        },
       });
-    }, observerOptions);
+    }, containerRef);
 
-    refs.forEach((ref) => {
-      if (ref.current) observer.observe(ref.current);
-    });
-
-    return () => observer.disconnect();
+    return () => ctx.revert(); // Clean up animation context on unmount
   }, []);
-
-  const currentVisual = STORY_SLIDES[activeSlide];
 
   return (
     <Container
+      ref={containerRef}
       fluid
       className="homepage-story-section"
       style={{ overflow: "visible" }}
     >
-      <Stack gap={60}>
+      <Stack gap={"md"} pt={50}>
         <Badge
           size="lg"
           variant="dot"
@@ -129,212 +41,6 @@ export default function StorySection() {
         >
           I. Story
         </Badge>
-
-        <Grid
-          align="stretch"
-          gap="xl"
-          className="homepage-story-grid"
-          style={{ position: "relative" }}
-        >
-          {/* ================= LEFT COLUMN: SCROLLABLE TEXT BLOCKS ================= */}
-          <Grid.Col
-            span={{ base: 12, md: 6 }}
-            className="homepage-story-copy"
-          >
-            <Stack gap={100} style={{ paddingBottom: "30vh" }}>
-              {/* Block I.a */}
-              <Box
-                ref={blockRef0}
-                className="homepage-story-block"
-                style={{
-                  minHeight: "70vh",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Stack gap="md">
-                  <Text size="xs" c="orange.4" ff="monospace" fw={700}>
-                    // 01. SIMULATION & ENGINEERING
-                  </Text>
-                  <Text
-                    size="xl"
-                    c="var(--folio-text)"
-                    style={{
-                      fontSize: "clamp(28px, 3.5vw, 44px)",
-                      lineHeight: "1.2",
-                      fontWeight: 300,
-                    }}
-                  >
-                    {`Member at TSDV specializing in simulation engineering and web development. Bridging complex mathematical models with responsive digital interfaces.`.toUpperCase()}
-                  </Text>
-                </Stack>
-              </Box>
-
-              {/* Block I.b */}
-              <Box
-                ref={blockRef1}
-                className="homepage-story-block"
-                style={{
-                  minHeight: "70vh",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Stack gap="md">
-                  <Text size="xs" c="var(--folio-text)" ff="monospace" fw={700}>
-                    // 02. PHOTOGRAPHY & VISUAL MEDIA
-                  </Text>
-                  <Text
-                    size="xl"
-                    c="var(--folio-text)"
-                    style={{
-                      fontSize: "clamp(28px, 3.5vw, 44px)",
-                      lineHeight: "1.2",
-                      fontWeight: 300,
-                    }}
-                  >
-                    {`Outside software, I capture geometry, perspective, and lighting through photography and videography.`.toUpperCase()}
-                  </Text>
-                </Stack>
-              </Box>
-
-              {/* Block I.c */}
-              <Box
-                ref={blockRef2}
-                className="homepage-story-block"
-                style={{
-                  minHeight: "70vh",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Stack gap="md">
-                  <Text size="xs" c="orange.4" ff="monospace" fw={700}>
-                    // 03. COMPANION LIFE
-                  </Text>
-                  <Text
-                    size="xl"
-                    c="var(--folio-text)"
-                    style={{
-                      fontSize: "clamp(28px, 3.5vw, 44px)",
-                      lineHeight: "1.2",
-                      fontWeight: 300,
-                    }}
-                  >
-                    {`Passionate cat lover sharing life with 2 feline companions who keep my workspace creative and grounded.`.toUpperCase()}
-                  </Text>
-                </Stack>
-              </Box>
-            </Stack>
-          </Grid.Col>
-
-          {/* ================= RIGHT COLUMN: STICKY VISUAL ================= */}
-          <Grid.Col
-            ref={visualColumnRef}
-            span={{ base: 12, md: 6 }}
-            className="homepage-story-visual-column"
-            style={{ position: "relative" }}
-          >
-            <Box
-              ref={visualTrackRef}
-              className="homepage-story-visual-track"
-              style={{
-                position: "relative",
-                height: "100dvh",
-                padding: "60px 0",
-                boxSizing: "border-box",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Box
-                className="homepage-story-visual-card"
-                style={{
-                  width: "100%",
-                  position: "relative",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  border: `1px solid ${currentVisual.borderColor}`,
-                  transition: "border-color 0.4s ease, box-shadow 0.4s ease",
-                  boxShadow: "0 0 30px rgba(0, 0, 0, 0.5)",
-                  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.68)), url("${currentVisual.src}")`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                {/* Tag */}
-                <Text
-                  size="xs"
-                  c="var(--folio-media-text)"
-                  ff="monospace"
-                  style={{
-                    position: "absolute",
-                    top: 14,
-                    left: 14,
-                    zIndex: 3,
-                    background: "rgba(192, 26, 26, 0.85)",
-                    padding: "4px 10px",
-                    borderRadius: "4px",
-                    letterSpacing: "1px",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                  }}
-                >
-                  {currentVisual.tag}
-                </Text>
-
-                {/* Active Image */}
-                <AspectRatio ratio={16 / 10}>
-                  <Image
-                    key={currentVisual.id}
-                    src={currentVisual.src}
-                    alt={currentVisual.alt}
-                    fallbackSrc="https://placehold.co/1200x750?text=System+Visual"
-                    style={{
-                      filter: currentVisual.filter,
-                      transition: "all 0.5s ease-in-out",
-                    }}
-                  />
-                </AspectRatio>
-
-                {/* Caption Overlay */}
-                <Box
-                  className="homepage-story-visual"
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    padding: "20px",
-                    background:
-                      "linear-gradient(transparent, rgba(0,0,0,0.95))",
-                    zIndex: 2,
-                  }}
-                >
-                  <Group justify="space-between" align="flex-end">
-                    <Stack gap={4}>
-                      <Text
-                        size="xs"
-                        c={currentVisual.badgeColor}
-                        ff="monospace"
-                        fw={700}
-                      >
-                        {currentVisual.badgeText}
-                      </Text>
-                      <Text size="xs" c="dimmed" style={{ maxWidth: "80%" }}>
-                        {currentVisual.caption}
-                      </Text>
-                    </Stack>
-
-                    <Text size="xs" c="dimmed" ff="monospace">
-                      0{activeSlide + 1} / 0{STORY_SLIDES.length}
-                    </Text>
-                  </Group>
-                </Box>
-              </Box>
-            </Box>
-          </Grid.Col>
-        </Grid>
       </Stack>
     </Container>
   );

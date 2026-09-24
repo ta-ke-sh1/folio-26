@@ -89,9 +89,15 @@
   scrollbar-width: thin;
 }
 
-.instrument-window__body::-webkit-scrollbar { width: 5px; }
-.instrument-window__body::-webkit-scrollbar-track { background: #111; }
-.instrument-window__body::-webkit-scrollbar-thumb { background: var(--instrument-orange); }
+.instrument-window__body::-webkit-scrollbar {
+  width: 5px;
+}
+.instrument-window__body::-webkit-scrollbar-track {
+  background: #111;
+}
+.instrument-window__body::-webkit-scrollbar-thumb {
+  background: var(--instrument-orange);
+}
 
 .instrument-window__close {
   color: var(--instrument-muted);
@@ -124,8 +130,7 @@
   border-left: 3px solid var(--instrument-orange);
   border-radius: 3px;
   background:
-    linear-gradient(90deg, rgba(255, 119, 0, 0.07), transparent 42%),
-    #070706;
+    linear-gradient(90deg, rgba(255, 119, 0, 0.07), transparent 42%), #070706;
 }
 
 .instrument-form__beacon::after {
@@ -135,7 +140,11 @@
   width: 28%;
   height: 100%;
   content: "";
-  background: repeating-linear-gradient(90deg, transparent 0 8px, rgba(255, 119, 0, 0.08) 8px 9px);
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 8px,
+    rgba(255, 119, 0, 0.08) 8px 9px
+  );
   pointer-events: none;
 }
 
@@ -171,13 +180,17 @@
   border-radius: 3px;
   background: rgba(8, 8, 7, 0.86);
   font-family: monospace;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .instrument-form .mantine-Input-input:focus,
 .instrument-form .mantine-Input-input:focus-within {
   border-color: var(--instrument-orange);
-  box-shadow: 0 0 0 1px rgba(255, 119, 0, 0.18), 0 0 14px rgba(255, 119, 0, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(255, 119, 0, 0.18),
+    0 0 14px rgba(255, 119, 0, 0.08);
 }
 
 .instrument-form__message-shell {
@@ -225,7 +238,9 @@
   border: 1px solid #33302b;
   border-radius: 3px;
   background: rgba(15, 15, 13, 0.92);
-  transition: border-color 150ms ease, background 150ms ease;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
 }
 
 .instrument-contact:hover {
@@ -262,8 +277,8 @@
 .instrument-detail__photo-stage {
   position: absolute;
   box-sizing: border-box;
-  width: 190px;
-  height: 164px;
+  width: 350px;
+  height: 300px;
 }
 
 .instrument-detail__photo-stage--desktop {
@@ -271,7 +286,7 @@
   right: 8px;
   z-index: 0;
   pointer-events: none;
-  transform: translate(-58%, -50%);
+  transform: translate(-5%, -50%);
   transition: transform 460ms cubic-bezier(0.2, 0.75, 0.25, 1);
 }
 
@@ -290,7 +305,7 @@
   right: 0;
   box-sizing: border-box;
   width: 100%;
-  height: 164px;
+  height: 100%;
   padding: 7px 7px 27px;
   background: #e9e2d5;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
@@ -298,7 +313,7 @@
 }
 
 .instrument-detail__postcard--back {
-  height: 158px;
+  height: 300px;
 }
 
 .instrument-detail__postcard--back-one {
@@ -321,7 +336,7 @@
 .instrument-detail__polaroid img {
   display: block;
   width: 100%;
-  height: 122px;
+  height: 100%;
   object-fit: cover;
   background: #171613;
 }
@@ -337,19 +352,31 @@
   white-space: nowrap;
 }
 
-.instrument-window-frame:hover .instrument-detail__photo-stage--desktop .instrument-detail__postcard--back-one,
-.instrument-window-frame:focus-within .instrument-detail__photo-stage--desktop .instrument-detail__postcard--back-one {
-  transform: translate(-28px, 0) rotate(-11deg);
+.instrument-window-frame:hover
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__postcard--back-one,
+.instrument-window-frame:focus-within
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__postcard--back-one {
+  transform: translate(180px, 0) rotate(-11deg);
 }
 
-.instrument-window-frame:hover .instrument-detail__photo-stage--desktop .instrument-detail__postcard--back-two,
-.instrument-window-frame:focus-within .instrument-detail__photo-stage--desktop .instrument-detail__postcard--back-two {
-  transform: translate(12px, 0) rotate(9deg);
+.instrument-window-frame:hover
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__postcard--back-two,
+.instrument-window-frame:focus-within
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__postcard--back-two {
+  transform: translate(160px, 0) rotate(19deg);
 }
 
-.instrument-window-frame:hover .instrument-detail__photo-stage--desktop .instrument-detail__polaroid,
-.instrument-window-frame:focus-within .instrument-detail__photo-stage--desktop .instrument-detail__polaroid {
-  transform: translate(0, 0) rotate(4deg);
+.instrument-window-frame:hover
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__polaroid,
+.instrument-window-frame:focus-within
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__polaroid {
+  transform: translate(170px, 0) rotate(8deg);
 }
 
 .instrument-detail__photo-hint {
@@ -364,8 +391,12 @@
   transition: opacity 160ms ease;
 }
 
-.instrument-window-frame:hover .instrument-detail__photo-stage--desktop .instrument-detail__photo-hint,
-.instrument-window-frame:focus-within .instrument-detail__photo-stage--desktop .instrument-detail__photo-hint {
+.instrument-window-frame:hover
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__photo-hint,
+.instrument-window-frame:focus-within
+  .instrument-detail__photo-stage--desktop
+  .instrument-detail__photo-hint {
   opacity: 0;
 }
 
@@ -397,7 +428,9 @@
   --instrument-muted-dim: var(--folio-muted);
   color: var(--folio-text);
   border-color: #c8c8c3;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18), 0 0 22px rgba(255, 119, 0, 0.1);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.18),
+    0 0 22px rgba(255, 119, 0, 0.1);
 }
 
 :root[data-mantine-color-scheme="light"] .instrument-window__titlebar {
@@ -423,7 +456,9 @@
 :root[data-mantine-color-scheme="light"] .instrument-window__close,
 :root[data-mantine-color-scheme="light"] .instrument-window__telemetry,
 :root[data-mantine-color-scheme="light"] .instrument-form__intro,
-:root[data-mantine-color-scheme="light"] .instrument-form .mantine-InputWrapper-label,
+:root[data-mantine-color-scheme="light"]
+  .instrument-form
+  .mantine-InputWrapper-label,
 :root[data-mantine-color-scheme="light"] .instrument-contact__handle,
 :root[data-mantine-color-scheme="light"] .instrument-detail__description {
   color: var(--folio-muted);
@@ -444,9 +479,13 @@
     max-height: calc(100dvh - 96px);
   }
 
-  .instrument-window__titlebar { cursor: default !important; }
+  .instrument-window__titlebar {
+    cursor: default !important;
+  }
 
-  .instrument-form__beacon pre { font-size: 8px !important; }
+  .instrument-form__beacon pre {
+    font-size: 8px !important;
+  }
 
   .instrument-detail__photo-stage--desktop {
     display: none;
@@ -487,5 +526,7 @@
 }
 
 @media (max-height: 680px) {
-  .instrument-window { max-height: calc(100dvh - 80px); }
+  .instrument-window {
+    max-height: calc(100dvh - 80px);
+  }
 }

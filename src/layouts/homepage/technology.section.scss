@@ -13,11 +13,19 @@
   overflow: hidden;
   border-block: 1px solid rgba(255, 119, 0, 0.16);
   background:
-    radial-gradient(ellipse at 50% 52%, rgba(255, 119, 0, 0.065), transparent 48%),
+    radial-gradient(
+      ellipse at 50% 52%,
+      rgba(255, 119, 0, 0.065),
+      transparent 48%
+    ),
     linear-gradient(rgba(255, 119, 0, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 119, 0, 0.025) 1px, transparent 1px),
     var(--folio-page-bg);
-  background-size: auto, 36px 36px, 36px 36px, auto;
+  background-size:
+    auto,
+    36px 36px,
+    36px 36px,
+    auto;
   isolation: isolate;
 }
 
@@ -36,13 +44,17 @@
 .technology-section::before {
   top: 16%;
   left: -18%;
-  box-shadow: 0 0 0 36px rgba(255, 119, 0, 0.018), 0 0 0 72px rgba(255, 119, 0, 0.012);
+  box-shadow:
+    0 0 0 36px rgba(255, 119, 0, 0.018),
+    0 0 0 72px rgba(255, 119, 0, 0.012);
 }
 
 .technology-section::after {
   right: -18%;
   bottom: 8%;
-  box-shadow: 0 0 0 36px rgba(255, 119, 0, 0.018), 0 0 0 72px rgba(255, 119, 0, 0.012);
+  box-shadow:
+    0 0 0 36px rgba(255, 119, 0, 0.018),
+    0 0 0 72px rgba(255, 119, 0, 0.012);
 }
 
 .technology-section__header {
@@ -81,11 +93,40 @@
   overflow: hidden;
   border: 1px solid rgba(255, 119, 0, 0.14);
   border-radius: 14px;
+  [data-mantine-color-scheme="dark"] & {
+    --graph-bg-center: rgba(14, 13, 11, 0.5);
+    --graph-bg-edge: rgba(3, 3, 3, 0.92);
+    --graph-grid-line: rgba(255, 255, 255, 0.025);
+    --graph-border: rgba(255, 119, 0, 0.18);
+    --graph-shadow-inset: inset 0 0 80px rgba(0, 0, 0, 0.55);
+    --graph-shadow-drop: 0 24px 80px rgba(0, 0, 0, 0.24);
+  }
+
+  [data-mantine-color-scheme="light"] & {
+    --graph-bg-center: rgba(255, 255, 255, 0.9);
+    --graph-bg-edge: rgba(241, 243, 245, 0.95);
+    --graph-grid-line: rgba(0, 0, 0, 0.035);
+    --graph-border: rgba(255, 119, 0, 0.25);
+    --graph-shadow-inset: inset 0 0 80px rgba(255, 255, 255, 0.8);
+    --graph-shadow-drop: 0 12px 40px rgba(0, 0, 0, 0.06);
+  }
   background:
-    radial-gradient(ellipse at center, rgba(14, 13, 11, 0.5), rgba(3, 3, 3, 0.92) 75%),
-    repeating-linear-gradient(0deg, transparent 0 39px, rgba(255, 255, 255, 0.025) 39px 40px),
-    repeating-linear-gradient(90deg, transparent 0 39px, rgba(255, 255, 255, 0.025) 39px 40px);
-  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55), 0 24px 80px rgba(0, 0, 0, 0.24);
+    radial-gradient(
+      ellipse at center,
+      var(--graph-bg-center),
+      var(--graph-bg-edge) 75%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 39px,
+      var(--graph-grid-line) 39px 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 39px,
+      var(--graph-grid-line) 39px 40px
+    );
+  box-shadow: var(--graph-shadow-inset), var(--graph-shadow-drop);
   touch-action: pan-y;
 }
 
@@ -111,7 +152,9 @@
 
 .technology-flow .react-flow__node {
   cursor: grab;
-  transition: opacity 180ms ease, filter 180ms ease;
+  transition:
+    opacity 180ms ease,
+    filter 180ms ease;
 }
 
 .technology-flow .react-flow__node:active {
@@ -148,7 +191,9 @@
 .technology-flow .react-flow__node.is-branch-active .technology-node {
   border-color: #ffad66;
   background: rgba(68, 35, 12, 0.98);
-  box-shadow: 0 0 18px rgba(255, 119, 0, 0.32), inset 0 0 18px rgba(255, 119, 0, 0.08);
+  box-shadow:
+    0 0 18px rgba(255, 119, 0, 0.32),
+    inset 0 0 18px rgba(255, 119, 0, 0.08);
 }
 
 .technology-flow .react-flow__node.is-branch-active .technology-node__icon {
@@ -190,7 +235,10 @@
   border-radius: 7px;
   background: rgba(11, 11, 10, 0.96);
   color: var(--folio-text);
-  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .technology-node--category {
@@ -213,7 +261,9 @@
   border-color: rgba(255, 119, 0, 0.8);
   border-radius: 50%;
   background: rgba(16, 12, 8, 0.98);
-  box-shadow: 0 0 28px rgba(255, 119, 0, 0.22), inset 0 0 22px rgba(255, 119, 0, 0.08);
+  box-shadow:
+    0 0 28px rgba(255, 119, 0, 0.22),
+    inset 0 0 22px rgba(255, 119, 0, 0.08);
   text-align: center;
 }
 
@@ -276,7 +326,9 @@
   width: 17px;
   height: 17px;
   color: #ff9a42;
-  transition: color 180ms ease, filter 180ms ease;
+  transition:
+    color 180ms ease,
+    filter 180ms ease;
 }
 
 .technology-node__label {
@@ -349,7 +401,9 @@
 }
 
 @keyframes technology-data-flow {
-  to { stroke-dashoffset: -88; }
+  to {
+    stroke-dashoffset: -88;
+  }
 }
 
 @media (max-width: 48em) {

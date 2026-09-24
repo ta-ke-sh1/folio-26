@@ -32,11 +32,7 @@ export const ITEMS: InteractiveItem[] = [
         "Zero downtime nap scheduling",
         "High tolerance for Mechanical Keyboard noise",
       ],
-      details: [
-        { key: "STATUS", val: "ACTIVE / SLEEPING" },
-        { key: "FEED_CYCLE", val: "08:00 & 19:00 IST" },
-        { key: "THREAT_LEVEL", val: "LOW (UNLESS HUNGRY)" },
-      ],
+      details: [],
     },
   },
   {
@@ -60,11 +56,7 @@ export const ITEMS: InteractiveItem[] = [
         "Software Engineering Innovation Award",
         "Certified OWASP Security & Automated Scan Specialist",
       ],
-      details: [
-        { key: "ALMA_MATER", val: "TOP TIER TECH UNIV" },
-        { key: "DOMAINS", val: "BACKEND / SECURITY / QA" },
-        { key: "SECURITY_SCAN", val: "CODEQL / ZAP PASS" },
-      ],
+      details: [],
     },
   },
   {

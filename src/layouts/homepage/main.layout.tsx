@@ -84,7 +84,10 @@ export default function AsciiLandingPage() {
     if (loadedVideoIndexesRef.current.has(index)) return;
     loadedVideoIndexesRef.current.add(index);
 
-    const nextCount = Math.min(loadedVideoIndexesRef.current.size, VIDEOS.length);
+    const nextCount = Math.min(
+      loadedVideoIndexesRef.current.size,
+      VIDEOS.length,
+    );
     setLoadedVideosCount(nextCount);
     if (nextCount === VIDEOS.length) setIsFullyLoaded(true);
   };
@@ -132,11 +135,7 @@ export default function AsciiLandingPage() {
         });
 
         transition
-          .to(
-            prevVideo,
-            { yPercent: -12, scale: 1.12, ease: "none" },
-            0,
-          )
+          .to(prevVideo, { yPercent: -12, scale: 1.12, ease: "none" }, 0)
           .to(video, { yPercent: 0, scale: 1, ease: "none" }, 0);
       });
 
@@ -250,7 +249,6 @@ export default function AsciiLandingPage() {
           },
         );
       }
-
     }, containerRef);
 
     return () => {
@@ -514,7 +512,9 @@ export default function AsciiLandingPage() {
       </Box>
 
       {/* Foreground Scrolling Content Layer */}
-      <Box style={{ position: "relative", zIndex: 3, color: "var(--folio-text)" }}>
+      <Box
+        style={{ position: "relative", zIndex: 3, color: "var(--folio-text)" }}
+      >
         <LayoutWrapper>
           {/* Video Scroll Trigger Sections */}
           <Group className="scroll-section-0" style={{ minHeight: "100vh" }} />
