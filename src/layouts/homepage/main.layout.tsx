@@ -6,8 +6,7 @@ import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import { CapabilitySection } from "./capability.section";
 import StorySection from "./story.section";
-import MemoriesSection from "./memories.section";
-import { useAnimatedNavigate } from "../../components/transition/transition";
+import { TechnologySection } from "./technology.section";
 import "./main.layout.scss";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -24,7 +23,8 @@ export default function AsciiLandingPage() {
   const storySectionRef = useRef<HTMLDivElement>(null);
   const preloaderRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
-  const animatedNavigate = useAnimatedNavigate();
+  const loadedVideoIndexesRef = useRef(new Set<number>());
+  const scrambleIntervalRef = useRef<number | null>(null);
 
   // Active section tracker (0, 1, or 2)
   const [activeSection, setActiveSection] = useState<number>(0);
@@ -36,18 +36,60 @@ export default function AsciiLandingPage() {
   const [isFullyLoaded, setIsFullyLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    animatedNavigate("/");
+    let previousWidth = window.innerWidth;
+    let previousHeight = window.innerHeight;
+    let resizeTimer: number | undefined;
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
+    const handleResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        const nextWidth = window.innerWidth;
+        const nextHeight = window.innerHeight;
+        const widthChanged = Math.abs(nextWidth - previousWidth) > 1;
+        const heightChanged = Math.abs(nextHeight - previousHeight) > 1;
+
+        previousWidth = nextWidth;
+        previousHeight = nextHeight;
+
+        // Ignore mobile browser chrome/keyboard height changes; orientation and
+        // width changes still reload so viewport-dependent layouts are rebuilt.
+        if (widthChanged || (!isCoarsePointer && heightChanged)) {
+          window.location.reload();
+        }
+      }, 300);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.clearTimeout(resizeTimer);
+    };
   }, []);
 
-  // Track video loading progress
-  const handleVideoLoaded = () => {
-    setLoadedVideosCount((prev) => {
-      const nextCount = prev + 1;
-      if (nextCount >= VIDEOS.length) {
-        setIsFullyLoaded(true);
+  useEffect(() => {
+    if (!isFullyLoaded) return;
+
+    const hideTimer = window.setTimeout(() => {
+      if (preloaderRef.current) {
+        preloaderRef.current.style.display = "none";
       }
-      return nextCount;
-    });
+    }, 800);
+
+    return () => window.clearTimeout(hideTimer);
+  }, [isFullyLoaded]);
+
+  // Track video loading progress
+  const handleVideoLoaded = (index: number) => {
+    if (loadedVideoIndexesRef.current.has(index)) return;
+    loadedVideoIndexesRef.current.add(index);
+
+    const nextCount = Math.min(
+      loadedVideoIndexesRef.current.size,
+      VIDEOS.length,
+    );
+    setLoadedVideosCount(nextCount);
+    if (nextCount === VIDEOS.length) setIsFullyLoaded(true);
   };
 
   // Initialize GSAP & start video playback ONLY after all videos are ready
@@ -65,37 +107,36 @@ export default function AsciiLandingPage() {
 
     const ctx = gsap.context(() => {
       const videoElements = videoRefs.current.filter(Boolean);
+      const isMobileViewport = window.matchMedia("(max-width: 48em)").matches;
 
-      // Fade out preloader overlay
-      gsap.to(preloaderRef.current, {
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-        onComplete: () => {
-          if (preloaderRef.current) {
-            preloaderRef.current.style.display = "none";
-          }
-        },
+      // 1. Parallax overlay transitions between background videos
+      videoElements.forEach((video, index) => {
+        gsap.set(video, {
+          opacity: 1,
+          yPercent: index === 0 ? 0 : 100,
+          scale: index === 0 ? 1 : 1.12,
+          transformOrigin: "center top",
+        });
       });
 
-      // 1. Cross-fade Background Videos
       videoElements.forEach((video, index) => {
         if (index === 0) return;
 
         const prevVideo = videoElements[index - 1];
         const sectionSelector = `.scroll-section-${index}`;
 
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: sectionSelector,
-              start: "top bottom",
-              end: "top top",
-              scrub: true,
-            },
-          })
-          .to(prevVideo, { opacity: 0, ease: "none" })
-          .to(video, { opacity: 1, ease: "none" }, "<");
+        const transition = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionSelector,
+            start: isMobileViewport ? "top 78%" : "top bottom",
+            end: "top top",
+            scrub: true,
+          },
+        });
+
+        transition
+          .to(prevVideo, { yPercent: -12, scale: 1.12, ease: "none" }, 0)
+          .to(video, { yPercent: 0, scale: 1, ease: "none" }, 0);
       });
 
       // 2. Text Shuffle / Scramble Effect
@@ -107,9 +148,11 @@ export default function AsciiLandingPage() {
         let iteration = 0;
         const maxIterations = 12;
 
-        gsap.killTweensOf(element);
+        if (scrambleIntervalRef.current !== null) {
+          window.clearInterval(scrambleIntervalRef.current);
+        }
 
-        const interval = setInterval(() => {
+        const intervalId = window.setInterval(() => {
           element.innerText = targetWord
             .split("")
             .map((char, index) => {
@@ -124,9 +167,13 @@ export default function AsciiLandingPage() {
 
           if (iteration >= maxIterations) {
             element.innerText = targetWord;
-            clearInterval(interval);
+            window.clearInterval(intervalId);
+            if (scrambleIntervalRef.current === intervalId) {
+              scrambleIntervalRef.current = null;
+            }
           }
         }, 30);
+        scrambleIntervalRef.current = intervalId;
       };
 
       // 3. Section Triggers for Active State & Header Word Swaps
@@ -166,9 +213,10 @@ export default function AsciiLandingPage() {
         },
       });
 
-      // 4. Fade out pinned Hero Header & HUD when reaching Story section
+      // 4. Parallax the Hero Header away as Story rises into view
       gsap.to(fixedTitleRef.current, {
-        opacity: 0,
+        y: "-12vh",
+        scale: 0.96,
         ease: "none",
         scrollTrigger: {
           trigger: storySectionRef.current,
@@ -181,37 +229,35 @@ export default function AsciiLandingPage() {
         },
       });
 
-      // 5. Fade IN Story Section
-      gsap.fromTo(
-        storySectionRef.current,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: storySectionRef.current,
-            start: "top 80%",
-            end: "top 20%",
-            scrub: true,
-          },
-        },
+      // 5. Move only the Story section at a different rate for parallax.
+      const storyParallaxTarget = storySectionRef.current?.querySelector(
+        ".homepage-story-section",
       );
-
-      // 6. Story Cards Reveal
-      gsap.from(".story-card", {
-        scrollTrigger: {
-          trigger: storySectionRef.current,
-          start: "top 50%",
-        },
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "power3.out",
-      });
+      if (storyParallaxTarget) {
+        gsap.fromTo(
+          storyParallaxTarget,
+          { y: "8vh" },
+          {
+            y: "-8vh",
+            ease: "none",
+            scrollTrigger: {
+              trigger: storyParallaxTarget,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          },
+        );
+      }
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      if (scrambleIntervalRef.current !== null) {
+        window.clearInterval(scrambleIntervalRef.current);
+        scrambleIntervalRef.current = null;
+      }
+    };
   }, [isFullyLoaded]);
 
   // Smooth scroll click handler for section navigation
@@ -223,7 +269,7 @@ export default function AsciiLandingPage() {
   };
 
   const progressPercentage = Math.round(
-    (loadedVideosCount / VIDEOS.length) * 100,
+    Math.min(loadedVideosCount / VIDEOS.length, 1) * 100,
   );
 
   return (
@@ -247,6 +293,9 @@ export default function AsciiLandingPage() {
           height: "100vh",
           backgroundColor: "var(--folio-page-bg)",
           zIndex: 200,
+          opacity: isFullyLoaded ? 0 : 1,
+          pointerEvents: isFullyLoaded ? "none" : "auto",
+          transition: "opacity 0.8s ease",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -370,7 +419,7 @@ export default function AsciiLandingPage() {
             left: 0,
             width: "100%",
             height: "100%",
-            zIndex: 1,
+            zIndex: VIDEOS.length + 1,
             backgroundColor: "rgba(0, 0, 0, 0.45)",
           }}
         />
@@ -384,19 +433,18 @@ export default function AsciiLandingPage() {
             loop
             muted
             playsInline
-            onCanPlayThrough={handleVideoLoaded}
-            onLoadedData={handleVideoLoaded}
+            onLoadedData={() => handleVideoLoaded(idx)}
             src={src}
             style={{
               position: "absolute",
-              top: "50%",
-              left: "50%",
+              top: 0,
+              left: 0,
               width: "100dvw",
               height: "100dvh",
               objectFit: "cover",
-              transform: "translate(-50%, -50%)",
-              opacity: idx === 0 ? 1 : 0,
-              willChange: "opacity",
+              zIndex: idx + 1,
+              opacity: 1,
+              willChange: "transform",
             }}
           />
         ))}
@@ -417,7 +465,7 @@ export default function AsciiLandingPage() {
           alignItems: "center",
           justifyContent: "center",
           pointerEvents: "none",
-          willChange: "opacity",
+          willChange: "transform",
         }}
       >
         <Stack justify="center" align="center">
@@ -464,38 +512,33 @@ export default function AsciiLandingPage() {
       </Box>
 
       {/* Foreground Scrolling Content Layer */}
-      <Box style={{ position: "relative", zIndex: 3, color: "var(--folio-text)" }}>
+      <Box
+        style={{ position: "relative", zIndex: 3, color: "var(--folio-text)" }}
+      >
         <LayoutWrapper>
           {/* Video Scroll Trigger Sections */}
           <Group className="scroll-section-0" style={{ minHeight: "100vh" }} />
           <Group className="scroll-section-1" style={{ minHeight: "100vh" }} />
           <Group className="scroll-section-2" style={{ minHeight: "100vh" }} />
 
-          {/* New Story & Approach Section (Fades in over video with top gradient fade) */}
+          {/* Story & Approach Section */}
           <Box
             ref={storySectionRef}
             className="homepage-content"
-            pt={160}
-            pb={120}
             style={{
               backgroundColor: "var(--folio-page-bg)",
               position: "relative",
               zIndex: 10,
               pointerEvents: "auto",
-              opacity: 0,
-              willChange: "opacity",
-              maskImage:
-                "linear-gradient(to bottom, transparent 0%, black 15%)",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, transparent 0%, black 15%)",
+              willChange: "transform",
             }}
           >
             <StorySection />
             <CapabilitySection />
-            <MemoriesSection />
+            <TechnologySection />
           </Box>
 
-          {/* Footer (Fades in seamlessly on top of the Story section) */}
+          {/* Footer */}
           <Box
             ref={footerRef}
             style={{

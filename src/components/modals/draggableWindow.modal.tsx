@@ -26,6 +26,11 @@ export interface InteractiveItem {
   icon: React.ElementType;
   appIconUrl?: string;
   tag: string;
+  photo?: {
+    src: string;
+    alt: string;
+    caption: string;
+  };
   content: {
     title: string;
     subtitle: string;
@@ -44,6 +49,40 @@ interface DraggableWindowProps {
   isClosing: boolean;
   onClose: () => void;
   onFocus: () => void;
+}
+
+function PolaroidStack({
+  item,
+  className,
+}: {
+  item: InteractiveItem;
+  className: string;
+}) {
+  if (!item.photo) return null;
+
+  return (
+    <div
+      className={`instrument-detail__photo-stage ${className}`}
+      role="group"
+      aria-label={`Photo: ${item.photo.alt}`}
+    >
+      <div
+        className="instrument-detail__postcard instrument-detail__postcard--back instrument-detail__postcard--back-one"
+        aria-hidden="true"
+      />
+      <div
+        className="instrument-detail__postcard instrument-detail__postcard--back instrument-detail__postcard--back-two"
+        aria-hidden="true"
+      />
+      <figure className="instrument-detail__postcard instrument-detail__polaroid">
+        <img src={item.photo.src} alt={item.photo.alt} />
+        <figcaption>{item.photo.caption}</figcaption>
+      </figure>
+      <span className="instrument-detail__photo-hint" aria-hidden="true">
+        HOVER TO REVEAL PHOTO
+      </span>
+    </div>
+  );
 }
 
 export function DraggableWindow({
@@ -116,11 +155,19 @@ export function DraggableWindow({
       const windowElement = windowRef.current;
       if (!container || !windowElement) return;
 
-      const maxX = Math.max(0, container.clientWidth - windowElement.offsetWidth);
-      const maxY = Math.max(0, container.clientHeight - windowElement.offsetHeight);
+      const maxX = Math.max(
+        0,
+        container.clientWidth - windowElement.offsetWidth,
+      );
+      const maxY = Math.max(
+        0,
+        container.clientHeight - windowElement.offsetHeight,
+      );
       const offset = itemIndex * 28;
-      const centeredX = (container.clientWidth - windowElement.offsetWidth) / 2 + offset;
-      const centeredY = (container.clientHeight - windowElement.offsetHeight) / 2 + offset;
+      const centeredX =
+        (container.clientWidth - windowElement.offsetWidth) / 2 + offset;
+      const centeredY =
+        (container.clientHeight - windowElement.offsetHeight) / 2 + offset;
       setPosition({
         x: Math.min(Math.max(12, centeredX), maxX),
         y: Math.min(Math.max(12, centeredY), maxY),
@@ -155,8 +202,14 @@ export function DraggableWindow({
       const container = containerRef.current;
       const windowElement = windowRef.current;
       if (!container || !windowElement) return;
-      const maxX = Math.max(0, container.clientWidth - windowElement.offsetWidth);
-      const maxY = Math.max(0, container.clientHeight - windowElement.offsetHeight);
+      const maxX = Math.max(
+        0,
+        container.clientWidth - windowElement.offsetWidth,
+      );
+      const maxY = Math.max(
+        0,
+        container.clientHeight - windowElement.offsetHeight,
+      );
       setPosition({
         x: Math.min(Math.max(0, dragRef.current.initialX + dx), maxX),
         y: Math.min(Math.max(0, dragRef.current.initialY + dy), maxY),
@@ -181,19 +234,26 @@ export function DraggableWindow({
   const ItemIcon = item.icon;
 
   return (
+    <div
+      ref={windowRef}
+      className="instrument-window-frame"
+      style={{
+        position: "absolute",
+        top: position.y,
+        left: position.x,
+        width: "clamp(320px, 76vw, 520px)",
+        zIndex,
+        userSelect: isDragging ? "none" : "auto",
+      }}
+    >
+      <PolaroidStack
+        item={item}
+        className="instrument-detail__photo-stage--desktop"
+      />
       <Paper
-        ref={windowRef}
         className="instrument-window instrument-window--active"
         shadow="xl"
         onMouseDown={onFocus}
-        style={{
-          position: "absolute",
-          top: position.y,
-          left: position.x,
-          width: "clamp(320px, 76vw, 520px)",
-          zIndex: zIndex,
-          userSelect: isDragging ? "none" : "auto",
-        }}
       >
         {/* Draggable Title Bar */}
         <Group
@@ -208,9 +268,7 @@ export function DraggableWindow({
           <Group gap="xs">
             <span className="instrument-window__signal" />
             <IconTerminal size={16} color="#FF7700" />
-            <Text
-              className="instrument-window__title"
-            >
+            <Text className="instrument-window__title">
               // WIN_{item.id.toUpperCase()}.EXE
             </Text>
           </Group>
@@ -241,7 +299,11 @@ export function DraggableWindow({
         {/* Window Body Content */}
         <Stack className="instrument-window__body" p="md" gap="md">
           {/* Header Badge & Title */}
-          <Group className="instrument-detail__heading" justify="space-between" align="flex-start">
+          <Group
+            className="instrument-detail__heading"
+            justify="space-between"
+            align="flex-start"
+          >
             <Stack gap={2}>
               <Group gap="xs">
                 <ItemIcon size={20} color="#FF7700" />
@@ -277,6 +339,10 @@ export function DraggableWindow({
           <Text className="instrument-detail__description" fz="sm">
             {item.content.description}
           </Text>
+          <PolaroidStack
+            item={item}
+            className="instrument-detail__photo-stage--mobile"
+          />
 
           {/* Highlights List */}
           <Box
@@ -319,19 +385,24 @@ export function DraggableWindow({
                   span={4}
                   key={i}
                   p="xs"
-                  style={{
-                  }}
+                  style={{}}
                 >
                   <Text
                     fz="9px"
-                    style={{ fontFamily: "monospace", color: "var(--folio-muted)" }}
+                    style={{
+                      fontFamily: "monospace",
+                      color: "var(--folio-muted)",
+                    }}
                   >
                     {d.key}
                   </Text>
                   <Text
                     fz="11px"
                     fw={700}
-                    style={{ fontFamily: "monospace", color: "var(--folio-text)" }}
+                    style={{
+                      fontFamily: "monospace",
+                      color: "var(--folio-text)",
+                    }}
                   >
                     {d.val}
                   </Text>
@@ -340,7 +411,11 @@ export function DraggableWindow({
             </Grid>
           )}
 
-          <Group className="instrument-detail__footer" justify="flex-end" pt="xs">
+          <Group
+            className="instrument-detail__footer"
+            justify="flex-end"
+            pt="xs"
+          >
             <Badge
               size="sm"
               variant="filled"
@@ -353,5 +428,6 @@ export function DraggableWindow({
           </Group>
         </Stack>
       </Paper>
+    </div>
   );
 }

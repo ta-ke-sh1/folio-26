@@ -2,13 +2,13 @@ import { useState } from "react";
 import {
   TextInput,
   PasswordInput,
-  Button,
   Paper,
   Title,
   Container,
   Alert,
   Stack,
 } from "@mantine/core";
+import { ShuffleButton as Button } from "../../components/animations/shuffle.button";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconAlertCircle } from "@tabler/icons-react";

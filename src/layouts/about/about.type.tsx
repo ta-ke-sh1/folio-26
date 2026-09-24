@@ -17,6 +17,11 @@ export const ITEMS: InteractiveItem[] = [
     category: "SYS_BIO",
     icon: IconCat,
     tag: "CAT_V1.0",
+    photo: {
+      src: "/pictures/9.jpg",
+      alt: "Yellow blossoms framed by dark tree leaves.",
+      caption: "FIELD NOTE 09 // CANOPY",
+    },
     content: {
       title: "BOBA & FELIX",
       subtitle: "Full-time Debugging Assistants & Nap Specialists",
@@ -27,11 +32,7 @@ export const ITEMS: InteractiveItem[] = [
         "Zero downtime nap scheduling",
         "High tolerance for Mechanical Keyboard noise",
       ],
-      details: [
-        { key: "STATUS", val: "ACTIVE / SLEEPING" },
-        { key: "FEED_CYCLE", val: "08:00 & 19:00 IST" },
-        { key: "THREAT_LEVEL", val: "LOW (UNLESS HUNGRY)" },
-      ],
+      details: [],
     },
   },
   {
@@ -40,6 +41,11 @@ export const ITEMS: InteractiveItem[] = [
     category: "SYS_ACHIEVE",
     icon: IconTrophy,
     tag: "ACCOLADES",
+    photo: {
+      src: "/pictures/3.jpg",
+      alt: "City traffic passing beneath an overpass at sunset.",
+      caption: "FIELD NOTE 03 // CONCRETE",
+    },
     content: {
       title: "RECOGNITIONS & CERTIFICATIONS",
       subtitle: "Academic Excellence & Professional Milestones",
@@ -50,11 +56,7 @@ export const ITEMS: InteractiveItem[] = [
         "Software Engineering Innovation Award",
         "Certified OWASP Security & Automated Scan Specialist",
       ],
-      details: [
-        { key: "ALMA_MATER", val: "TOP TIER TECH UNIV" },
-        { key: "DOMAINS", val: "BACKEND / SECURITY / QA" },
-        { key: "SECURITY_SCAN", val: "CODEQL / ZAP PASS" },
-      ],
+      details: [],
     },
   },
   {
@@ -63,6 +65,11 @@ export const ITEMS: InteractiveItem[] = [
     category: "SYS_TIME",
     icon: IconClock,
     tag: "TIMEPIECES",
+    photo: {
+      src: "/pictures/2.jpg",
+      alt: "Quiet water beneath a city bridge.",
+      caption: "FIELD NOTE 02 // PASSING LIGHT",
+    },
     content: {
       title: "MECHANICAL HOROLOGY",
       subtitle: "Analog Precision in a Digital Realm",
@@ -86,6 +93,11 @@ export const ITEMS: InteractiveItem[] = [
     category: "SYS_OPTICS",
     icon: IconCamera,
     tag: "35MM_RAW",
+    photo: {
+      src: "/pictures/1.jpg",
+      alt: "A solitary figure standing in the water before a distant skyline.",
+      caption: "FIELD NOTE 01 // STILL WATER",
+    },
     content: {
       title: "CYBER STREET & SHADOWS",
       subtitle: "High-Contrast Visual Log",

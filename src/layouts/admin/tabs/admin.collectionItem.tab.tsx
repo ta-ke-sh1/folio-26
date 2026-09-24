@@ -3,7 +3,6 @@ import {
   Container,
   Group,
   Title,
-  Button,
   Box,
   LoadingOverlay,
   Badge,
@@ -11,6 +10,7 @@ import {
   ActionIcon,
   Image,
 } from "@mantine/core";
+import { ShuffleButton as Button } from "../../../components/animations/shuffle.button";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlus, IconEdit } from "@tabler/icons-react";
 import { type DataTableColumn } from "mantine-datatable";

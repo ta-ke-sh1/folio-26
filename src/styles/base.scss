@@ -16,6 +16,7 @@
   --folio-muted: #a6a7ab;
   --folio-border: rgba(255, 119, 0, 0.22);
   --folio-grid: rgba(255, 255, 255, 0.05);
+  --folio-flow-line: rgba(255, 255, 255, 0.14);
 }
 
 :root[data-mantine-color-scheme="light"] {
@@ -29,6 +30,7 @@
   --folio-muted: #626262;
   --folio-border: rgba(190, 75, 0, 0.24);
   --folio-grid: rgba(0, 0, 0, 0.08);
+  --folio-flow-line: rgba(0, 0, 0, 0.14);
 }
 
 html,

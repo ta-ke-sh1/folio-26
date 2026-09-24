@@ -6,13 +6,14 @@ import {
   Title,
   NavLink,
   Drawer,
-  Button,
   Stack,
   Text,
   Box,
   useComputedColorScheme,
   useMantineColorScheme,
 } from "@mantine/core";
+import { ShuffleButton as Button } from "../animations/shuffle.button";
+import { ShuffleText } from "../animations/shuffle.text";
 import { useDisclosure } from "@mantine/hooks";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { ZIndexLevel } from "../../enums/styles.enum";
@@ -231,7 +232,12 @@ export default function NavigationBar() {
               return (
                 <NavLink
                   key={link.label}
-                  label={isActive ? `> ${link.label}` : link.label}
+                  label={
+                    <ShuffleText
+                      text={isActive ? `> ${link.label}` : link.label}
+                    />
+                  }
+                  aria-label={link.label}
                   onClick={() => handleNavigation(link.href)}
                   style={{
                     fontFamily: "monospace",

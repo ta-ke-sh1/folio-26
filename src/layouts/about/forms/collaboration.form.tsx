@@ -5,13 +5,13 @@ import {
   Stack,
   Badge,
   Group,
-  Button,
   Box,
   TextInput,
   Text,
   Select,
   Textarea,
 } from "@mantine/core";
+import { ShuffleButton as Button } from "../../../components/animations/shuffle.button";
 import { IconCheck, IconSend } from "@tabler/icons-react";
 import { useState } from "react";
 import { commonInputStyles } from "../../../components/modals/form.types";

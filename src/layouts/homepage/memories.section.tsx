@@ -144,6 +144,7 @@ export default function MemoriesSection() {
         >
           {/* Edge Gradient Mask */}
           <Box
+            className="homepage-memories-marquee"
             style={{
               position: "absolute",
               top: 0,
@@ -160,6 +161,7 @@ export default function MemoriesSection() {
           {/* GSAP Animated Track */}
           <Box
             ref={trackRef}
+            className="homepage-memories-track"
             style={{
               display: "flex",
               gap: "32px",
@@ -174,6 +176,7 @@ export default function MemoriesSection() {
               return (
                 <Card
                   key={`${item.id}-${idx}`}
+                  className="homepage-memory-card"
                   onClick={() => navigate(item.link)}
                   onMouseEnter={handleMouseEnterCard}
                   onMouseLeave={(e) => handleMouseLeaveCard(e, baseRotation)}
