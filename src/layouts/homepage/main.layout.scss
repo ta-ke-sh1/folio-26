@@ -26,7 +26,7 @@
 
 .homepage-story-signal {
   position: relative;
-  min-height: 430px;
+  min-height: 500px;
   height: 100%;
   overflow: hidden;
   background-color: #050505;
@@ -35,7 +35,11 @@
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(135deg, #171717, #050505 65%);
-  background-size: auto, 34px 34px, 34px 34px, auto;
+  background-size:
+    auto,
+    34px 34px,
+    34px 34px,
+    auto;
   border: 1px solid rgba(255, 119, 0, 0.45);
   border-radius: 2px;
   cursor: none;
@@ -78,7 +82,9 @@
   --galaxy-angle: 0deg;
   border: 1px solid rgba(255, 119, 0, 0.7);
   border-radius: 50%;
-  box-shadow: 0 0 40px rgba(255, 119, 0, 0.24), inset 0 0 30px rgba(255, 119, 0, 0.12);
+  box-shadow:
+    0 0 40px rgba(255, 119, 0, 0.24),
+    inset 0 0 30px rgba(255, 119, 0, 0.12);
   animation: homepage-galaxy-rotation 48s linear infinite;
   transform: translate(-50%, -50%) rotate(var(--galaxy-angle));
   pointer-events: none;
@@ -92,7 +98,9 @@
   height: 18px;
   border-radius: 50%;
   background: #ffb35c;
-  box-shadow: 0 0 12px #ff7700, 0 0 32px rgba(255, 119, 0, 0.95);
+  box-shadow:
+    0 0 12px #ff7700,
+    0 0 32px rgba(255, 119, 0, 0.95);
   transform: translate(-50%, -50%);
 }
 
@@ -177,7 +185,9 @@
   left: 50%;
   width: 0;
   height: 0;
-  transform: rotate(calc(0deg - var(--galaxy-angle) - var(--planet-orbit-angle, 0deg)));
+  transform: rotate(
+    calc(0deg - var(--galaxy-angle) - var(--planet-orbit-angle, 0deg))
+  );
   transform-origin: 0 0;
   pointer-events: none;
 }
@@ -234,8 +244,15 @@
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    radial-gradient(circle at center, rgba(26, 15, 7, 0.94), rgba(4, 4, 4, 0.97) 72%);
-  background-size: 30px 30px, 30px 30px, auto;
+    radial-gradient(
+      circle at center,
+      rgba(26, 15, 7, 0.94),
+      rgba(4, 4, 4, 0.97) 72%
+    );
+  background-size:
+    30px 30px,
+    30px 30px,
+    auto;
   animation: homepage-galaxy-focus-in 0.35s ease-out both;
 }
 
@@ -287,8 +304,15 @@
   padding: 12px;
   border: 1px solid rgba(255, 179, 92, 0.9);
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #ffd6a0, #ff7700 38%, #431707 78%);
-  box-shadow: 0 0 22px rgba(255, 119, 0, 0.72), inset -10px -8px 20px rgba(0, 0, 0, 0.65);
+  background: radial-gradient(
+    circle at 32% 28%,
+    #ffd6a0,
+    #ff7700 38%,
+    #431707 78%
+  );
+  box-shadow:
+    0 0 22px rgba(255, 119, 0, 0.72),
+    inset -10px -8px 20px rgba(0, 0, 0, 0.65);
   color: #fff4e6;
   transform: translate(-50%, -50%);
 }
@@ -338,7 +362,9 @@
   border: 1px solid rgba(255, 191, 128, 0.75);
   border-radius: 50%;
   background: radial-gradient(circle at 32% 28%, #ffd2a6, #ff7700 65%, #7a2e08);
-  box-shadow: 0 0 8px rgba(255, 119, 0, 0.65), inset -2px -2px 4px rgba(0, 0, 0, 0.65);
+  box-shadow:
+    0 0 8px rgba(255, 119, 0, 0.65),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.65);
 }
 
 .homepage-story-galaxy-moon-marker {
@@ -348,7 +374,8 @@
   width: 8px;
   height: 8px;
   transform: translate(-50%, -50%);
-  animation: homepage-moon-label-counter var(--moon-duration, 14s) linear infinite;
+  animation: homepage-moon-label-counter var(--moon-duration, 14s) linear
+    infinite;
 }
 
 .homepage-story-galaxy-moon-label {
@@ -457,7 +484,9 @@
   align-items: flex-start;
   gap: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .homepage-story-index-item:hover {

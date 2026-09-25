@@ -24,20 +24,45 @@ export default function PhilosophySection() {
           size="lg"
           variant="dot"
           color="primaryOrange"
-          style={{ position: "absolute", top: '55px', left: '15px', zIndex: 10 }}
+          style={{
+            position: "absolute",
+            top: "15px",
+            left: "15px",
+            zIndex: 10,
+          }}
         >
           II. Philosophy
         </Badge>
-        <div style={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10, }}>
-            <Stack gap="5" style={{
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 10,
+          }}
+        >
+          <Stack
+            gap="5"
+            style={{
               textAlign: "center",
-            }}>
-                <Text>YOUR VISIONS</Text>
-                <Text>+</Text>
-                <Text>MY VISUALIZATION</Text>
-            </Stack>
+            }}
+          >
+            <Text>YOUR VISIONS</Text>
+            <Text>+</Text>
+            <Text>MY VISUALIZATION</Text>
+          </Stack>
         </div>
-        <div style={{ position: "absolute", top: 0, left: 0, width: "100dvw", height: "calc(100dvh + 50px)", opacity: 0.7, }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100dvw",
+            height: "calc(100dvh + 50px)",
+            opacity: 0.7,
+          }}
+        >
           <Dither
             waveColor={[0, 0, 0]}
             disableAnimation={false}

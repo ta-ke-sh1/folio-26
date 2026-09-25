@@ -23,14 +23,14 @@ export const ITEMS: InteractiveItem[] = [
       caption: "FIELD NOTE 09 // CANOPY",
     },
     content: {
-      title: "BOBA & FELIX",
-      subtitle: "Full-time Debugging Assistants & Nap Specialists",
+      title: "CAM & SỌC",
+      subtitle: "Full-time Snack Sneakers & Nap Specialists",
       description:
         "Engineered for high-frequency purring and automated keyboard sitting. Primary duties include monitoring code deployments and enforcing mandatory screen breaks.",
       highlights: [
-        "Senior Code Inspector (Specializing in Async Ops)",
+        "Senior Snack Inspector (Specializing in sensing fresh foods)",
         "Zero downtime nap scheduling",
-        "High tolerance for Mechanical Keyboard noise",
+        "Just don't let me touch. Crazy, I fed you with my hands you little *****",
       ],
       details: [],
     },
@@ -42,7 +42,7 @@ export const ITEMS: InteractiveItem[] = [
     icon: IconTrophy,
     tag: "ACCOLADES",
     photo: {
-      src: "/pictures/3.jpg",
+      src: "/pictures/about/awards.jpg",
       alt: "City traffic passing beneath an overpass at sunset.",
       caption: "FIELD NOTE 03 // CONCRETE",
     },
@@ -52,9 +52,9 @@ export const ITEMS: InteractiveItem[] = [
       description:
         "Consistently striving for engineering excellence, system architecture optimizations, and high-standard backend security standards.",
       highlights: [
-        "Top University Graduate (Honors)",
-        "Software Engineering Innovation Award",
-        "Certified OWASP Security & Automated Scan Specialist",
+        "SC-500 Microsoft Certified: Cloud and AI Security Engineer Associate",
+        "Toshiba Software Development Vietnam Best Engineer of 2025",
+        "Top University Graduate (First Class Honors)",
       ],
       details: [],
     },

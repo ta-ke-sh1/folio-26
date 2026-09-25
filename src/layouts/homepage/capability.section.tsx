@@ -74,7 +74,7 @@ export function CapabilitySection() {
                 >
                   {`Mainly proficient in simulations, my development expertise focuses
               on replicating life events and interactions into the programming
-              scene. I enjoy combining visual design with digital strategy.`.toUpperCase()}
+              scene. `.toUpperCase()}
                 </Text>
               </Box>
             </Grid.Col>
@@ -95,7 +95,7 @@ export function CapabilitySection() {
                     lineHeight: "60px",
                   }}
                 >
-                  {`My works aims to serve its purposes while maintaining a certain degree
+                  {`I enjoy combining visual design with digital strategy. My works aims to serve its purposes while maintaining a certain degree
               of personal aesthetic preferenes.`.toUpperCase()}
                 </Text>
               </Box>

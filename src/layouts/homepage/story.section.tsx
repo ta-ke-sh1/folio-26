@@ -1,61 +1,81 @@
-import { useRef, useState } from "react";
-import { Container, Stack, Badge, Grid, Box, Text, Title } from "@mantine/core";
+import { useState } from "react";
+import { Container, Stack, Badge, Grid, Box, Text } from "@mantine/core";
 
 const STORY_PANELS = [
   {
     index: "01",
     label: "CORE_ROLE",
-    title: "FULL-STACK ENGINEER",
+    title: "CAREER OVERVIEW",
     body: "Building reliable products from data layer to interface, with a bias for clear systems and considered details.",
-    meta: "[COMPANY] // SYSTEMS / PRODUCT",
+    meta: "TSDV // FULL-STACK DEVELOPER // 4 YEARS OF EXPERIENCE",
   },
   {
     index: "02",
     label: "MOTION_LOG",
-    title: "VIDEOGRAPHY",
+    title: "MAIN EXPERTISE",
     body: "Following movement, rhythm, and atmosphere to turn everyday sequences into visual stories with a pulse.",
-    meta: "CAMERA // EDIT // SEQUENCE",
+    meta: "SYSTEM DESIGN // WEB DEVELOPMENT",
   },
   {
     index: "03",
     label: "FRAME_ARCHIVE",
-    title: "PHOTOGRAPHY",
+    title: "SIDE QUESTS",
     body: "Collecting geometry, light, and human traces through deliberate framing and a patient eye.",
-    meta: "LIGHT // FORM // PERSPECTIVE",
+    meta: "VIDEOGRAPHY // PHOTOGRAPHY // FAN OF BAD BUNNY",
   },
   {
     index: "04",
-    label: "OPEN_SIGNAL",
-    title: "VISUAL EXPLORATION",
+    label: "LANGUAGES",
+    title: "COMMUNICATION",
     body: "Exploring the space between technology and feeling, where interfaces become places to pause, look, and wonder.",
-    meta: "RESEARCH // EXPERIMENT // PLAY",
+    meta: "VIETNAMESE // ENGLISH // JAPANESE",
   },
 ];
 
 const GALAXY_PLANETS = [
   {
-    name: "FULL-STACK ENGINEER",
+    name: "CAREER OVERVIEW",
     orbit: 1,
-    panel: 0,
-    moons: ["REACT", "TYPESCRIPT", "APIs", "SIMULATION"],
-  },
-  {
-    name: "VIDEOGRAPHY",
-    orbit: 2,
     panel: 1,
-    moons: ["CAMERA", "MOTION", "EDITING", "STORY"],
+    moons: [
+      "4 YEARS OF EXPERIENCE",
+      "BEST ENGINEER OF COMPANY",
+      "LEAD A TEAM OF 3",
+      "8+ PROJECTS WITH DIFFERENT SCALES",
+    ],
   },
   {
-    name: "PHOTOGRAPHY",
-    orbit: 3,
+    name: "MAIN EXPERTISE",
+    orbit: 2,
     panel: 2,
-    moons: ["LIGHT", "FRAMING", "ARCHITECTURE", "DETAIL"],
+    moons: [
+      "PROTOCOLS SIMULATION",
+      "WEB DEVELOPMENT",
+      "SYSTEM DESIGN",
+      "SECURITY ISSUES",
+    ],
   },
   {
-    name: "VISUAL EXPLORATION",
+    name: "SIDE QUESTS",
+    orbit: 3,
+    panel: 3,
+    moons: [
+      "BAD BUNNY ENJOYER",
+      "RANDOM PHOTOGRAPHER",
+      "FILMMAKER FOR ONCE IN A WHILE",
+      "I HAVE 2 CATS",
+    ],
+  },
+  {
+    name: "CERTIFICATES",
     orbit: 4,
     panel: 3,
-    moons: ["MOVIES", "CAT LOVER", "VISUALS", "CURIOSITY"],
+    moons: [
+      "8.0 IELTS",
+      "N2 JAPANESE",
+      "FIRST CLASS HONORS IN COMPUTING",
+      "28 YEARS OF HONING VIETNAMESE",
+    ],
   },
 ];
 
@@ -98,8 +118,8 @@ export default function StorySection() {
                 size="xl"
                 c="var(--folio-text)"
                 style={{
-                   fontSize: 64,
-                   lineHeight: '60px',
+                  fontSize: 64,
+                  lineHeight: "60px",
                 }}
               >
                 {`Full-stack software engineer at Toshiba Software Development Vietnam. Specialized in simulation software development, transforming industrial concepts into accessible web platforms.`.toUpperCase()}
@@ -165,7 +185,10 @@ export default function StorySection() {
                   >
                     ← GALAXY
                   </button>
-                  <Text className="homepage-story-galaxy-focus-index" ff="monospace">
+                  <Text
+                    className="homepage-story-galaxy-focus-index"
+                    ff="monospace"
+                  >
                     {STORY_PANELS[activePanel].index} // PERSONAL SYSTEM
                   </Text>
                   <Box className="homepage-story-galaxy-focus-system">
@@ -173,11 +196,15 @@ export default function StorySection() {
                       <Box
                         key={moon}
                         className={`homepage-story-galaxy-moon-orbit homepage-story-galaxy-moon-orbit--${index + 1}`}
-                        style={{ animationDelay: `${-moonStartDelays[index]}s` }}
+                        style={{
+                          animationDelay: `${-moonStartDelays[index]}s`,
+                        }}
                       >
                         <span
                           className="homepage-story-galaxy-moon-marker"
-                          style={{ animationDelay: `${-moonStartDelays[index]}s` }}
+                          style={{
+                            animationDelay: `${-moonStartDelays[index]}s`,
+                          }}
                         >
                           <span className="homepage-story-galaxy-moon" />
                           <span className="homepage-story-galaxy-moon-label">
@@ -196,7 +223,7 @@ export default function StorySection() {
               )}
               <Stack gap={4} className="homepage-story-signal-readout">
                 <Text size="xs" c="orange.4" ff="monospace" fw={700}>
-                  LIVE_VIEW / {STORY_PANELS[activePanel].index}
+                  CLICK TO VIEW / {STORY_PANELS[activePanel].index}
                 </Text>
                 <Text size="xs" c="dimmed" ff="monospace">
                   ORBITAL SYSTEM / ACTIVE
@@ -218,46 +245,46 @@ export default function StorySection() {
 
           <Grid.Col span={12} mt="xl">
             <Grid gap="xs" className="homepage-story-index">
-          {STORY_PANELS.map((panel) => (
-            <Grid.Col
-              key={panel.index}
-              span={{ base: 12, sm: 6, lg: 3 }}
-            >
-              <Box
-                className="homepage-story-index-item"
-                role="button"
-                tabIndex={0}
-                aria-label={`Open ${panel.title} galaxy`}
-                onMouseEnter={() => setActivePanel(Number(panel.index) - 1)}
-                onClick={() => {
-                  const panelIndex = Number(panel.index) - 1;
-                  openPlanetSystem(panelIndex);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    const panelIndex = Number(panel.index) - 1;
-                    openPlanetSystem(panelIndex);
-                  }
-                }}
-                style={{
-                  borderTopColor: activePanel === Number(panel.index) - 1 ? "#ff7700" : undefined,
-                }}
-              >
-                <Text size="xs" ff="monospace" c="orange.4" fw={700}>
-                  {panel.index}
-                </Text>
-                <Stack gap={2}>
-                  <Text c="white" fw={700} ff="monospace" size="sm">
-                    {panel.title}
-                  </Text>
-                  <Text size="xs" c="dimmed" ff="monospace">
-                    {panel.meta}
-                  </Text>
-                </Stack>
-              </Box>
-            </Grid.Col>
-          ))}
+              {STORY_PANELS.map((panel) => (
+                <Grid.Col key={panel.index} span={{ base: 12, sm: 6, lg: 3 }}>
+                  <Box
+                    className="homepage-story-index-item"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open ${panel.title} galaxy`}
+                    onMouseEnter={() => setActivePanel(Number(panel.index) - 1)}
+                    onClick={() => {
+                      const panelIndex = Number(panel.index) - 1;
+                      openPlanetSystem(panelIndex);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        const panelIndex = Number(panel.index) - 1;
+                        openPlanetSystem(panelIndex);
+                      }
+                    }}
+                    style={{
+                      borderTopColor:
+                        activePanel === Number(panel.index) - 1
+                          ? "#ff7700"
+                          : undefined,
+                    }}
+                  >
+                    <Text size="xs" ff="monospace" c="orange.4" fw={700}>
+                      {panel.index}
+                    </Text>
+                    <Stack gap={2}>
+                      <Text c="white" fw={700} ff="monospace" size="sm">
+                        {panel.title}
+                      </Text>
+                      <Text size="xs" c="dimmed" ff="monospace">
+                        {panel.meta}
+                      </Text>
+                    </Stack>
+                  </Box>
+                </Grid.Col>
+              ))}
             </Grid>
           </Grid.Col>
         </Grid>
