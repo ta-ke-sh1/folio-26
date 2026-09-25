@@ -8,6 +8,7 @@ import { CapabilitySection } from "./capability.section";
 import StorySection from "./story.section";
 import { TechnologySection } from "./technology.section";
 import "./main.layout.scss";
+import PhilosophySection from "./philosophy.section";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -534,6 +535,7 @@ export default function AsciiLandingPage() {
             }}
           >
             <StorySection />
+            <PhilosophySection />
             <CapabilitySection />
             <TechnologySection />
           </Box>

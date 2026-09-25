@@ -404,7 +404,7 @@ function TechnologyFlowNode({ data }: NodeProps<TechnologyNode>) {
   const Icon = ICONS[data.icon];
 
   return (
-    <div
+    <Box
       className={`technology-node technology-node--${data.variant}`}
       aria-label={`${data.label}${isHub ? " core" : ""}`}
     >
@@ -523,7 +523,7 @@ function TechnologyFlowNode({ data }: NodeProps<TechnologyNode>) {
           <span className="technology-node__label">{data.label}</span>
         </>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -588,25 +588,13 @@ export function TechnologySection() {
       className="technology-section"
       aria-labelledby="technology-heading"
     >
-      <div className="technology-section__header">
-        <div>
+      <Box className="technology-section__header">
+        <Box>
           <Badge size="lg" variant="dot" color="primaryOrange">
             IV. TECHNOLOGY NETWORK
           </Badge>
-          <Text
-            id="technology-heading"
-            component="h2"
-            className="technology-section__title"
-          >
-            TOOLS THAT CONNECT IDEAS.
-          </Text>
-        </div>
-        <Text className="technology-section__instruction">
-          {isMobile
-            ? "VERTICAL TECHNOLOGY MAP"
-            : "DRAG NODES TO REARRANGE // PINCH TO ZOOM"}
-        </Text>
-      </div>
+        </Box>
+      </Box>
 
       <Box
         className="technology-graph"
@@ -650,12 +638,12 @@ export function TechnologySection() {
             color="var(--folio-flow-line)"
           />
         </ReactFlow>
-        <div className="technology-graph__legend" aria-hidden="true">
+        <Box className="technology-graph__legend" aria-hidden="true">
           <span>
             <i className="technology-graph__legend-dot" /> ACTIVE SYSTEM
           </span>
           <span>19 NODES // 18 LINKS</span>
-        </div>
+        </Box>
       </Box>
     </section>
   );

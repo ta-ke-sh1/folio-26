@@ -84,14 +84,20 @@ export default function TriggerCard({
         maxWidth,
         flex,
         padding: "14px 18px",
-        backgroundColor: isOpen ? "var(--folio-card-hover)" : "var(--folio-card)",
-        border: isOpen ? "1px solid #FF7700" : "1px solid var(--folio-card-border)",
+        background: isOpen
+          ? "linear-gradient(145deg, rgba(255, 119, 0, 0.18), rgba(255, 255, 255, 0.04))"
+          : "linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.025))",
+        border: isOpen
+          ? "1px solid rgba(255, 119, 0, 0.75)"
+          : "1px solid rgba(255, 255, 255, 0.16)",
         borderRadius: "16px",
+        backdropFilter: "blur(18px) saturate(135%)",
+        WebkitBackdropFilter: "blur(18px) saturate(135%)",
         cursor: "pointer",
         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
         boxShadow: isOpen
-          ? "0 0 20px rgba(255, 119, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.5)"
-          : "0 2px 8px rgba(0, 0, 0, 0.3)",
+          ? "0 0 24px rgba(255, 119, 0, 0.28), 10px 10px 24px rgba(0, 0, 0, 0.32), -8px -8px 20px rgba(255, 255, 255, 0.055), inset 1px 1px 0 rgba(255, 255, 255, 0.2), inset -1px -1px 0 rgba(0, 0, 0, 0.18)"
+          : "10px 10px 24px rgba(0, 0, 0, 0.32), -8px -8px 20px rgba(255, 255, 255, 0.055), inset 1px 1px 0 rgba(255, 255, 255, 0.16), inset -1px -1px 0 rgba(0, 0, 0, 0.18)",
         position: "relative",
         overflow: "hidden",
       }}

@@ -4,10 +4,12 @@ import {
   useState,
   useEffect,
   useRef,
+  useCallback,
   type ReactNode,
 } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Box, Text, Group, Stack } from "@mantine/core";
+import { useLenis } from "lenis/react";
 import { ZIndexLevel } from "../../enums/styles.enum";
 
 interface TransitionContextType {
@@ -86,82 +88,137 @@ function CrtNoiseCanvas() {
 // --- Provider Component ---
 export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const lenis = useLenis();
+  const location = useLocation();
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const [stage, setStage] = useState<"idle" | "enter" | "active" | "exit">(
-    "idle",
+    "active",
   );
   const [progress, setProgress] = useState(0);
-  const [destination, setDestination] = useState("");
-  const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
+  const [destination, setDestination] = useState(() =>
+    location.pathname === "/"
+      ? "WELCOME BACK"
+      : location.pathname.replace("/", "").toUpperCase(),
+  );
+  const [terminalLogs, setTerminalLogs] = useState<string[]>([
+    `> INITIALIZING_PAGE_ENTRY -> ${location.pathname}`,
+  ]);
+  const transitionLock = useRef(false);
+  const hasPlayedInitialTransition = useRef(false);
 
-  const navigateTo = (to: string) => {
-    if (isTransitioning) return;
+  useEffect(() => {
+    if (!isTransitioning) return;
 
-    const formattedDest =
-      to === "/" ? "WELCOME BACK" : `${to.replace("/", "").toUpperCase()}`;
+    const root = document.documentElement;
+    const body = document.body;
+    const previousRootOverflow = root.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+    const previousRootOverscroll = root.style.overscrollBehavior;
+    const previousBodyOverscroll = body.style.overscrollBehavior;
 
-    setDestination(formattedDest);
-    setIsTransitioning(true);
-    setStage("enter");
-    setProgress(0);
-    setTerminalLogs([`> INITIALIZING_CHANNEL_SWITCH -> ${to}`]);
+    lenis?.stop();
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    root.style.overscrollBehavior = "none";
+    body.style.overscrollBehavior = "none";
 
-    // Fast turn-on flash (CRT expansion)
-    setTimeout(() => {
-      setStage("active");
-    }, 200);
-
-    // Sequence log steps spread across 3.5 seconds
-    const steps = [
-      `> SYSTEM_CHECK: VERIFIED`,
-      `> LOCATING_TARGET_ROUTE: [${formattedDest}]`,
-      `> ALLOCATING_VIRTUAL_DOM_BUFFERS...`,
-      `> PRELOADING_ASYNC_COMPONENTS...`,
-      `> COMPILED_CSS_MODULES: OK`,
-      `> HYDRATING_STATE_TREE...`,
-      `> VERIFYING_CANVAS_PIXEL_RATIO...`,
-      `> ROUTE_READY: MOUNTING_PAGE...`,
-    ];
-
-    let currentStep = 0;
-    const duration = 3500; // 3.5 Seconds transition
-    const startTime = performance.now();
-
-    const updateProgress = (now: number) => {
-      const elapsed = now - startTime;
-      const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
-      setProgress(pct);
-
-      // Distribute logs sequentially across progress percentage
-      const stepInterval = 100 / steps.length;
-      if (pct > currentStep * stepInterval && currentStep < steps.length) {
-        setTerminalLogs((prev) => [...prev, steps[currentStep]]);
-        currentStep++;
-      }
-
-      if (elapsed < duration) {
-        requestAnimationFrame(updateProgress);
-      } else {
-        // Perform React Router route change
-        navigate(to);
-
-        // Allow 2 additional animation frames for React component tree mounting
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            // Stage 3: CRT collapse/turn-off animation
-            setStage("exit");
-
-            setTimeout(() => {
-              setIsTransitioning(false);
-              setStage("idle");
-            }, 450);
-          });
-        });
-      }
+    return () => {
+      root.style.overflow = previousRootOverflow;
+      body.style.overflow = previousBodyOverflow;
+      root.style.overscrollBehavior = previousRootOverscroll;
+      body.style.overscrollBehavior = previousBodyOverscroll;
+      lenis?.start();
     };
+  }, [isTransitioning, lenis]);
 
-    requestAnimationFrame(updateProgress);
-  };
+  const startTransition = useCallback(
+    (to: string, shouldNavigate: boolean, isInitialEntry = false) => {
+      if (transitionLock.current) return;
+      transitionLock.current = true;
+
+      const formattedDest =
+        to === "/" ? "WELCOME BACK" : `${to.replace("/", "").toUpperCase()}`;
+
+      setDestination(formattedDest);
+      setIsTransitioning(true);
+      setProgress(0);
+      setStage(isInitialEntry ? "active" : "enter");
+      setTerminalLogs([
+        `> ${isInitialEntry ? "INITIALIZING_PAGE_ENTRY" : "INITIALIZING_CHANNEL_SWITCH"} -> ${to}`,
+      ]);
+
+      if (!isInitialEntry) {
+        // Fast turn-on flash (CRT expansion)
+        setTimeout(() => {
+          setStage("active");
+        }, 200);
+      }
+
+      // Sequence log steps spread across 3.5 seconds
+      const steps = [
+        `> SYSTEM_CHECK: VERIFIED`,
+        `> LOCATING_TARGET_ROUTE: [${formattedDest}]`,
+        `> ALLOCATING_VIRTUAL_DOM_BUFFERS...`,
+        `> PRELOADING_ASYNC_COMPONENTS...`,
+        `> COMPILED_CSS_MODULES: OK`,
+        `> HYDRATING_STATE_TREE...`,
+        `> VERIFYING_CANVAS_PIXEL_RATIO...`,
+        `> ROUTE_READY: MOUNTING_PAGE...`,
+      ];
+
+      let currentStep = 0;
+      const duration = 3500; // 3.5 Seconds transition
+      const startTime = performance.now();
+
+      const updateProgress = (now: number) => {
+        const elapsed = now - startTime;
+        const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
+        setProgress(pct);
+
+        // Distribute logs sequentially across progress percentage
+        const stepInterval = 100 / steps.length;
+        if (pct > currentStep * stepInterval && currentStep < steps.length) {
+          setTerminalLogs((prev) => [...prev, steps[currentStep]]);
+          currentStep++;
+        }
+
+        if (elapsed < duration) {
+          requestAnimationFrame(updateProgress);
+        } else {
+          // Change routes only for user-initiated navigation.
+          if (shouldNavigate) navigate(to);
+
+          // Allow 2 additional animation frames for React component tree mounting
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              // Stage 3: CRT collapse/turn-off animation
+              setStage("exit");
+
+              setTimeout(() => {
+                setIsTransitioning(false);
+                setStage("idle");
+                transitionLock.current = false;
+              }, 450);
+            });
+          });
+        }
+      };
+
+      requestAnimationFrame(updateProgress);
+    },
+    [navigate],
+  );
+
+  const navigateTo = useCallback(
+    (to: string) => startTransition(to, true),
+    [startTransition],
+  );
+
+  useEffect(() => {
+    if (hasPlayedInitialTransition.current) return;
+    hasPlayedInitialTransition.current = true;
+    startTransition(location.pathname, false, true);
+  }, [location.pathname, startTransition]);
 
   return (
     <PageTransitionContext.Provider value={{ navigateTo, isTransitioning }}>
@@ -323,6 +380,16 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
         </Box>
       )}
     </PageTransitionContext.Provider>
+  );
+}
+
+export function PageEntrance({ children }: { children: ReactNode }) {
+  const location = useLocation();
+
+  return (
+    <Box key={location.key} className="route-page-entrance">
+      {children}
+    </Box>
   );
 }
 

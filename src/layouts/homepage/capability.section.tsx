@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Container, Stack, Badge, Grid, Text } from "@mantine/core";
+import { Container, Stack, Badge, Grid, Text, Box } from "@mantine/core";
 import { AsciiCanvas } from "../../components/animations/ascii/ascii";
 import { AsciiTypes } from "../../components/animations/ascii/types";
 
@@ -9,7 +9,7 @@ export function CapabilitySection() {
   const strategyTextRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <Container fluid mt="100px" className="homepage-capability-section">
+    <Container fluid mb="50px" className="homepage-capability-section">
       <Stack gap={60}>
         {/* Section Header */}
         <Stack gap="md" mt="60px">
@@ -19,7 +19,7 @@ export function CapabilitySection() {
             color="primaryOrange"
             style={{ width: "fit-content" }}
           >
-            II. Capability
+            III. Capability
           </Badge>
 
           <Grid align="flex-start">
@@ -62,7 +62,7 @@ export function CapabilitySection() {
                 position: "relative",
               }}
             >
-              <div ref={storyTextRef} className="homepage-capability-copy">
+              <Box ref={storyTextRef} className="homepage-capability-copy">
                 <Text
                   size="xl"
                   c="var(--folio-text)"
@@ -76,7 +76,7 @@ export function CapabilitySection() {
               on replicating life events and interactions into the programming
               scene. I enjoy combining visual design with digital strategy.`.toUpperCase()}
                 </Text>
-              </div>
+              </Box>
             </Grid.Col>
 
             {/* Strategy Content Column */}
@@ -85,7 +85,7 @@ export function CapabilitySection() {
               mt="xl"
               className="homepage-capability-strategy-content"
             >
-              <div ref={strategyTextRef} className="homepage-capability-copy">
+              <Box ref={strategyTextRef} className="homepage-capability-copy">
                 <Text
                   size="xl"
                   c="var(--folio-text)"
@@ -98,7 +98,7 @@ export function CapabilitySection() {
                   {`My works aims to serve its purposes while maintaining a certain degree
               of personal aesthetic preferenes.`.toUpperCase()}
                 </Text>
-              </div>
+              </Box>
             </Grid.Col>
 
             {/* Strategy Heading Column */}

@@ -410,15 +410,17 @@
 .viewfinder__nav {
   position: absolute;
   top: 50%;
+  z-index: 4;
   color: var(--camera-orange);
   border: 1px solid rgba(255, 119, 0, 0.55);
   background: rgba(7, 7, 7, 0.75);
+  transform: translateY(-50%);
 }
 .viewfinder__nav--previous {
-  left: 32px;
+  left: 12px;
 }
 .viewfinder__nav--next {
-  right: 14px;
+  right: 12px;
 }
 
 .pathfinder {
@@ -726,32 +728,55 @@
   }
   .camera-body__workspace {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 14px;
-    padding: 12px;
+    grid-template-rows: minmax(145px, 1fr) auto;
+    gap: 8px;
+    padding: 8px;
   }
   .exposure-panel {
     order: 2;
-    padding: 12px 0 0;
+    --dial-size: clamp(30px, 9vw, 36px);
+    --dial-label-size: clamp(6px, 1.8vw, 7px);
+    --dial-value-size: clamp(7px, 2vw, 8px);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 5px 0 0;
     border-top: 1px solid var(--camera-line);
     border-right: 0;
   }
   .exposure-panel__heading {
-    margin-bottom: 12px;
+    margin: 0;
+    font-size: 8px;
+    line-height: 1.2;
+    white-space: nowrap;
   }
   .exposure-panel .mantine-Stack-root {
     width: 100%;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .camera-dial-pair {
+    display: contents;
+  }
+  .camera-dial {
+    min-width: 0;
   }
   .exposure-panel__note {
-    margin-top: 12px;
+    grid-column: 1 / -1;
+    margin-top: 3px;
     padding: 0;
+    font-size: 6px;
+    line-height: 1.2;
   }
   .viewfinder-shell {
+    min-height: 145px;
     padding: 13px 0 0 13px;
   }
   .viewfinder {
     height: 100%;
-    min-height: 0;
+    min-height: 132px;
   }
   .viewfinder__caption {
     right: 12px;
@@ -762,26 +787,113 @@
     gap: 2px;
   }
   .viewfinder__nav--previous {
-    left: 22px;
+    left: 8px;
   }
   .viewfinder__nav--next {
     right: 8px;
   }
   .pathfinder {
     grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 12px;
+    gap: 5px;
+    padding: 8px;
   }
   .pathfinder__label {
     flex-direction: row;
     padding: 0;
   }
+  .pathfinder__label .mantine-Text-root {
+    font-size: 7px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
   .film-strip {
-    grid-template-columns: repeat(9, 94px);
-    min-width: 882px;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    min-width: 0;
+    gap: 1px;
+    padding: 6px 2px;
+    overflow: hidden;
+  }
+  .film-strip__frame {
+    min-width: 0;
+    height: 48px;
+    padding: 4px 1px 2px;
+  }
+  .film-strip__index,
+  .film-strip__code {
+    font-size: 5px;
+  }
+  .film-strip__index {
+    top: 7px;
+    left: 3px;
+  }
+  .film-strip__code {
+    right: 2px;
   }
   .canister-rack {
     min-width: 0;
+    min-height: 58px;
+    gap: 8px;
+    padding: 2px 0;
+  }
+  .film-canister {
+    min-width: 76px;
+    gap: 3px;
+    padding: 2px 0;
+  }
+  .film-canister__spool {
+    width: 48px;
+    height: 48px;
+  }
+  .film-canister__label {
+    width: 31px;
+    height: 31px;
+  }
+  .film-canister__label > span {
+    font-size: 8px;
+  }
+  .film-canister__name {
+    font-size: 7px;
+  }
+  .canister-rack__manifest {
+    padding-left: 8px;
+    font-size: 7px;
+    letter-spacing: 0.2px;
+  }
+  .canister-rack__manifest .mantine-Text-root {
+    font-size: 7px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .canister-rack__manifest > :last-child {
+    margin-top: 3px;
+  }
+  .pathfinder__roll-header {
+    margin-bottom: 4px;
+    font-size: 7px;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .pathfinder__roll-header .mantine-Text-root {
+    font-size: 7px;
+    line-height: 1.2;
+  }
+  .pathfinder__roll-header > :first-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pathfinder__roll-header button {
+    padding: 2px 5px;
+    font-size: 7px;
+  }
+  .viewfinder__nav {
+    width: 26px;
+    height: 26px;
+  }
+  .viewfinder__nav svg {
+    width: 15px;
+    height: 15px;
   }
 }
 
@@ -796,7 +908,7 @@
     display: none;
   }
   .viewfinder {
-    min-height: 0;
+    min-height: 132px;
   }
 }
 
@@ -834,5 +946,29 @@
   }
   .exposure-panel .mantine-Stack-root {
     gap: 7px;
+  }
+}
+
+@media (max-width: 48em) and (max-height: 720px) {
+  .camera-body__workspace {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .exposure-panel .mantine-Stack-root {
+    gap: 4px;
+  }
+  .film-strip__frame {
+    height: 48px;
+  }
+  .canister-rack {
+    min-height: 58px;
+  }
+  .film-canister__spool {
+    width: 48px;
+    height: 48px;
+  }
+  .film-canister__label {
+    width: 31px;
+    height: 31px;
   }
 }

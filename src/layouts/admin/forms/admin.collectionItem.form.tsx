@@ -294,14 +294,14 @@ export function ItemFormModal({
                   <Dropzone.Idle>
                     <IconPhoto size={40} color="var(--mantine-color-dimmed)" />
                   </Dropzone.Idle>
-                  <div>
+                  <Box>
                     <Text size="sm" inline>
                       Drag an image here or click to select
                     </Text>
                     <Text size="xs" c="dimmed" inline mt={4}>
                       Upload 1 image file
                     </Text>
-                  </div>
+                  </Box>
                 </Group>
               </Dropzone>
             )}

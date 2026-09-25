@@ -8,10 +8,10 @@ import {
   DraggableFormWindow,
   type FormWindowItem,
 } from "../../components/modals/draggableForm.modal";
-import AsciiWaveBackground from "./background/ascii.background";
 import { FORM_TYPES, ITEMS } from "./about.type";
 import TriggerCard from "../../components/card/trigger.card";
 import "./about.layout.scss";
+import GradientBlinds from "../../components/background/gradientBlinds";
 
 // --- MAIN PAGE COMPONENT ---
 export default function AboutPage() {
@@ -56,7 +56,9 @@ export default function AboutPage() {
     setClosingWindowIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
     window.setTimeout(() => {
       setOpenWindows((prev) => prev.filter((w) => w.id !== id));
-      setClosingWindowIds((prev) => prev.filter((closingId) => closingId !== id));
+      setClosingWindowIds((prev) =>
+        prev.filter((closingId) => closingId !== id),
+      );
       if (focusedWindowId === id) setFocusedWindowId(null);
     }, 260);
   };
@@ -128,7 +130,34 @@ export default function AboutPage() {
           borderRadius: 10,
         }}
       >
-        <AsciiWaveBackground />
+        <Box
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none", // Ensures the gradient blinds don't block interactions with underlying elements
+            zIndex: 0, // Ensures the gradient blinds stay behind other content
+          }}
+        >
+          <GradientBlinds
+            gradientColors={["#F97316", "#EAB308"]}
+            angle={252}
+            noise={0.78}
+            blindCount={34}
+            blindMinWidth={20}
+            spotlightRadius={0.5}
+            spotlightSoftness={1}
+            spotlightOpacity={1}
+            mouseDampening={0.14}
+            distortAmount={2}
+            shineDirection="left"
+            mixBlendMode="lighten"
+            color1="#F97316"
+            color2="#EAB308"
+          />
+        </Box>
 
         <Grid
           align="stretch"
@@ -254,11 +283,14 @@ export default function AboutPage() {
               </Stack>
             </Stack>
 
-            <section className="about-mobile-controls" aria-label="Contacts and information">
+            <section
+              className="about-mobile-controls"
+              aria-label="Contacts and information"
+            >
               <Text className="about-mobile-controls__heading">
                 [ CONTACTS // PERSONAL INFO ]
               </Text>
-              <div className="about-mobile-controls__grid">
+              <Box className="about-mobile-controls__grid">
                 {FORM_TYPES.map((item) => {
                   const isOpen = openForms.some((form) => form.id === item.id);
                   return (
@@ -281,7 +313,9 @@ export default function AboutPage() {
                   );
                 })}
                 {ITEMS.map((item) => {
-                  const isOpen = openWindows.some((windowItem) => windowItem.id === item.id);
+                  const isOpen = openWindows.some(
+                    (windowItem) => windowItem.id === item.id,
+                  );
                   return (
                     <TriggerCard
                       key={item.id}
@@ -296,7 +330,7 @@ export default function AboutPage() {
                     />
                   );
                 })}
-              </div>
+              </Box>
             </section>
           </Grid.Col>
 
