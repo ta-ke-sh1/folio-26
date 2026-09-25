@@ -238,11 +238,11 @@ export default function GalleryLayout() {
     <LayoutWrapper>
       <main className="camera-gallery">
         <header className="camera-gallery__header">
-          <div>
+          <Box>
             <Text mb="sm" className="camera-gallery__eyebrow">
               OPTICAL ARCHIVE / ROLL 026
             </Text>
-          </div>
+          </Box>
           <Group gap="xs" className="camera-gallery__status">
             <span className="camera-gallery__status-light" />
             <Text>
@@ -257,7 +257,7 @@ export default function GalleryLayout() {
           className="camera-body"
           aria-label="Interactive film camera gallery"
         >
-          <div className="camera-body__topline">
+          <Box className="camera-body__topline">
             <Text>FOLIO // 35MM</Text>
             <Group gap="xs">
               <IconFocusCentered size={15} />
@@ -272,16 +272,16 @@ export default function GalleryLayout() {
             >
               <IconRefresh size={16} />
             </ActionIcon>
-          </div>
+          </Box>
 
-          <div className="camera-body__workspace">
+          <Box className="camera-body__workspace">
             <aside
               className="exposure-panel"
               aria-label="Exposure sorting controls"
             >
               <Text className="exposure-panel__heading">EXPOSURE / SORT</Text>
               <Stack gap="lg" align="center">
-                <div className="camera-dial-pair">
+                <Box className="camera-dial-pair">
                   <CameraDial
                     label="ISO"
                     edge="MIN"
@@ -298,8 +298,8 @@ export default function GalleryLayout() {
                     active={sortKey === "iso"}
                     onChange={(value) => changeSetting("iso", "max", value)}
                   />
-                </div>
-                <div className="camera-dial-pair">
+                </Box>
+                <Box className="camera-dial-pair">
                   <CameraDial
                     label="APERTURE"
                     edge="MIN"
@@ -322,8 +322,8 @@ export default function GalleryLayout() {
                       changeSetting("aperture", "max", value)
                     }
                   />
-                </div>
-                <div className="camera-dial-pair">
+                </Box>
+                <Box className="camera-dial-pair">
                   <CameraDial
                     label="SHUTTER"
                     edge="MIN"
@@ -342,7 +342,7 @@ export default function GalleryLayout() {
                     formatValue={(value) => `1/${value}`}
                     onChange={(value) => changeSetting("shutter", "max", value)}
                   />
-                </div>
+                </Box>
               </Stack>
               <Text className="exposure-panel__note">
                 ACTIVE SORT: {sortKey.toUpperCase()} / {sortedShots.length}{" "}
@@ -350,9 +350,9 @@ export default function GalleryLayout() {
               </Text>
             </aside>
 
-            <div className="viewfinder-shell">
-              <div className="ruler ruler--top" aria-hidden="true" />
-              <div className="ruler ruler--left" aria-hidden="true" />
+            <Box className="viewfinder-shell">
+              <Box className="ruler ruler--top" aria-hidden="true" />
+              <Box className="ruler ruler--left" aria-hidden="true" />
               <figure
                 className={`viewfinder ${isCanisterLoaded && hasMatchingShots ? "" : "viewfinder--empty"}`}
               >
@@ -362,21 +362,39 @@ export default function GalleryLayout() {
                       src={`/pictures/${activeShot.id}.jpg`}
                       alt={`${activeShot.title}, ${activeShot.location}`}
                     />
-                    <div className="viewfinder__grid" aria-hidden="true" />
-                    <div className="viewfinder__focus" aria-hidden="true">
+                    <Box className="viewfinder__grid" aria-hidden="true" />
+                    <Box className="viewfinder__focus" aria-hidden="true">
                       <span />
-                    </div>
+                    </Box>
                     <figcaption className="viewfinder__caption">
-                      <div>
+                      <Box>
                         <Text className="viewfinder__frame">
                           FRAME {String(activeShot.id).padStart(2, "0")}
                         </Text>
-                      </div>
+                      </Box>
                       <Text>
                         {activeShot.iso} / f{activeShot.aperture} / 1/
                         {activeShot.shutter}
                       </Text>
                     </figcaption>
+                    <ActionIcon
+                      className="viewfinder__nav viewfinder__nav--previous"
+                      variant="filled"
+                      aria-label="Previous frame"
+                      title="Previous frame"
+                      onClick={() => stepFrame(-1)}
+                    >
+                      <IconChevronLeft size={20} />
+                    </ActionIcon>
+                    <ActionIcon
+                      className="viewfinder__nav viewfinder__nav--next"
+                      variant="filled"
+                      aria-label="Next frame"
+                      title="Next frame"
+                      onClick={() => stepFrame(1)}
+                    >
+                      <IconChevronRight size={20} />
+                    </ActionIcon>
                   </>
                 ) : (
                   <figcaption className="viewfinder__empty-message">
@@ -393,45 +411,23 @@ export default function GalleryLayout() {
                   </figcaption>
                 )}
               </figure>
-              {isCanisterLoaded && hasMatchingShots && (
-                <>
-                  <ActionIcon
-                    className="viewfinder__nav viewfinder__nav--previous"
-                    variant="filled"
-                    aria-label="Previous frame"
-                    title="Previous frame"
-                    onClick={() => stepFrame(-1)}
-                  >
-                    <IconChevronLeft size={20} />
-                  </ActionIcon>
-                  <ActionIcon
-                    className="viewfinder__nav viewfinder__nav--next"
-                    variant="filled"
-                    aria-label="Next frame"
-                    title="Next frame"
-                    onClick={() => stepFrame(1)}
-                  >
-                    <IconChevronRight size={20} />
-                  </ActionIcon>
-                </>
-              )}
-            </div>
-          </div>
+            </Box>
+          </Box>
 
-          <div className="pathfinder" aria-label="Film archive pathfinder">
-            <div className="pathfinder__label">
+          <Box className="pathfinder" aria-label="Film archive pathfinder">
+            <Box className="pathfinder__label">
               <Text>FILM VAULT</Text>
               <Text>
                 {isCanisterLoaded
                   ? `${sortKey.toUpperCase()} / NEAREST FIRST`
                   : "01 ROLL AVAILABLE"}
               </Text>
-            </div>
-            <div className="pathfinder__archive">
+            </Box>
+            <Box className="pathfinder__archive">
               {isCanisterLoaded ? (
                 <>
-                  <div className="pathfinder__roll-header">
-                    <Text>ROLL 026 // 09 EXPOSURES</Text>
+                  <Box className="pathfinder__roll-header">
+                    <Text>ROLL 026 // 09 FRAMES</Text>
                     <button
                       type="button"
                       aria-label="Eject roll"
@@ -439,8 +435,8 @@ export default function GalleryLayout() {
                     >
                       <ShuffleText text="EJECT ROLL" />
                     </button>
-                  </div>
-                  <div
+                  </Box>
+                  <Box
                     className="film-strip"
                     aria-label="Frames inside roll 026"
                   >
@@ -472,10 +468,10 @@ export default function GalleryLayout() {
                         </span>
                       </button>
                     ))}
-                  </div>
+                  </Box>
                 </>
               ) : (
-                <div
+                <Box
                   className="canister-rack"
                   aria-label="Available film canisters"
                 >
@@ -495,15 +491,15 @@ export default function GalleryLayout() {
                       <ShuffleText text="ROLL 026 // 09 EXP" />
                     </span>
                   </button>
-                  <div className="canister-rack__manifest">
+                  <Box className="canister-rack__manifest">
                     <Text>35MM COLOR NEGATIVE</Text>
                     <Text>ISO 100-1600 / 09 FRAMES</Text>
                     <Text>SELECT CANISTER TO LOAD</Text>
-                  </div>
-                </div>
+                  </Box>
+                </Box>
               )}
-            </div>
-          </div>
+            </Box>
+          </Box>
         </section>
       </main>
     </LayoutWrapper>

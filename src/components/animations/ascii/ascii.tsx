@@ -308,7 +308,9 @@ export function AsciiCanvas({
         height: `${dynamicHeight}px`,
         display: "block",
         overflow: "hidden",
-        opacity: 0.6,
+        opacity: 0.9,
+        border: `1px solid ${color}`,
+        borderRadius: '8px',
       }}
     >
       <canvas

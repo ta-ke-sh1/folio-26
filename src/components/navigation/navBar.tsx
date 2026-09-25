@@ -4,8 +4,7 @@ import {
   Group,
   Burger,
   Title,
-  NavLink,
-  Drawer,
+  Menu,
   Stack,
   Text,
   Box,
@@ -21,7 +20,7 @@ import { useLocation } from "react-router";
 import { useAnimatedNavigate } from "../transition/transition";
 
 export default function NavigationBar() {
-  const [opened, { toggle, close }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("dark");
   const animatedNavigate = useAnimatedNavigate();
@@ -181,105 +180,116 @@ export default function NavigationBar() {
               )}
             </Button>
 
-            {/* Mobile CRT Burger Icon */}
-            <Burger
-              opened={opened}
-              onClick={toggle}
-              hiddenFrom="sm"
-              size="sm"
-              color="var(--folio-accent)"
-              aria-label="Toggle navigation menu"
-            />
+                {/* Mobile CRT Menu */}
+                <Menu
+                  opened={opened}
+                  onChange={(nextOpened) => (nextOpened ? open() : close())}
+                  position="bottom-end"
+                  offset={10}
+                  withinPortal
+                  zIndex={ZIndexLevel.HIGHEST + 1}
+                  transitionProps={{ transition: "pop-top-right", duration: 140 }}
+                >
+                  <Menu.Target>
+                    <Burger
+                      opened={opened}
+                      hiddenFrom="sm"
+                      size="sm"
+                      color="var(--folio-accent)"
+                      aria-label="Toggle navigation menu"
+                    />
+                  </Menu.Target>
+
+                  <Menu.Dropdown
+                    style={{
+                      width: 300,
+                      padding: 0,
+                      overflow: "hidden",
+                      backgroundColor: "var(--folio-surface)",
+                      border: "1px solid rgba(255, 119, 0, 0.4)",
+                      borderRadius: 4,
+                      boxShadow: "0 12px 36px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 119, 0, 0.12)",
+                    }}
+                  >
+                    <Box
+                      px="md"
+                      py="sm"
+                      style={{
+                        borderBottom: "1px dashed rgba(255, 119, 0, 0.28)",
+                        background: "rgba(255, 119, 0, 0.045)",
+                      }}
+                    >
+                      <Group justify="space-between">
+                        <Text
+                          size="xs"
+                          c="primaryOrange"
+                          style={{ fontFamily: "monospace", fontWeight: 700 }}
+                        >
+                          {"> TERMINAL_MENU"}
+                        </Text>
+                        <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+                          CH_NO: 26
+                        </Text>
+                      </Group>
+                    </Box>
+
+                    <Stack gap={4} p="xs">
+                      {navLinks.map((link) => {
+                        const isActive = location.pathname === link.href;
+                        return (
+                          <Menu.Item
+                            key={link.label}
+                            aria-label={link.label}
+                            aria-current={isActive ? "page" : undefined}
+                            onClick={() => handleNavigation(link.href)}
+                            style={{
+                              minHeight: 46,
+                              fontFamily: "monospace",
+                              fontSize: 16,
+                              fontWeight: 700,
+                              color: isActive
+                                ? "var(--folio-accent)"
+                                : "var(--folio-muted)",
+                              backgroundColor: isActive
+                                ? "rgba(255, 119, 0, 0.1)"
+                                : "transparent",
+                              borderLeft: isActive
+                                ? "3px solid var(--folio-accent)"
+                                : "3px solid transparent",
+                              borderRadius: 2,
+                            }}
+                          >
+                            <ShuffleText
+                              text={isActive ? `> ${link.label}` : link.label}
+                            />
+                          </Menu.Item>
+                        );
+                      })}
+                    </Stack>
+
+                    <Box
+                      px="md"
+                      py="sm"
+                      style={{ borderTop: "1px dashed rgba(255, 119, 0, 0.2)" }}
+                    >
+                      <Group justify="space-between">
+                        <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+                          SIGNAL:
+                        </Text>
+                        <Text
+                          size="xs"
+                          c="green.5"
+                          style={{ fontFamily: "monospace", fontWeight: 700 }}
+                        >
+                          ONLINE
+                        </Text>
+                      </Group>
+                    </Box>
+                  </Menu.Dropdown>
+                </Menu>
           </Group>
         </Group>
 
-        {/* Mobile Terminal Navigation Drawer */}
-        <Drawer
-          opened={opened}
-          onClose={close}
-          size="100%"
-          padding="xl"
-          hiddenFrom="sm"
-          zIndex={1000}
-          withCloseButton={false}
-          styles={{
-            content: {
-              backgroundColor: "var(--folio-surface)",
-              color: "var(--folio-text)",
-              borderLeft: "1px solid var(--folio-border)",
-            },
-
-            close: {
-              color: "var(--folio-accent)",
-              "&:hover": {
-                backgroundColor: "rgba(255, 119, 0, 0.15)",
-              },
-            },
-          }}
-        >
-          <Stack gap="md" mt="xl">
-            <Group gap="xs">
-              <Text
-                size="xs"
-                c="primaryOrange"
-                style={{ fontFamily: "monospace", fontWeight: 700 }}
-              >
-                {"> TERMINAL_MENU"}
-              </Text>
-            </Group>
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.href;
-              return (
-                <NavLink
-                  key={link.label}
-                  label={
-                    <ShuffleText
-                      text={isActive ? `> ${link.label}` : link.label}
-                    />
-                  }
-                  aria-label={link.label}
-                  onClick={() => handleNavigation(link.href)}
-                  style={{
-                    fontFamily: "monospace",
-                    fontSize: "18px",
-                    fontWeight: 700,
-                    color: isActive
-                      ? "var(--folio-accent)"
-                      : "var(--folio-muted)",
-                    backgroundColor: isActive
-                      ? "rgba(255, 119, 0, 0.1)"
-                      : "transparent",
-                    borderLeft: isActive
-                      ? "3px solid var(--folio-accent)"
-                      : "3px solid transparent",
-                    borderRadius: "2px",
-                    padding: "12px 16px",
-                  }}
-                />
-              );
-            })}
-          </Stack>
-
-          <Box
-            style={{
-              position: "absolute",
-              bottom: "62px",
-              left: "24px",
-              right: "24px",
-              paddingTop: "16px",
-              borderTop: "1px dashed rgba(255, 119, 0, 0.2)",
-            }}
-          >
-            <Group justify="space-between">
-              <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
-                CH_NO: 26
-              </Text>
-              <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
-                SIGNAL: ONLINE
-              </Text>
-            </Group>
-          </Box>
-        </Drawer>
       </Container>
 
       {/* Bottom Telemetry Bar */}
