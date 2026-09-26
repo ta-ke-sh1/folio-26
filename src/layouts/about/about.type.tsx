@@ -18,19 +18,19 @@ export const ITEMS: InteractiveItem[] = [
     icon: IconCat,
     tag: "CAT_V1.0",
     photo: {
-      src: "/pictures/9.jpg",
+      src: "/pictures/about/cat.jpg",
       alt: "Yellow blossoms framed by dark tree leaves.",
       caption: "FIELD NOTE 09 // CANOPY",
     },
     content: {
-      title: "CAM & SỌC",
+      title: "CAM",
       subtitle: "Full-time Snack Sneakers & Nap Specialists",
       description:
-        "Engineered for high-frequency purring and automated keyboard sitting. Primary duties include monitoring code deployments and enforcing mandatory screen breaks.",
+        "Engineered for high-frequency purring and automated keyboard sitting. Primary duties include monitoring code deployments and sleep the day away.",
       highlights: [
         "Senior Snack Inspector (Specializing in sensing fresh foods)",
         "Zero downtime nap scheduling",
-        "Just don't let me touch. Crazy, I fed you with my hands you little *****",
+        "Just don't let me touch. I fed you with my hands you little *****",
       ],
       details: [],
     },
