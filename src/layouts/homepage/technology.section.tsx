@@ -591,11 +591,10 @@ export function TechnologySection() {
       <Box className="technology-section__header">
         <Box>
           <Badge size="lg" variant="dot" color="primaryOrange">
-            IV. TECHNOLOGY NETWORK
+            IV. TECHNOLOGY STACK
           </Badge>
         </Box>
       </Box>
-
       <Box
         className="technology-graph"
         aria-label="Interactive graph of development and database technologies"

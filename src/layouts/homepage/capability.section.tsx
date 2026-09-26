@@ -70,6 +70,7 @@ export function CapabilitySection() {
                     fontSize: 64,
                     maxWidth: "50dvw",
                     lineHeight: "60px",
+                    textAlign: "left",
                   }}
                 >
                   {`Mainly proficient in simulations, my development expertise focuses
@@ -93,6 +94,7 @@ export function CapabilitySection() {
                     fontSize: 64,
                     maxWidth: "50dvw",
                     lineHeight: "60px",
+                    textAlign: "right",
                   }}
                 >
                   {`I enjoy combining visual design with digital strategy. My works aims to serve its purposes while maintaining a certain degree
