@@ -48,7 +48,19 @@ export function ShuffleButton({ children, ...props }: ShuffleButtonProps) {
         if (isPlainText) stop();
       }}
     >
-      {isPlainText ? <span aria-hidden="true">{displayText}</span> : children}
+      {isPlainText ? (
+        <span
+          aria-hidden="true"
+          style={{
+            marginLeft: "5px",
+            marginRight: "5px",
+          }}
+        >
+          {displayText}
+        </span>
+      ) : (
+        children
+      )}
     </MantineButton>
   );
 }

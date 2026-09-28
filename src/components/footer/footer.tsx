@@ -1,79 +1,115 @@
 import { Box, Container, Stack } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
 import gsap from "gsap";
 import { ShuffleButton } from "../animations/shuffle.button";
 import { useAnimatedNavigate } from "../transition/transition";
 import "./footer.scss";
 
-type LocatorPoint = {
-  x: number;
-  y: number;
-  code: string;
-};
-
-type LocatorRegion = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
+/* ----------------------------- static data ------------------------------ */
 
 const LOCATOR_OFFSETS = [
-  [-32, -24], [-14, -34], [8, -28], [29, -35],
-  [-39, -8], [-20, -13], [2, -11], [23, -8],
-  [-34, 12], [-13, 7], [11, 10], [34, 14],
-  [-25, 31], [-4, 27], [19, 32], [38, 30],
+  [-32, -24],
+  [-14, -34],
+  [8, -28],
+  [29, -35],
+  [-39, -8],
+  [-20, -13],
+  [2, -11],
+  [23, -8],
+  [-34, 12],
+  [-13, 7],
+  [11, 10],
+  [34, 14],
+  [-25, 31],
+  [-4, 27],
+  [19, 32],
+  [38, 30],
 ] as const;
+
 const LOCATOR_REGIONS = [
   { x: -28, y: -22, width: 31, height: 23 },
   { x: 4, y: -31, width: 30, height: 19 },
   { x: -38, y: 2, width: 28, height: 21 },
   { x: -7, y: -2, width: 36, height: 24 },
   { x: 19, y: 12, width: 27, height: 21 },
-];
-const INITIAL_POINTER_POINT = { x: 50, y: 50 };
+] as const;
 
-function createLocatorPoints(pointer: { x: number; y: number }): LocatorPoint[] {
-  return LOCATOR_OFFSETS.map(([offsetX, offsetY], index) => {
-    const x = Math.round(Math.max(5, Math.min(95, pointer.x + offsetX)));
-    const y = Math.round(Math.max(7, Math.min(93, pointer.y + offsetY)));
-    return {
-      x,
-      y,
-      code: `X${String(x * 11 + index).padStart(3, "0")}Y${String(y * 9 + index * 3).padStart(3, "0")}`,
-    };
-  });
-}
+const INITIAL_POINTER: Record<string, number> = { x: 50, y: 50 } as const;
 
-function createLocatorRegions(pointer: { x: number; y: number }): LocatorRegion[] {
-  return LOCATOR_REGIONS.map(({ x, y, width, height }) => ({
-    x: Math.max(1, Math.min(99 - width, pointer.x + x)),
-    y: Math.max(1, Math.min(99 - height, pointer.y + y)),
-    width,
-    height,
-  }));
-}
-
-const INITIAL_LOCATOR_POINTS = createLocatorPoints(INITIAL_POINTER_POINT);
-const INITIAL_LOCATOR_REGIONS = createLocatorRegions(INITIAL_POINTER_POINT);
+// Network lines connect point i -> i+1, skipping every third pair.
+const NETWORK_INDEXES = Array.from(
+  { length: LOCATOR_OFFSETS.length - 1 },
+  (_, i) => i,
+).filter((i) => i % 3 !== 1);
 
 const sitemapLinks = [
   { label: "HOME", path: "/" },
-  { label: "ABOUT", path: "/about" },
+  // { label: "ABOUT", path: "/about" },
   { label: "COLLECTIONS", path: "/collections" },
   { label: "GALLERY", path: "/gallery" },
   { label: "PLAYGROUND", path: "/playground" },
-  { label: "LOGIN", path: "/login" },
+  // { label: "LOGIN", path: "/login" },
 ];
+const SIDE_LINK_COLUMNS = [sitemapLinks.slice(0, 3), sitemapLinks.slice(3)];
 
-type FooterProps = {
-  compact?: boolean;
+/* ------------------------------- helpers -------------------------------- */
+
+const clamp = (v: number, min: number, max: number) =>
+  Math.max(min, Math.min(max, v));
+
+const pad3 = (n: number) => String(n).padStart(3, "0");
+
+const pointX = (px: number, i: number) =>
+  clamp(px + LOCATOR_OFFSETS[i][0], 5, 95);
+const pointY = (py: number, i: number) =>
+  clamp(py + LOCATOR_OFFSETS[i][1], 7, 93);
+const pointCode = (x: number, y: number, i: number) =>
+  `X${pad3(Math.round(x) * 11 + i)}Y${pad3(Math.round(y) * 9 + i * 3)}`;
+
+const regionX = (px: number, i: number) =>
+  clamp(px + LOCATOR_REGIONS[i].x, 1, 99 - LOCATOR_REGIONS[i].width);
+const regionY = (py: number, i: number) =>
+  clamp(py + LOCATOR_REGIONS[i].y, 1, 99 - LOCATOR_REGIONS[i].height);
+
+const pointerPath = (
+  px: number,
+  py: number,
+  x: number,
+  y: number,
+  i: number,
+) => {
+  const bend = i % 2 === 0 ? 8 : -8;
+  return `M ${px} ${py} Q ${(px + x) / 2 + bend} ${(py + y) / 2 - bend} ${x} ${y}`;
 };
+const networkPath = (x1: number, y1: number, x2: number, y2: number) =>
+  `M ${x1} ${y1} L ${x2} ${y2}`;
+
+// Initial (pointer = 50/50) layout, used for first render and as delta origin.
+const INITIAL_POINTS = LOCATOR_OFFSETS.map((_, i) => {
+  const x = pointX(INITIAL_POINTER.x, i);
+  const y = pointY(INITIAL_POINTER.y, i);
+  return { x, y, code: pointCode(x, y, i) };
+});
+const INITIAL_REGIONS = LOCATOR_REGIONS.map((r, i) => ({
+  x: regionX(INITIAL_POINTER.x, i),
+  y: regionY(INITIAL_POINTER.y, i),
+  width: r.width,
+  height: r.height,
+}));
+
+// Exponential smoothing, frame-rate independent.
+const damp = (current: number, target: number, speed: number, dt: number) =>
+  current + (target - current) * (1 - Math.exp(-speed * dt));
+
+/* ------------------------------ component ------------------------------- */
+
+type FooterProps = { compact?: boolean };
 
 export default function Footer({ compact = false }: FooterProps) {
   const location = useLocation();
   const animatedNavigate = useAnimatedNavigate();
+
   const watcherRef = useRef<HTMLDivElement>(null);
   const eyeRef = useRef<HTMLDivElement>(null);
   const irisRef = useRef<HTMLDivElement>(null);
@@ -95,118 +131,187 @@ export default function Footer({ compact = false }: FooterProps) {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const pointer = { ...INITIAL_POINTER_POINT };
-    const irisPosition = { x: 0, y: 0 };
-    let watcherBounds = watcher.getBoundingClientRect();
 
-    const updatePointerVisuals = () => {
-      const x = pointer.x;
-      const y = pointer.y;
-      const moveX = ((x - 50) / 100) * watcherBounds.width;
-      const moveY = ((y - 50) / 100) * watcherBounds.height;
-      blob.style.translate = `${moveX}px ${moveY}px`;
-      crosshair.style.translate = `${moveX}px ${moveY}px`;
+    const count = LOCATOR_OFFSETS.length;
+    const px = new Float32Array(count); // current point x (%)
+    const py = new Float32Array(count); // current point y (%)
+    const codes = INITIAL_POINTS.map((p) => p.code);
 
-      const locatorPoints = createLocatorPoints(pointer);
-      const locatorRegions = createLocatorRegions(pointer);
-      locatorRegions.forEach((region, index) => {
-        const element = regionRefs.current[index];
-        const initial = INITIAL_LOCATOR_REGIONS[index];
-        if (!element || !initial) return;
-        const dx = ((region.x - initial.x) / 100) * watcherBounds.width;
-        const dy = ((region.y - initial.y) / 100) * watcherBounds.height;
-        element.style.translate = `${dx}px ${dy}px`;
-      });
+    const pointer = { ...INITIAL_POINTER }; // smoothed, in % of watcher
+    const pointerTarget = { ...INITIAL_POINTER };
+    const iris_ = { x: 0, y: 0 }; // smoothed, in px
+    const irisTarget = { x: 0, y: 0 };
 
-      locatorPoints.forEach((point, index) => {
-        const element = locationRefs.current[index];
-        const initial = INITIAL_LOCATOR_POINTS[index];
-        if (!element || !initial) return;
-        const dx = ((point.x - initial.x) / 100) * watcherBounds.width;
-        const dy = ((point.y - initial.y) / 100) * watcherBounds.height;
-        element.style.translate = `${dx}px ${dy}px`;
-        element.textContent = point.code;
+    let width = 1;
+    let height = 1;
+    let lastClientX: number | null = null;
+    let lastClientY: number | null = null;
+    let needsMeasure = false;
+    let visible = true;
+    let dirty = true;
 
-        const bend = index % 2 === 0 ? 8 : -8;
-        pointerLineRefs.current[index]?.setAttribute(
-          "d",
-          `M ${x} ${y} Q ${(x + point.x) / 2 + bend} ${(y + point.y) / 2 - bend} ${point.x} ${point.y}`,
-        );
-      });
+    /** Convert last cursor position to targets. Only reads layout. */
+    const measure = () => {
+      needsMeasure = false;
+      if (lastClientX === null || lastClientY === null) return;
 
-      locatorPoints.slice(0, -1).forEach((point, index) => {
-        const nextPoint = locatorPoints[index + 1];
-        if (index % 3 === 1 || !nextPoint) return;
-        networkLineRefs.current[index]?.setAttribute(
-          "d",
-          `M ${point.x} ${point.y} L ${nextPoint.x} ${nextPoint.y}`,
-        );
-      });
-    };
-    let pointerTween: gsap.core.Tween | undefined;
-    let irisTween: gsap.core.Tween | undefined;
-    const updateBounds = () => {
-      watcherBounds = watcher.getBoundingClientRect();
-    };
+      const rect = watcher.getBoundingClientRect();
+      width = rect.width || 1;
+      height = rect.height || 1;
+      pointerTarget.x = clamp(
+        ((lastClientX - rect.left) / width) * 100,
+        0,
+        100,
+      );
+      pointerTarget.y = clamp(
+        ((lastClientY - rect.top) / height) * 100,
+        0,
+        100,
+      );
 
-    const trackEyePointer = (event: PointerEvent) => {
-      const eyeBounds = eye.getBoundingClientRect();
+      const eyeRect = eye.getBoundingClientRect();
       const maxX = Math.max(0, (eye.clientWidth - iris.clientWidth) / 2 - 2);
       const maxY = Math.max(0, (eye.clientHeight - iris.clientHeight) / 2 - 2);
-      const irisX = Math.max(
+      irisTarget.x = clamp(
+        lastClientX - eyeRect.left - eyeRect.width / 2,
         -maxX,
-        Math.min(maxX, event.clientX - eyeBounds.left - eyeBounds.width / 2),
+        maxX,
       );
-      const irisY = Math.max(
+      irisTarget.y = clamp(
+        lastClientY - eyeRect.top - eyeRect.height / 2,
         -maxY,
-        Math.min(maxY, event.clientY - eyeBounds.top - eyeBounds.height / 2),
+        maxY,
       );
-      irisTween?.kill();
-      irisTween = gsap.to(irisPosition, {
-        x: irisX,
-        y: irisY,
-        duration: reduceMotion ? 0 : 0.18,
-        ease: "power3.out",
-        overwrite: "auto",
-        onUpdate: () => {
-          iris.style.translate = `${irisPosition.x}px ${irisPosition.y}px`;
-        },
-      });
+      dirty = true;
     };
 
-    const trackPointer = (event: PointerEvent) => {
-      const localX = event.clientX - watcherBounds.left;
-      const localY = event.clientY - watcherBounds.top;
-      const x = Math.max(0, Math.min(100, (localX / watcherBounds.width) * 100));
-      const y = Math.max(0, Math.min(100, (localY / watcherBounds.height) * 100));
-      pointerTween?.kill();
-      pointerTween = gsap.to(pointer, {
-        x,
-        y,
-        duration: reduceMotion ? 0 : 0.48,
-        ease: "power3.out",
-        overwrite: "auto",
-        onUpdate: updatePointerVisuals,
-      });
+    /** Only writes to the DOM. */
+    const render = () => {
+      const { x, y } = pointer;
+      const mx = ((x - 50) / 100) * width;
+      const my = ((y - 50) / 100) * height;
+      blob.style.translate = `${mx}px ${my}px`;
+      crosshair.style.translate = `${mx}px ${my}px`;
+      iris.style.translate = `${iris_.x}px ${iris_.y}px`;
+
+      for (let i = 0; i < LOCATOR_REGIONS.length; i++) {
+        const el = regionRefs.current[i];
+        if (!el) continue;
+        const dx = ((regionX(x, i) - INITIAL_REGIONS[i].x) / 100) * width;
+        const dy = ((regionY(y, i) - INITIAL_REGIONS[i].y) / 100) * height;
+        el.style.translate = `${dx}px ${dy}px`;
+      }
+
+      for (let i = 0; i < count; i++) {
+        const cx = pointX(x, i);
+        const cy = pointY(y, i);
+        px[i] = cx;
+        py[i] = cy;
+
+        const el = locationRefs.current[i];
+        if (el) {
+          const dx = ((cx - INITIAL_POINTS[i].x) / 100) * width;
+          const dy = ((cy - INITIAL_POINTS[i].y) / 100) * height;
+          el.style.translate = `${dx}px ${dy}px`;
+          const code = pointCode(cx, cy, i);
+          if (codes[i] !== code) {
+            codes[i] = code;
+            el.textContent = code;
+          }
+        }
+        pointerLineRefs.current[i]?.setAttribute(
+          "d",
+          pointerPath(x, y, cx, cy, i),
+        );
+      }
+
+      for (const i of NETWORK_INDEXES) {
+        networkLineRefs.current[i]?.setAttribute(
+          "d",
+          networkPath(px[i], py[i], px[i + 1], py[i + 1]),
+        );
+      }
     };
 
-    window.addEventListener("pointermove", trackEyePointer, { passive: true });
-    window.addEventListener("pointermove", trackPointer, { passive: true });
-    window.addEventListener("resize", updateBounds);
+    const tick = (_time: number, deltaTime: number) => {
+      if (!visible) return;
+      if (needsMeasure) measure();
+
+      const dt = Math.min(deltaTime, 64) / 1000;
+      const settled =
+        Math.abs(pointer.x - pointerTarget.x) < 0.005 &&
+        Math.abs(pointer.y - pointerTarget.y) < 0.005 &&
+        Math.abs(iris_.x - irisTarget.x) < 0.05 &&
+        Math.abs(iris_.y - irisTarget.y) < 0.05;
+
+      if (settled && !dirty) return;
+
+      if (reduceMotion || settled) {
+        pointer.x = pointerTarget.x;
+        pointer.y = pointerTarget.y;
+        iris_.x = irisTarget.x;
+        iris_.y = irisTarget.y;
+      } else {
+        pointer.x = damp(pointer.x, pointerTarget.x, 8, dt);
+        pointer.y = damp(pointer.y, pointerTarget.y, 8, dt);
+        iris_.x = damp(iris_.x, irisTarget.x, 22, dt);
+        iris_.y = damp(iris_.y, irisTarget.y, 22, dt);
+      }
+      dirty = false;
+      render();
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+      needsMeasure = true; // measured once per frame in tick()
+    };
+    // Bounds change while scrolling / resizing even if the mouse is still.
+    const invalidate = () => {
+      needsMeasure = true;
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) needsMeasure = true;
+      },
+      { threshold: 0 },
+    );
+    io.observe(watcher);
+
+    const ro = new ResizeObserver(invalidate);
+    ro.observe(watcher);
+
+    // Initialise widths so the first render is correct.
+    const rect = watcher.getBoundingClientRect();
+    width = rect.width || 1;
+    height = rect.height || 1;
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("scroll", invalidate, {
+      passive: true,
+      capture: true,
+    });
+    window.addEventListener("resize", invalidate);
+    gsap.ticker.add(tick);
+
     return () => {
-      window.removeEventListener("pointermove", trackEyePointer);
-      window.removeEventListener("pointermove", trackPointer);
-      window.removeEventListener("resize", updateBounds);
-      pointerTween?.kill();
-      irisTween?.kill();
-      gsap.killTweensOf([pointer, irisPosition]);
+      gsap.ticker.remove(tick);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("scroll", invalidate, { capture: true });
+      window.removeEventListener("resize", invalidate);
+      io.disconnect();
+      ro.disconnect();
     };
   }, []);
 
-  const navigate = (path: string) => {
-    if (path !== location.pathname) animatedNavigate(path);
-  };
-  const sideLinkColumns = [sitemapLinks.slice(0, 3), sitemapLinks.slice(3)];
+  const navigate = useCallback(
+    (path: string) => {
+      if (path !== location.pathname) animatedNavigate(path);
+    },
+    [location.pathname, animatedNavigate],
+  );
 
   return (
     <Container
@@ -216,10 +321,7 @@ export default function Footer({ compact = false }: FooterProps) {
     >
       <Stack
         className="footer-console__layout"
-        style={{
-          height: compact ? "100%" : "100dvh",
-          width: "100%",
-        }}
+        style={{ height: compact ? "100%" : "100dvh", width: "100%" }}
       >
         <Box
           className="footer-console__watcher"
@@ -232,73 +334,83 @@ export default function Footer({ compact = false }: FooterProps) {
             ref={blobRef}
             aria-hidden="true"
           />
-          {INITIAL_LOCATOR_REGIONS.map((region, index) => (
+
+          {INITIAL_REGIONS.map((region, index) => (
             <span
-              key={`region-${index}`}
-              ref={(element) => {
-                regionRefs.current[index] = element;
+              key={index}
+              ref={(el) => {
+                regionRefs.current[index] = el;
               }}
               className="footer-console__locator-region"
               style={{
                 left: `${region.x}%`,
                 top: `${region.y}%`,
-                width: `${region.width}%`, 
+                width: `${region.width}%`,
                 height: `${region.height}%`,
               }}
               aria-hidden="true"
             />
           ))}
+
           <svg
             className="footer-console__locator-lines"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            {INITIAL_LOCATOR_POINTS.map((point, index) => {
-              const bend = index % 2 === 0 ? 8 : -8;
-              return (
-                <path
-                  key={`pointer-${index}`}
-                  ref={(element) => {
-                    pointerLineRefs.current[index] = element;
-                  }}
-                  d={`M ${INITIAL_POINTER_POINT.x} ${INITIAL_POINTER_POINT.y} Q ${(INITIAL_POINTER_POINT.x + point.x) / 2 + bend} ${(INITIAL_POINTER_POINT.y + point.y) / 2 - bend} ${point.x} ${point.y}`}
-                  className="footer-console__locator-line"
-                />
-              );
-            })}
-            {INITIAL_LOCATOR_POINTS.slice(0, -1).map((point, index) => {
-              const nextPoint = INITIAL_LOCATOR_POINTS[index + 1];
-              if (index % 3 === 1) return null;
-              if (!nextPoint) return null;
+            {INITIAL_POINTS.map((point, index) => (
+              <path
+                key={`pointer-${index}`}
+                ref={(el) => {
+                  pointerLineRefs.current[index] = el;
+                }}
+                d={pointerPath(
+                  INITIAL_POINTER.x,
+                  INITIAL_POINTER.y,
+                  point.x,
+                  point.y,
+                  index,
+                )}
+                className="footer-console__locator-line"
+              />
+            ))}
+            {NETWORK_INDEXES.map((index) => {
+              const a = INITIAL_POINTS[index];
+              const b = INITIAL_POINTS[index + 1];
               return (
                 <path
                   key={`network-${index}`}
-                  ref={(element) => {
-                    networkLineRefs.current[index] = element;
+                  ref={(el) => {
+                    networkLineRefs.current[index] = el;
                   }}
-                  d={`M ${point.x} ${point.y} L ${nextPoint.x} ${nextPoint.y}`}
+                  d={networkPath(a.x, a.y, b.x, b.y)}
                   className="footer-console__locator-line footer-console__locator-line--faint"
                 />
               );
             })}
           </svg>
+
           <span
             className="footer-console__locator-crosshair"
             ref={crosshairRef}
-            style={{ left: `${INITIAL_POINTER_POINT.x}%`, top: `${INITIAL_POINTER_POINT.y}%` }}
+            style={{
+              left: `${INITIAL_POINTER.x}%`,
+              top: `${INITIAL_POINTER.y}%`,
+            }}
             aria-hidden="true"
           />
+
           <Box className="footer-console__eye" ref={eyeRef} aria-hidden="true">
             <Box className="footer-console__iris" ref={irisRef}>
               <Box className="footer-console__pupil" />
             </Box>
           </Box>
-          {INITIAL_LOCATOR_POINTS.map((point, index) => (
+
+          {INITIAL_POINTS.map((point, index) => (
             <span
               key={`location-${index}`}
-              ref={(element) => {
-                locationRefs.current[index] = element;
+              ref={(el) => {
+                locationRefs.current[index] = el;
               }}
               className={`footer-console__location${index % 4 === 0 ? " is-large" : ""}`}
               style={{ left: `${point.x}%`, top: `${point.y}%` }}
@@ -306,15 +418,18 @@ export default function Footer({ compact = false }: FooterProps) {
               {point.code}
             </span>
           ))}
+
           <Box
             className="footer-console__side-sitemap"
             aria-label="Footer navigation"
           >
-            {sideLinkColumns.map((links, columnIndex) => (
+            {SIDE_LINK_COLUMNS.map((links, columnIndex) => (
               <Stack
                 key={columnIndex}
                 className={`footer-console__side-link-column${columnIndex === 1 ? " is-right" : ""}`}
                 justify="space-between"
+                mr="sm"
+                ml="sm"
               >
                 {links.map((link) => (
                   <ShuffleButton

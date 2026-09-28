@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Container, Stack, Badge, Grid, Box, Text } from "@mantine/core";
-import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 const STORY_PANELS = [
@@ -111,11 +110,7 @@ export default function StorySection() {
       className="homepage-story-section"
       style={{ overflow: "visible" }}
     >
-      <Stack
-        gap="sm"
-        pt={50}
-        style={{ minHeight: "100dvh" }}
-      >
+      <Stack gap="sm" pt={20} style={{ minHeight: "100dvh" }}>
         <Badge
           size="lg"
           variant="dot"
@@ -271,7 +266,11 @@ export default function StorySection() {
                         ff="monospace"
                         fw={700}
                         ta="center"
-                        style={{ maxWidth: "100%", fontSize: 9, lineHeight: 1.25 }}
+                        style={{
+                          maxWidth: "100%",
+                          fontSize: 9,
+                          lineHeight: 1.25,
+                        }}
                       >
                         {GALAXY_PLANETS[selectedPlanet].name}
                       </Text>

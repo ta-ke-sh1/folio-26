@@ -627,7 +627,6 @@ export function TechnologySection() {
           zoomOnScroll={false}
           zoomOnPinch={!isMobile}
           zoomOnDoubleClick={!isMobile}
-          preventScrolling={!isMobile}
           proOptions={{ hideAttribution: true }}
           onNodeMouseEnter={(_, node) =>
             setActiveBranch(

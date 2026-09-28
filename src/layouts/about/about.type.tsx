@@ -15,7 +15,7 @@ export const ITEMS: InteractiveItem[] = [
   {
     id: "footer",
     windowWidth: 720,
-    label: "SITE FOOTER",
+    label: "NAVIGATION",
     category: "SYS_NAV",
     icon: IconTerminal,
     tag: "NAVIGATION",
@@ -90,35 +90,6 @@ export const ITEMS: InteractiveItem[] = [
       description: "",
       highlights: [],
       details: [],
-    },
-  },
-  {
-    id: "photography",
-    windowWidth: 720,
-    label: "PHOTOGRAPHY",
-    category: "SYS_OPTICS",
-    icon: IconCamera,
-    tag: "35MM_RAW",
-    photo: {
-      src: "/pictures/1.jpg",
-      alt: "A solitary figure standing in the water before a distant skyline.",
-      caption: "FIELD NOTE 01 // STILL WATER",
-    },
-    content: {
-      title: "CYBER STREET & SHADOWS",
-      subtitle: "High-Contrast Visual Log",
-      description:
-        "Capturing urban nocturnal landscapes, high-contrast monochrome architecture, neon reflections, and quiet moments in busy cities.",
-      highlights: [
-        "Street & Architectural Night Photography",
-        "Color Grading: Dark Cyber Orange & High-Contrast B&W",
-        "35mm & 50mm Prime Lens Framing",
-      ],
-      details: [
-        { key: "GEAR", val: "MIRRORLESS + 35MM F1.4" },
-        { key: "PALETTE", val: "NOIR / CYBER ORANGE" },
-        { key: "EXPORT", val: "100% UNCOMPRESSED RAW" },
-      ],
     },
   },
 ];
