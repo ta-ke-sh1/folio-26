@@ -1,18 +1,35 @@
 import {
   IconCat,
   IconTrophy,
-  IconClock,
+  IconBook2,
   IconCamera,
   IconHandFingerRight,
   IconMessageDots,
   IconMail,
+  IconTerminal,
 } from "@tabler/icons-react";
 import type { FormWindowItem } from "../../components/modals/draggableForm.modal";
 import type { InteractiveItem } from "../../components/modals/draggableWindow.modal";
 
 export const ITEMS: InteractiveItem[] = [
   {
+    id: "footer",
+    windowWidth: 720,
+    label: "NAVIGATION",
+    category: "SYS_NAV",
+    icon: IconTerminal,
+    tag: "NAVIGATION",
+    content: {
+      title: "SITE NAVIGATION",
+      subtitle: "Global links and system status",
+      description: "",
+      highlights: [],
+      details: [],
+    },
+  },
+  {
     id: "pets",
+    windowWidth: 560,
     label: "PETS",
     category: "SYS_BIO",
     icon: IconCat,
@@ -37,6 +54,7 @@ export const ITEMS: InteractiveItem[] = [
   },
   {
     id: "awards",
+    windowWidth: 680,
     label: "AWARDS & HONORS",
     category: "SYS_ACHIEVE",
     icon: IconTrophy,
@@ -60,59 +78,18 @@ export const ITEMS: InteractiveItem[] = [
     },
   },
   {
-    id: "watches",
-    label: "HOBBY",
-    category: "SYS_TIME",
-    icon: IconClock,
-    tag: "TIMEPIECES",
-    photo: {
-      src: "/pictures/2.jpg",
-      alt: "Quiet water beneath a city bridge.",
-      caption: "FIELD NOTE 02 // PASSING LIGHT",
-    },
+    id: "story",
+    windowWidth: 1180,
+    label: "STORY",
+    category: "SYS_STORY",
+    icon: IconBook2,
+    tag: "PERSONAL_ARCHIVE",
     content: {
-      title: "MECHANICAL HOROLOGY",
-      subtitle: "Analog Precision in a Digital Realm",
-      description:
-        "Fascinated by mechanical complications, automatic movements, and tactile engineering. Appreciates the architecture behind gear trains and escapements.",
-      highlights: [
-        "Automatic Movement Enthusiast (NH35 / ETA / Miyota)",
-        "Tactical & Diver Tool Watches",
-        "Sapphire Crystal & Custom Mod Assembly",
-      ],
-      details: [
-        { key: "PREFERENCE", val: "AUTOMATIC / MECHANICAL" },
-        { key: "DAILY_DRIVER", val: "SEIKO MOD 39MM" },
-        { key: "TOLERANCE", val: "+5s/DAY DEV" },
-      ],
-    },
-  },
-  {
-    id: "photography",
-    label: "PHOTOGRAPHY",
-    category: "SYS_OPTICS",
-    icon: IconCamera,
-    tag: "35MM_RAW",
-    photo: {
-      src: "/pictures/1.jpg",
-      alt: "A solitary figure standing in the water before a distant skyline.",
-      caption: "FIELD NOTE 01 // STILL WATER",
-    },
-    content: {
-      title: "CYBER STREET & SHADOWS",
-      subtitle: "High-Contrast Visual Log",
-      description:
-        "Capturing urban nocturnal landscapes, high-contrast monochrome architecture, neon reflections, and quiet moments in busy cities.",
-      highlights: [
-        "Street & Architectural Night Photography",
-        "Color Grading: Dark Cyber Orange & High-Contrast B&W",
-        "35mm & 50mm Prime Lens Framing",
-      ],
-      details: [
-        { key: "GEAR", val: "MIRRORLESS + 35MM F1.4" },
-        { key: "PALETTE", val: "NOIR / CYBER ORANGE" },
-        { key: "EXPORT", val: "100% UNCOMPRESSED RAW" },
-      ],
+      title: "PERSONAL STORY",
+      subtitle: "Interactive homepage archive",
+      description: "",
+      highlights: [],
+      details: [],
     },
   },
 ];

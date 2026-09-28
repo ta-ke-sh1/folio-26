@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Box, Group, Stack, Title, Text, Grid } from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
+import gsap from "gsap";
 import {
   type InteractiveItem,
   DraggableWindow,
@@ -12,6 +14,13 @@ import { FORM_TYPES, ITEMS } from "./about.type";
 import TriggerCard from "../../components/card/trigger.card";
 import "./about.layout.scss";
 import GradientBlinds from "../../components/background/gradientBlinds";
+import JapaneseSignal from "../../components/background/japanese.signal";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
+import { ShuffleButton } from "../../components/animations/shuffle.button";
+import Footer from "../../components/footer/footer";
+import LandingPage from "../homepage/main.layout";
+
+const ABOUT_GRADIENT_COLORS = ["#F97316", "#EAB308"];
 
 // --- MAIN PAGE COMPONENT ---
 export default function AboutPage() {
@@ -25,6 +34,48 @@ export default function AboutPage() {
   const [closingWindowIds, setClosingWindowIds] = useState<string[]>([]);
   const [closingFormIds, setClosingFormIds] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const closeAllControlRef = useRef<HTMLDivElement>(null);
+  const hasOpenItems = openWindows.length + openForms.length > 0;
+
+  useEffect(
+    () => () => {
+      if (closeAllControlRef.current) {
+        gsap.killTweensOf(closeAllControlRef.current);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const control = closeAllControlRef.current;
+    if (!control) return;
+    gsap.killTweensOf(control);
+
+    if (hasOpenItems) {
+      control.style.pointerEvents = "auto";
+      gsap.set(control, { xPercent: -50, y: 88, autoAlpha: 0 });
+      gsap.to(control, {
+        xPercent: -50,
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.55,
+        ease: "back.out(1.4)",
+        overwrite: "auto",
+      });
+    } else {
+      gsap.to(control, {
+        xPercent: -50,
+        y: 88,
+        autoAlpha: 0,
+        duration: 0.36,
+        ease: "power3.in",
+        overwrite: "auto",
+        onComplete: () => {
+          control.style.pointerEvents = "none";
+        },
+      });
+    }
+  }, [hasOpenItems]);
 
   // Bring specified window to the front layer
   const bringToFront = (id: string) => {
@@ -87,6 +138,15 @@ export default function AboutPage() {
     }, 260);
   };
 
+  const requestCloseAll = () => {
+    openWindows.forEach((item) => {
+      if (!closingWindowIds.includes(item.id)) requestCloseWindow(item.id);
+    });
+    openForms.forEach((item) => {
+      if (!closingFormIds.includes(item.id)) requestCloseForm(item.id);
+    });
+  };
+
   // Keyboard shortcut listener: pressing Escape closes the currently focused top window
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -111,9 +171,49 @@ export default function AboutPage() {
         height: "100dvh",
         position: "relative",
         overflowX: "hidden",
+        overflowY: "hidden",
         borderRadius: 10,
       }}
     >
+      <div
+        ref={closeAllControlRef}
+        className="about-close-all-control"
+        style={{
+          position: "absolute",
+          zIndex: 2_147_483_647,
+          bottom: 56,
+          left: "50%",
+          opacity: 0,
+          visibility: "hidden",
+          pointerEvents: "none",
+        }}
+        aria-hidden={!hasOpenItems}
+      >
+        <ShuffleButton
+          style={{
+            border: "1px solid rgba(255, 190, 135, 0.65)",
+            background:
+              "linear-gradient(135deg, rgba(255, 149, 64, 0.34), rgba(30, 24, 20, 0.58))",
+            color: "#fff4e8",
+            boxShadow:
+              "0 8px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28)",
+            backdropFilter: "blur(16px) saturate(145%)",
+            WebkitBackdropFilter: "blur(16px) saturate(145%)",
+            fontFamily: "monospace",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+          }}
+          leftSection={<IconX size={14} />}
+          onClick={requestCloseAll}
+          size="sm"
+          variant="default"
+          aria-label="Close all open windows and forms"
+          disabled={!hasOpenItems}
+          tabIndex={hasOpenItems ? 0 : -1}
+        >
+          CLOSE ALL
+        </ShuffleButton>
+      </div>
       <Stack
         className="about-page__stage"
         ref={containerRef}
@@ -142,7 +242,7 @@ export default function AboutPage() {
           }}
         >
           <GradientBlinds
-            gradientColors={["#F97316", "#EAB308"]}
+            gradientColors={ABOUT_GRADIENT_COLORS}
             angle={252}
             noise={0.78}
             blindCount={34}
@@ -150,7 +250,7 @@ export default function AboutPage() {
             spotlightRadius={0.5}
             spotlightSoftness={1}
             spotlightOpacity={1}
-            mouseDampening={0.14}
+            mouseDampening={0.06}
             distortAmount={2}
             shineDirection="left"
             mixBlendMode="lighten"
@@ -199,7 +299,7 @@ export default function AboutPage() {
                     fontFamily: "monospace",
                   }}
                 >
-                  [ Story ]
+                  <BilingualShuffle english="[ Story ]" japanese="[ 物語 ]" />
                 </Text>
                 <Group justify="space-between">
                   <Box className="vhs-title-container">
@@ -242,6 +342,11 @@ export default function AboutPage() {
                     </Text>
                   </Box>
                 </Group>
+                <JapaneseSignal
+                  channel="about"
+                  variant="minimal"
+                  className="section-japanese-signal--center"
+                />
               </Stack>
 
               {/* Form Trigger Cards */}
@@ -252,7 +357,10 @@ export default function AboutPage() {
                       fontFamily: "monospace",
                     }}
                   >
-                    [ Contacts ]
+                    <BilingualShuffle
+                      english="[ Contacts ]"
+                      japanese="[ 連絡先 ]"
+                    />
                   </Text>
                 </Group>
                 <Group gap="md" wrap="wrap">
@@ -288,7 +396,10 @@ export default function AboutPage() {
               aria-label="Contacts and information"
             >
               <Text className="about-mobile-controls__heading">
-                [ CONTACTS // PERSONAL INFO ]
+                <BilingualShuffle
+                  english="[ CONTACTS // PERSONAL INFO ]"
+                  japanese="[ 連絡先 // 個人情報 ]"
+                />
               </Text>
               <Box className="about-mobile-controls__grid">
                 {FORM_TYPES.map((item) => {
@@ -402,7 +513,13 @@ export default function AboutPage() {
               isClosing={closingWindowIds.includes(item.id)}
               onClose={() => requestCloseWindow(item.id)}
               onFocus={() => bringToFront(item.id)}
-            />
+            >
+              {item.id === "footer" ? (
+                <Footer compact />
+              ) : item.id === "story" ? (
+                <LandingPage embedded />
+              ) : null}
+            </DraggableWindow>
           );
         })}
 

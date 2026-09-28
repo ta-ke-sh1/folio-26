@@ -4,6 +4,8 @@ import CollectionService from "../../services/collection.service.ts";
 import { useParams } from "react-router";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper.tsx";
 import { CollectionItemCard } from "../../components/card/collectionItem.card.tsx";
+import JapaneseSignal from "../../components/background/japanese.signal";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 export default function CollectionDetailsLayout() {
   const { id } = useParams();
@@ -44,11 +46,20 @@ export default function CollectionDetailsLayout() {
                 textAlign: "center",
               }}
             >
-              COLLECTIONS {id}
+              <BilingualShuffle
+                english={`COLLECTIONS ${id}`}
+                japanese={`コレクション ${id}`}
+              />
             </Title>
           </Stack>
         </Group>
         <Grid mt={30}>
+          <JapaneseSignal
+            channel="collection"
+            variant="mixed"
+            placement="grid-items"
+            className="section-japanese-signal--start"
+          />
           {data.map((d: any, index: number) => (
             <Grid.Col
               span={{

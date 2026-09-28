@@ -1,5 +1,4 @@
 import { Badge, Box, Divider, Group, Stack, Text } from "@mantine/core";
-import "./date.card.scss";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { useState } from "react";
 
@@ -22,7 +21,6 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
         onClick={handleNavigate}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="date-card"
         style={{
           height: "24dvh",
           minHeight: "100px",
@@ -33,6 +31,7 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
           boxShadow: isHovered ? "0 0 20px rgba(255, 119, 0, 0.2)" : "none",
           cursor: data?.id ? "pointer" : "default",
           transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+          backgroundColor: isHovered ? "#ffa94d" : undefined,
           padding: "16px 24px",
           position: "relative",
           overflow: "hidden",

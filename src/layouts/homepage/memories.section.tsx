@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 export interface MemoryItem {
   id: string;
@@ -129,7 +130,7 @@ export default function MemoriesSection() {
             color="primaryOrange"
             style={{ width: "fit-content" }}
           >
-            III. Memories
+            <BilingualShuffle english="III. Memories" japanese="III. 記憶" />
           </Badge>
         </Stack>
 

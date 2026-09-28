@@ -49,7 +49,7 @@ export function DraggableFormWindow({
     initialY: 0,
   });
 
-  const width = 800;
+  const width = 1200;
 
   useGSAP(
     () => {
@@ -96,11 +96,19 @@ export function DraggableFormWindow({
       const windowElement = windowRef.current;
       if (!container || !windowElement) return;
 
-      const maxX = Math.max(0, container.clientWidth - windowElement.offsetWidth);
-      const maxY = Math.max(0, container.clientHeight - windowElement.offsetHeight);
+      const maxX = Math.max(
+        0,
+        container.clientWidth - windowElement.offsetWidth,
+      );
+      const maxY = Math.max(
+        0,
+        container.clientHeight - windowElement.offsetHeight,
+      );
       const offset = itemIndex * 28;
-      const centeredX = (container.clientWidth - windowElement.offsetWidth) / 2 + offset;
-      const centeredY = (container.clientHeight - windowElement.offsetHeight) / 2 + offset;
+      const centeredX =
+        (container.clientWidth - windowElement.offsetWidth) / 2 + offset;
+      const centeredY =
+        (container.clientHeight - windowElement.offsetHeight) / 2 + offset;
       setPosition({
         x: Math.min(Math.max(12, centeredX), maxX),
         y: Math.min(Math.max(12, centeredY), maxY),
@@ -135,8 +143,14 @@ export function DraggableFormWindow({
       const container = containerRef.current;
       const windowElement = windowRef.current;
       if (!container || !windowElement) return;
-      const maxX = Math.max(0, container.clientWidth - windowElement.offsetWidth);
-      const maxY = Math.max(0, container.clientHeight - windowElement.offsetHeight);
+      const maxX = Math.max(
+        0,
+        container.clientWidth - windowElement.offsetWidth,
+      );
+      const maxY = Math.max(
+        0,
+        container.clientHeight - windowElement.offsetHeight,
+      );
       setPosition({
         x: Math.min(Math.max(0, dragRef.current.initialX + dx), maxX),
         y: Math.min(Math.max(0, dragRef.current.initialY + dy), maxY),
@@ -188,11 +202,7 @@ export function DraggableFormWindow({
         <Group gap="xs">
           <span className="instrument-window__signal" />
           <HeaderIcon size={16} color="#FF7700" />
-          <Text
-            className="instrument-window__title"
-          >
-            {item.title}
-          </Text>
+          <Text className="instrument-window__title">{item.title}</Text>
         </Group>
 
         <Group gap="xs">

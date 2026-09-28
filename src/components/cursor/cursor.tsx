@@ -76,17 +76,13 @@ export default function Cursor() {
       yRing(e.clientY - 18);
 
       // Check for interactive targets
-      const target = e.target as HTMLElement | null;
+      const target = e.target instanceof Element ? e.target : null;
       if (target) {
-        const interactive =
-          target.tagName === "BUTTON" ||
-          target.tagName === "A" ||
-          target.tagName === "INPUT" ||
-          target.tagName === "TEXTAREA" ||
-          target.tagName === "SELECT" ||
-          target.onclick !== null ||
-          target.getAttribute("role") === "button" ||
-          window.getComputedStyle(target).cursor === "pointer";
+        const interactive = Boolean(
+          target.closest(
+            'button, a, input, textarea, select, [role="button"], [tabindex]:not([tabindex="-1"])',
+          ),
+        );
 
         if (interactive !== isHovered) {
           isHovered = interactive;

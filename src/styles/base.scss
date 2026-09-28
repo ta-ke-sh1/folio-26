@@ -81,12 +81,7 @@ html {
 
 html,
 body,
-button,
-a,
-input,
-textarea,
-select,
-[role="button"] {
+body * {
   cursor: none !important;
 }
 
@@ -97,12 +92,7 @@ select,
 
   html,
   body,
-  button,
-  a,
-  input,
-  textarea,
-  select,
-  [role="button"] {
+  body * {
     cursor: auto !important;
   }
 }
@@ -167,17 +157,4 @@ select,
   100% {
     transform: translateY(500%);
   }
-}
-
-.gradient-blinds-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.dither-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
 }

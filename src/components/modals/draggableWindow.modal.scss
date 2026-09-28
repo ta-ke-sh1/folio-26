@@ -43,6 +43,19 @@
     inset 0 1px #7d654e;
 }
 
+.instrument-window--footer {
+  height: min(calc(100dvh - 120px), 620px);
+  min-height: 0;
+  max-height: min(calc(100dvh - 120px), 620px);
+}
+
+.instrument-window--footer .instrument-window__body {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
 .instrument-window__titlebar {
   flex: 0 0 auto;
   min-height: var(--instrument-titlebar-height);
@@ -83,7 +96,6 @@
 
 .instrument-window__body {
   min-height: 0;
-  padding: var(--instrument-space) !important;
   overflow: auto;
   scrollbar-color: var(--instrument-orange) #111;
   scrollbar-width: thin;
@@ -282,17 +294,14 @@
 }
 
 .instrument-detail__photo-stage--desktop {
-  top: 50%;
-  right: 8px;
-  z-index: 0;
+  position: fixed;
+  top: 50vh;
+  left: 16px;
+  z-index: 1001;
   pointer-events: none;
-  transform: translate(-5%, -50%);
-  transition: transform 460ms cubic-bezier(0.2, 0.75, 0.25, 1);
-}
-
-.instrument-window-frame:hover .instrument-detail__photo-stage--desktop,
-.instrument-window-frame:focus-within .instrument-detail__photo-stage--desktop {
-  transform: translate(62%, -50%);
+  translate: calc(-100% - 16px) 0;
+  transform: translate(0, -50%);
+  --instrument-muted-dim: #68635b;
 }
 
 .instrument-detail__photo-stage--mobile {
@@ -309,7 +318,6 @@
   padding: 7px 7px 27px;
   background: #e9e2d5;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
-  transition: transform 420ms cubic-bezier(0.2, 0.75, 0.25, 1);
 }
 
 .instrument-detail__postcard--back {
@@ -352,33 +360,6 @@
   white-space: nowrap;
 }
 
-.instrument-window-frame:hover
-  .instrument-detail__photo-stage--desktop
-  .instrument-detail__postcard--back-one,
-.instrument-window-frame:focus-within
-  .instrument-detail__photo-stage--desktop
-  .instrument-detail__postcard--back-one {
-  transform: translate(180px, 0) rotate(-11deg);
-}
-
-.instrument-window-frame:hover
-  .instrument-detail__photo-stage--desktop
-  .instrument-detail__postcard--back-two,
-.instrument-window-frame:focus-within
-  .instrument-detail__photo-stage--desktop
-  .instrument-detail__postcard--back-two {
-  transform: translate(160px, 0) rotate(19deg);
-}
-
-.instrument-window-frame:hover
-  .instrument-detail__photo-stage--desktop
-  .instrument-detail__polaroid,
-.instrument-window-frame:focus-within
-  .instrument-detail__photo-stage--desktop
-  .instrument-detail__polaroid {
-  transform: translate(170px, 0) rotate(8deg);
-}
-
 .instrument-detail__photo-hint {
   position: absolute;
   bottom: 7px;
@@ -391,11 +372,7 @@
   transition: opacity 160ms ease;
 }
 
-.instrument-window-frame:hover
-  .instrument-detail__photo-stage--desktop
-  .instrument-detail__photo-hint,
-.instrument-window-frame:focus-within
-  .instrument-detail__photo-stage--desktop
+.instrument-detail__photo-stage--desktop.is-revealed
   .instrument-detail__photo-hint {
   opacity: 0;
 }
@@ -476,6 +453,11 @@
   }
 
   .instrument-window {
+    max-height: calc(100dvh - 96px);
+  }
+
+  .instrument-window--footer {
+    height: calc(100dvh - 96px);
     max-height: calc(100dvh - 96px);
   }
 

@@ -35,6 +35,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "./technology.section.scss";
+import JapaneseSignal from "../../components/background/japanese.signal";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 type Branch = "left" | "right";
 const ICONS = {
@@ -589,10 +591,14 @@ export function TechnologySection() {
       aria-labelledby="technology-heading"
     >
       <Box className="technology-section__header">
-        <Box>
+        <Box style={{ width: "100%" }}>
           <Badge size="lg" variant="dot" color="primaryOrange">
-            IV. TECHNOLOGY STACK
+            <BilingualShuffle
+              english="IV. TECHNOLOGY STACK"
+              japanese="IV. 技術構成"
+            />
           </Badge>
+          <JapaneseSignal channel="technology" variant="minimal" />
         </Box>
       </Box>
       <Box
@@ -621,7 +627,6 @@ export function TechnologySection() {
           zoomOnScroll={false}
           zoomOnPinch={!isMobile}
           zoomOnDoubleClick={!isMobile}
-          preventScrolling={!isMobile}
           proOptions={{ hideAttribution: true }}
           onNodeMouseEnter={(_, node) =>
             setActiveBranch(

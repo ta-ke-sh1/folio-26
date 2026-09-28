@@ -1,7 +1,9 @@
 import { Badge, Container, Stack, Text } from "@mantine/core";
 import Dither from "../../components/background/dither.background";
+import JapaneseSignal from "../../components/background/japanese.signal";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
-export default function PhilosophySection() {
+export default function PhilosophySection({ embedded = false }: { embedded?: boolean }) {
   return (
     <Container
       fluid
@@ -31,8 +33,13 @@ export default function PhilosophySection() {
             zIndex: 10,
           }}
         >
-          II. Philosophy
+          <BilingualShuffle english="II. Philosophy" japanese="II. 哲学" />
         </Badge>
+        <JapaneseSignal
+          channel="philosophy"
+          variant="telemetry"
+          className="section-japanese-signal--center"
+        />
         <div
           style={{
             position: "absolute",
@@ -58,7 +65,7 @@ export default function PhilosophySection() {
             position: "absolute",
             top: 0,
             left: 0,
-            width: "100dvw",
+            width: embedded ? "100%" : "100dvw",
             height: "calc(100dvh + 50px)",
             opacity: 0.7,
           }}

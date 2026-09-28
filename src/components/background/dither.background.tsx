@@ -364,7 +364,7 @@ export default function Dither({
   return (
     <div
       ref={containerRef}
-      className={className ? `dither-container ${className}` : "dither-container"}
+      className={className}
       style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}
     >
       <canvas

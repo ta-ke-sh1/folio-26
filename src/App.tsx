@@ -20,6 +20,9 @@ import "@fontsource-variable/inter/wght.css"; // Specify axis
 import "@fontsource-variable/plus-jakarta-sans"; // Defaults to wght axis
 import "@fontsource-variable/plus-jakarta-sans/wght.css"; // Specify axis
 
+import "@fontsource/dm-mono/400.css"; // Default monospace font
+import '@fontsource/dotgothic16'; // Styling fonts
+
 import CollectionDetailsLayout from "./layouts/collection/collectionDetails.layout.tsx";
 import NavigationBar from "./components/navigation/navBar.tsx";
 import CollectionsLayout from "./layouts/collection/collections.layout.tsx";
@@ -52,10 +55,6 @@ const routes: RouteItem[] = [
   },
   {
     path: "/",
-    element: <MainLayout />,
-  },
-  {
-    path: "/about",
     element: <AboutLayout />,
   },
   {
@@ -83,6 +82,7 @@ const routes: RouteItem[] = [
 export default function App() {
   const theme = createTheme({
     fontFamily: "Inter Variable",
+    fontFamilyMonospace: "DM Mono",
     primaryColor: "primaryOrange",
     primaryShade: 5,
     black: ColorPalette.BlackPure,

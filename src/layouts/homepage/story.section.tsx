@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Container, Stack, Badge, Grid, Box, Text } from "@mantine/core";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 const STORY_PANELS = [
   {
@@ -80,6 +81,13 @@ const GALAXY_PLANETS = [
 ];
 
 const MOON_ORBIT_DURATIONS = [32, 42, 52, 64];
+const MOON_ORBIT_SIZES = ["48%", "66%", "84%", "100%"];
+const PLANET_ORBIT_STYLES = [
+  { width: "28%", angle: 32, markerSize: 8, radius: 4, color: "#ff8a3d" },
+  { width: "48%", angle: 142, markerSize: 11, radius: 5.5, color: "#ffc078" },
+  { width: "70%", angle: 238, markerSize: 14, radius: 7, color: "#ff6b35" },
+  { width: "90%", angle: 62, markerSize: 18, radius: 9, color: "#d94801" },
+];
 
 export default function StorySection() {
   const [activePanel, setActivePanel] = useState(0);
@@ -102,14 +110,14 @@ export default function StorySection() {
       className="homepage-story-section"
       style={{ overflow: "visible" }}
     >
-      <Stack gap="sm" pt={50} className="homepage-story-stack">
+      <Stack gap="sm" pt={20} style={{ minHeight: "100dvh" }}>
         <Badge
           size="lg"
           variant="dot"
           color="primaryOrange"
           style={{ width: "fit-content" }}
         >
-          I. Story
+          <BilingualShuffle english="I. Story" japanese="I. 物語" />
         </Badge>
         <Grid align="stretch" gap={0} className="homepage-story-grid">
           <Grid.Col span={{ base: 12 }}>
@@ -126,7 +134,6 @@ export default function StorySection() {
               </Text>
             </Stack>
           </Grid.Col>
-
           <Grid.Col span={{ base: 12 }}>
             <Box
               className={`homepage-story-signal${selectedPlanet !== null ? " is-expanded" : ""}`}
@@ -139,38 +146,61 @@ export default function StorySection() {
                 }}
               >
                 <Box className="homepage-story-signal-star" />
-                {GALAXY_PLANETS.map((planet, index) => (
-                  <Box
-                    key={planet.name}
-                    className={`homepage-story-signal-planet-orbit homepage-story-signal-planet-orbit--${planet.orbit}`}
-                  >
+                {GALAXY_PLANETS.map((planet, index) => {
+                  const orbitStyle = PLANET_ORBIT_STYLES[index];
+                  return (
                     <Box
-                      className={`homepage-story-signal-planet-marker homepage-story-signal-planet-marker--${planet.orbit}`}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open ${planet.name} system`}
-                      aria-pressed={selectedPlanet === index}
-                      onClick={() => openPlanetSystem(index)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          openPlanetSystem(index);
-                        }
+                      key={planet.name}
+                      className="homepage-story-signal-planet-orbit"
+                      style={{
+                        width: orbitStyle.width,
+                        ["--planet-orbit-angle" as string]: `${orbitStyle.angle}deg`,
+                        transform: `translate(-50%, -50%) rotate(${orbitStyle.angle}deg)`,
+                        borderStyle: index === 3 ? "dashed" : undefined,
                       }}
                     >
                       <Box
-                        className={`homepage-story-signal-planet homepage-story-signal-planet--${planet.orbit}`}
-                        role="img"
-                        aria-label={planet.name}
-                      />
-                      <span className="homepage-story-signal-planet-label-anchor">
-                        <span className="homepage-story-signal-planet-label">
-                          {planet.name}
+                        className="homepage-story-signal-planet-marker"
+                        style={{
+                          width: orbitStyle.markerSize,
+                          height: orbitStyle.markerSize,
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Open ${planet.name} system`}
+                        aria-pressed={selectedPlanet === index}
+                        onClick={() => openPlanetSystem(index)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            openPlanetSystem(index);
+                          }
+                        }}
+                      >
+                        <Box
+                          className="homepage-story-signal-planet"
+                          style={{
+                            background: orbitStyle.color,
+                            boxShadow:
+                              index === 3
+                                ? "0 0 10px rgba(255, 119, 0, 0.95)"
+                                : undefined,
+                          }}
+                          role="img"
+                          aria-label={planet.name}
+                        />
+                        <span className="homepage-story-signal-planet-label-anchor">
+                          <span
+                            className="homepage-story-signal-planet-label"
+                            style={{ bottom: orbitStyle.radius + 6 }}
+                          >
+                            {planet.name}
+                          </span>
                         </span>
-                      </span>
+                      </Box>
                     </Box>
-                  </Box>
-                ))}
+                  );
+                })}
               </Box>
               {selectedPlanet !== null && (
                 <Box
@@ -186,42 +216,78 @@ export default function StorySection() {
                     ← GALAXY
                   </button>
                   <Text
-                    className="homepage-story-galaxy-focus-index"
                     ff="monospace"
+                    style={{
+                      position: "absolute",
+                      top: 22,
+                      right: 16,
+                      margin: 0,
+                      color: "rgba(255, 184, 120, 0.7)",
+                      fontSize: 9,
+                      letterSpacing: "0.5px",
+                    }}
                   >
                     {STORY_PANELS[activePanel].index} // PERSONAL SYSTEM
                   </Text>
                   <Box className="homepage-story-galaxy-focus-system">
-                    {GALAXY_PLANETS[selectedPlanet].moons.map((moon, index) => (
-                      <Box
-                        key={moon}
-                        className={`homepage-story-galaxy-moon-orbit homepage-story-galaxy-moon-orbit--${index + 1}`}
-                        style={{
-                          animationDelay: `${-moonStartDelays[index]}s`,
-                        }}
-                      >
-                        <span
-                          className="homepage-story-galaxy-moon-marker"
+                    {GALAXY_PLANETS[selectedPlanet].moons.map((moon, index) => {
+                      const duration = MOON_ORBIT_DURATIONS[index];
+                      const direction = index % 2 === 1 ? "reverse" : "normal";
+                      return (
+                        <Box
+                          key={moon}
+                          className="homepage-story-galaxy-moon-orbit"
                           style={{
+                            width: MOON_ORBIT_SIZES[index],
                             animationDelay: `${-moonStartDelays[index]}s`,
+                            animationDuration: `${duration}s`,
+                            animationDirection: direction,
                           }}
                         >
-                          <span className="homepage-story-galaxy-moon" />
-                          <span className="homepage-story-galaxy-moon-label">
-                            {moon}
+                          <span
+                            className="homepage-story-galaxy-moon-marker"
+                            style={{
+                              animationDelay: `${-moonStartDelays[index]}s`,
+                              animationDuration: `${duration}s`,
+                              animationDirection: direction,
+                            }}
+                          >
+                            <span className="homepage-story-galaxy-moon" />
+                            <span className="homepage-story-galaxy-moon-label">
+                              {moon}
+                            </span>
                           </span>
-                        </span>
-                      </Box>
-                    ))}
+                        </Box>
+                      );
+                    })}
                     <Box className="homepage-story-galaxy-main-planet">
-                      <Text size="xs" ff="monospace" fw={700} ta="center">
+                      <Text
+                        size="xs"
+                        ff="monospace"
+                        fw={700}
+                        ta="center"
+                        style={{
+                          maxWidth: "100%",
+                          fontSize: 9,
+                          lineHeight: 1.25,
+                        }}
+                      >
                         {GALAXY_PLANETS[selectedPlanet].name}
                       </Text>
                     </Box>
                   </Box>
                 </Box>
               )}
-              <Stack gap={4} className="homepage-story-signal-readout">
+              <Stack
+                gap={4}
+                style={{
+                  position: "absolute",
+                  zIndex: 5,
+                  left: 18,
+                  bottom: 18,
+                  maxWidth: "calc(100% - 36px)",
+                }}
+              >
                 <Text size="xs" c="orange.4" ff="monospace" fw={700}>
                   CLICK TO VIEW / {STORY_PANELS[activePanel].index}
                 </Text>
@@ -237,13 +303,23 @@ export default function StorySection() {
                   ROTATION // GALAXY 48s · MOONS 32–64s
                 </Text>
               </Stack>
-              <Text className="homepage-story-signal-mark" ff="monospace">
+              <Text
+                ff="monospace"
+                style={{
+                  position: "absolute",
+                  top: 18,
+                  right: 18,
+                  margin: 0,
+                  color: "rgba(255, 255, 255, 0.52)",
+                  fontSize: 12,
+                }}
+              >
                 26°
               </Text>
             </Box>
           </Grid.Col>
 
-          <Grid.Col span={12} mt="xl">
+          <Grid.Col span={12} mt="40">
             <Grid gap="xs" className="homepage-story-index">
               {STORY_PANELS.map((panel) => (
                 <Grid.Col key={panel.index} span={{ base: 12, sm: 6, lg: 3 }}>
