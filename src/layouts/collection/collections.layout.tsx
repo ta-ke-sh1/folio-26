@@ -16,6 +16,8 @@ import CollectionService from "../../services/collection.service";
 import ListMap from "./list/list.tsx";
 import type { CollectionEntity } from "../../models/entity/collection.model.tsx";
 import "./collections.layout.scss";
+import JapaneseSignal from "../../components/background/japanese.signal";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 /** Helper function to format a Date object or month/year pair into "JUL. 2026" format */
 function formatMonthYear(year: number, monthIndex: number): string {
@@ -115,10 +117,16 @@ export default function CollectionsLayout() {
               }}
             >
               {currentLabel}
-              <br /> COLLECTIONS
+              <br />
+              <BilingualShuffle english="COLLECTIONS" japanese="コレクション" />
             </Title>
           </Stack>
         </Group>
+
+        <JapaneseSignal
+          channel="collection"
+          className="section-japanese-signal--center"
+        />
 
         {/* Terminal View Mode Switcher */}
         <Group

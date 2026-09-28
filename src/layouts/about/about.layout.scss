@@ -2,11 +2,16 @@
   display: none;
 }
 
-@media (max-width: 48em) {
+@media (max-width: 62em) {
   .about-page {
     height: auto !important;
     min-height: 100dvh;
     overflow-y: visible !important;
+  }
+
+  .about-close-all-control {
+    top: calc(100dvh - 88px);
+    bottom: auto !important;
   }
 
   .about-page__stage {
@@ -14,7 +19,7 @@
     height: auto !important;
     min-height: calc(100dvh - 120px);
     margin-inline: 12px !important;
-    padding: 12px !important;
+    padding: 8px 12px !important;
     overflow: visible !important;
   }
 
@@ -31,8 +36,13 @@
     flex: none !important;
     height: auto !important;
     justify-content: flex-start !important;
-    gap: clamp(16px, 4vw, 24px);
+    gap: clamp(8px, 4vw, 24px);
     padding-bottom: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .about-story-layout > .mantine-Stack-root:first-child {
+    padding-top: 0 !important;
   }
 
   .about-desktop-contacts,
@@ -62,10 +72,10 @@
 
   .about-mobile-controls__card {
     box-sizing: border-box;
-    width: 100% !important;
+    width: 100%;
     min-width: 0;
-    max-width: none !important;
-    padding: clamp(8px, 2.4vw, 12px) !important;
+    max-width: none;
+    padding: clamp(2px, 2.4vw, 8px) !important;
     border-radius: 10px !important;
   }
 

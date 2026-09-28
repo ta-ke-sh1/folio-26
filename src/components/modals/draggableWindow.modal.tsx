@@ -15,12 +15,15 @@ import {
   IconCheck,
 } from "@tabler/icons-react";
 import { useState, useRef, useEffect } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import "./draggableWindow.modal.scss";
 
 export interface InteractiveItem {
   id: string;
+  windowWidth?: CSSProperties["width"];
   label: string;
   category: string;
   icon: React.ElementType;
@@ -49,20 +52,27 @@ interface DraggableWindowProps {
   isClosing: boolean;
   onClose: () => void;
   onFocus: () => void;
+  children?: ReactNode;
 }
 
 function PolaroidStack({
   item,
   className,
+  stageRef,
+  style,
 }: {
   item: InteractiveItem;
   className: string;
+  stageRef?: React.Ref<HTMLDivElement>;
+  style?: CSSProperties;
 }) {
   if (!item.photo) return null;
 
   return (
     <div
+      ref={stageRef}
       className={`instrument-detail__photo-stage ${className}`}
+      style={style}
       role="group"
       aria-label={`Photo: ${item.photo.alt}`}
     >
@@ -93,11 +103,15 @@ export function DraggableWindow({
   isClosing,
   onClose,
   onFocus,
+  children,
 }: DraggableWindowProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const windowRef = useRef<HTMLDivElement>(null);
+  const photoStageRef = useRef<HTMLDivElement>(null);
+  const photoRevealedRef = useRef(false);
+  const fanResetTweenRef = useRef<gsap.core.Tween | null>(null);
   const dragRef = useRef<{
     startX: number;
     startY: number;
@@ -233,25 +247,118 @@ export function DraggableWindow({
 
   const ItemIcon = item.icon;
 
+  useEffect(
+    () => () => {
+      fanResetTweenRef.current?.kill();
+    },
+    [],
+  );
+
+  const setPhotoRevealed = (isRevealed: boolean) => {
+    const stage = photoStageRef.current;
+    if (
+      !stage ||
+      isMobile ||
+      !item.photo ||
+      photoRevealedRef.current === isRevealed
+    ) {
+      return;
+    }
+    photoRevealedRef.current = isRevealed;
+    stage.classList.toggle("is-revealed", isRevealed);
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const fanCards = [
+      {
+        selector: ".instrument-detail__postcard--back-one",
+        revealed: { x: 80, xPercent: 0, rotation: -11 },
+        parked: { x: 0, xPercent: -28, rotation: -12 },
+      },
+      {
+        selector: ".instrument-detail__postcard--back-two",
+        revealed: { x: 60, xPercent: 0, rotation: 19 },
+        parked: { x: 0, xPercent: -15, rotation: 10 },
+      },
+      {
+        selector: ".instrument-detail__polaroid",
+        revealed: { x: 70, xPercent: 0, rotation: 8 },
+        parked: { x: 0, xPercent: -22, rotation: -5 },
+      },
+    ];
+
+    if (isRevealed) {
+      // Cancel any pending reset if the pointer re-enters while the stack is leaving.
+      fanResetTweenRef.current?.kill();
+
+      // GSAP targets each postcard separately to fan it open as the stage enters.
+      fanCards.forEach(({ selector, revealed }) => {
+        const card = stage.querySelector<HTMLElement>(selector);
+        if (!card) return;
+
+        gsap.to(card, {
+          ...revealed,
+          duration: reduceMotion ? 0 : 0.42,
+          ease: "power3.out",
+          overwrite: "auto",
+        });
+      });
+
+      // MOUSE OVER: move from beyond the viewport's left edge to its fixed anchor.
+      stage.style.transition = "none";
+      stage.style.translate = "calc(-100% - 16px) 0px";
+      stage.getBoundingClientRect();
+      stage.style.transition = reduceMotion
+        ? "none"
+        : "translate 720ms cubic-bezier(0.16, 1, 0.3, 1)";
+      stage.style.translate = "0px 0px";
+      return;
+    }
+
+    // MOUSE OUT: slide back beyond the viewport's left edge, not relative to the modal.
+    stage.style.transition = reduceMotion
+      ? "none"
+      : "translate 420ms cubic-bezier(0.65, 0, 0.35, 1)";
+    stage.style.translate = "calc(-100% - 200px) 0px";
+
+    // Keep the cards still while the whole stack exits, then silently reset them offscreen.
+    fanResetTweenRef.current?.kill();
+    fanResetTweenRef.current = gsap.delayedCall(reduceMotion ? 0 : 0.42, () => {
+      fanCards.forEach(({ selector, parked }) => {
+        const card = stage.querySelector<HTMLElement>(selector);
+        if (card) gsap.set(card, parked);
+      });
+    });
+  };
+
   return (
+    <>
+    {/* Pointer enter/exit triggers the reveal/park animation; focus/blur is its keyboard equivalent. */}
     <div
       ref={windowRef}
       className="instrument-window-frame"
+      onMouseEnter={() => setPhotoRevealed(true)}
+      onMouseLeave={() => setPhotoRevealed(false)}
+      onFocusCapture={() => setPhotoRevealed(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setPhotoRevealed(false);
+        }
+      }}
       style={{
         position: "absolute",
         top: position.y,
         left: position.x,
-        width: "clamp(320px, 76vw, 520px)",
+        width: item.windowWidth ?? "clamp(320px, 76vw, 520px)",
+        maxWidth: item.id === "story" ? "calc(100% - 24px)" : undefined,
         zIndex,
         userSelect: isDragging ? "none" : "auto",
       }}
     >
-      <PolaroidStack
-        item={item}
-        className="instrument-detail__photo-stage--desktop"
-      />
       <Paper
-        className="instrument-window instrument-window--active"
+        className={`instrument-window instrument-window--active${item.id === "footer" ? " instrument-window--footer" : ""}`}
         shadow="xl"
         onMouseDown={onFocus}
       >
@@ -297,7 +404,19 @@ export function DraggableWindow({
         <div className="instrument-window__ruler" aria-hidden="true" />
 
         {/* Window Body Content */}
-        <Stack className="instrument-window__body" p="md" gap="md">
+        <Stack
+          className="instrument-window__body"
+          p={item.id === "story" ? 0 : "md"}
+          gap="md"
+          data-lenis-prevent={item.id === "story" ? "" : undefined}
+          style={item.id === "story" ? {
+            overflowX: "hidden",
+            overflowY: "auto",
+            overscrollBehavior: "contain",
+          } : undefined}
+        >
+          {children ?? (
+            <>
           {/* Header Badge & Title */}
           <Group
             className="instrument-detail__heading"
@@ -426,8 +545,21 @@ export function DraggableWindow({
               CLOSE_WINDOW [ESC]
             </Badge>
           </Group>
+            </>
+          )}
         </Stack>
       </Paper>
     </div>
+
+    {item.photo && createPortal(
+      <PolaroidStack
+        item={item}
+        className="instrument-detail__photo-stage--desktop"
+        stageRef={photoStageRef}
+        style={{ zIndex: zIndex + 1, position: 'fixed' }}
+      />,
+      document.body,
+    )}
+    </>
   );
 }

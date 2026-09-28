@@ -9,6 +9,8 @@ import { useState } from "react";
 import { ShuffleText } from "../../components/animations/shuffle.text";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import "./gallery.layout.scss";
+import JapaneseSignal from "../../components/background/japanese.signal";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 type SortKey = "iso" | "aperture" | "shutter";
 
@@ -240,7 +242,10 @@ export default function GalleryLayout() {
         <header className="camera-gallery__header">
           <Box>
             <Text mb="sm" className="camera-gallery__eyebrow">
-              OPTICAL ARCHIVE / ROLL 026
+              <BilingualShuffle
+                english="OPTICAL ARCHIVE / ROLL 026"
+                japanese="光学アーカイブ / ROLL 026"
+              />
             </Text>
           </Box>
           <Group gap="xs" className="camera-gallery__status">
@@ -252,6 +257,12 @@ export default function GalleryLayout() {
             </Text>
           </Group>
         </header>
+
+        <JapaneseSignal
+          channel="gallery"
+          variant="telemetry"
+          className="section-japanese-signal--wide"
+        />
 
         <section
           className="camera-body"
@@ -279,7 +290,12 @@ export default function GalleryLayout() {
               className="exposure-panel"
               aria-label="Exposure sorting controls"
             >
-              <Text className="exposure-panel__heading">EXPOSURE / SORT</Text>
+              <Text className="exposure-panel__heading">
+                <BilingualShuffle
+                  english="EXPOSURE / SORT"
+                  japanese="露出 / 並び替え"
+                />
+              </Text>
               <Stack gap="lg" align="center">
                 <Box className="camera-dial-pair">
                   <CameraDial

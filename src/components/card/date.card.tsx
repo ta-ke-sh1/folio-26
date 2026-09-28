@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import { Group, Text, Box, Badge, Stack } from "@mantine/core";
 import { IconTerminal, IconArrowUpRight } from "@tabler/icons-react";
 
-import "./date.card.scss";
 import { useAnimatedNavigate } from "../transition/transition";
 import { getRandomNumber } from "../../services/utils.service";
 
@@ -92,7 +91,6 @@ export function DateCard({ data }: DateCardProps) {
       onClick={handleNavigate}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="date-card"
       style={{
         height: "18dvh",
         minHeight: "100px",

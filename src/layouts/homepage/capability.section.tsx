@@ -2,6 +2,8 @@ import { useRef } from "react";
 import { Container, Stack, Badge, Grid, Text, Box } from "@mantine/core";
 import { AsciiCanvas } from "../../components/animations/ascii/ascii";
 import { AsciiTypes } from "../../components/animations/ascii/types";
+import JapaneseSignal from "../../components/background/japanese.signal";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 // --- Main Component ---
 export function CapabilitySection() {
@@ -19,9 +21,8 @@ export function CapabilitySection() {
             color="primaryOrange"
             style={{ width: "fit-content" }}
           >
-            III. Capability
+            <BilingualShuffle english="III. Capability" japanese="III. 能力" />
           </Badge>
-
           <Grid align="flex-start">
             {/* Story Heading Column */}
             <Grid.Col
@@ -45,7 +46,10 @@ export function CapabilitySection() {
                   zIndex: 2,
                 }}
               >
-                {"II.a. Overview"}
+                <BilingualShuffle
+                  english="II.a. Overview"
+                  japanese="II.a. 概要"
+                />
               </Text>
               {/* ASCII Wave Animation height matched to storyTextRef */}
               <AsciiCanvas
@@ -53,7 +57,6 @@ export function CapabilitySection() {
                 targetRef={storyTextRef}
               />
             </Grid.Col>
-
             {/* Story Content Column */}
             <Grid.Col
               span={{ base: 12, md: 6 }}
@@ -63,6 +66,12 @@ export function CapabilitySection() {
               }}
             >
               <Box ref={storyTextRef} className="homepage-capability-copy">
+                <JapaneseSignal
+                  channel="capability"
+                  variant="telemetry"
+                  placement="grid-items"
+                  className="section-japanese-signal--end"
+                />
                 <Text
                   size="xl"
                   c="var(--folio-text)"
@@ -126,7 +135,10 @@ export function CapabilitySection() {
                   zIndex: 2,
                 }}
               >
-                {"II.b. Strategy"}
+                <BilingualShuffle
+                  english="II.b. Strategy"
+                  japanese="II.b. 戦略"
+                />
               </Text>
               {/* ASCII Matrix Animation height matched to strategyTextRef */}
               <AsciiCanvas

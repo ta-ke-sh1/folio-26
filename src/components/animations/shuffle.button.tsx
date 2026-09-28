@@ -19,7 +19,8 @@ function getText(children: ReactNode): string {
 
 export function ShuffleButton({ children, ...props }: ShuffleButtonProps) {
   const textLabel = getText(children).replace(/\s+/g, " ").trim();
-  const isPlainText = typeof children === "string" || typeof children === "number";
+  const isPlainText =
+    typeof children === "string" || typeof children === "number";
   const { displayText, start, stop } = useTextShuffle(
     isPlainText ? String(children) : "",
   );
@@ -27,6 +28,7 @@ export function ShuffleButton({ children, ...props }: ShuffleButtonProps) {
 
   return (
     <MantineButton
+      variant="filled"
       {...buttonProps}
       aria-label={buttonProps["aria-label"] ?? (textLabel || undefined)}
       onMouseEnter={(event) => {
@@ -46,11 +48,7 @@ export function ShuffleButton({ children, ...props }: ShuffleButtonProps) {
         if (isPlainText) stop();
       }}
     >
-      {isPlainText ? (
-        <span aria-hidden="true">{displayText}</span>
-      ) : (
-        children
-      )}
+      {isPlainText ? <span aria-hidden="true">{displayText}</span> : children}
     </MantineButton>
   );
 }

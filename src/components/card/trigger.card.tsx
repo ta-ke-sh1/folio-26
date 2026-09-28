@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import type { CSSProperties } from "react";
 import { Image, Text, Box, Group, Badge } from "@mantine/core";
 import { shuffleText } from "../../services/utils.service";
 
@@ -11,8 +12,9 @@ interface TriggerCardProps {
   isOpen: boolean;
   isFocused: boolean;
   onClick: () => void;
-  width?: string | number;
-  maxWidth?: string | number;
+  width?: CSSProperties["width"];
+  height?: CSSProperties["height"];
+  maxWidth?: CSSProperties["maxWidth"];
   flex?: string;
   className?: string;
 }
@@ -26,6 +28,7 @@ export default function TriggerCard({
   isFocused,
   onClick,
   width,
+  height,
   maxWidth,
   flex,
   className,
@@ -81,6 +84,7 @@ export default function TriggerCard({
       onMouseLeave={handleMouseLeave}
       style={{
         width,
+        height,
         maxWidth,
         flex,
         padding: "14px 18px",

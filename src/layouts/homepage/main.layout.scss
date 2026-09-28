@@ -1,27 +1,7 @@
-.ascii-landing-page {
-  overflow-x: clip;
-}
-
 @property --galaxy-angle {
   syntax: "<angle>";
   inherits: true;
   initial-value: 0deg;
-}
-
-.homepage-story-stack {
-  min-height: 100dvh;
-}
-
-.homepage-story-display {
-  margin-top: 28px;
-  color: #f5f5f5;
-  text-shadow: 0 0 24px rgba(255, 255, 255, 0.08);
-}
-
-.homepage-story-display span {
-  color: var(--mantine-color-orange-5, #ff7700);
-  -webkit-text-stroke: 1px rgba(255, 119, 0, 0.45);
-  text-shadow: 0 0 28px rgba(255, 119, 0, 0.32);
 }
 
 .homepage-story-signal {
@@ -113,38 +93,12 @@
   border-radius: 50%;
 }
 
-.homepage-story-signal-planet-orbit--1 {
-  width: 28%;
-  --planet-orbit-angle: 32deg;
-  transform: translate(-50%, -50%) rotate(var(--planet-orbit-angle));
-}
-
-.homepage-story-signal-planet-orbit--2 {
-  width: 48%;
-  --planet-orbit-angle: 142deg;
-  transform: translate(-50%, -50%) rotate(var(--planet-orbit-angle));
-}
-
-.homepage-story-signal-planet-orbit--3 {
-  width: 70%;
-  --planet-orbit-angle: 238deg;
-  transform: translate(-50%, -50%) rotate(var(--planet-orbit-angle));
-}
-
-.homepage-story-signal-planet-orbit--4 {
-  width: 90%;
-  border-style: dashed;
-  --planet-orbit-angle: 62deg;
-  transform: translate(-50%, -50%) rotate(var(--planet-orbit-angle));
-}
-
 .homepage-story-signal-planet-marker {
   position: absolute;
   top: -4px;
   left: 50%;
   width: 8px;
   height: 8px;
-  --planet-radius: 4px;
   transform: translateX(-50%);
   pointer-events: auto;
   cursor: pointer;
@@ -159,24 +113,6 @@
   box-shadow: 0 0 8px rgba(255, 119, 0, 0.9);
   pointer-events: auto;
   cursor: help;
-}
-
-.homepage-story-signal-planet-marker--2 {
-  width: 11px;
-  height: 11px;
-  --planet-radius: 5.5px;
-}
-
-.homepage-story-signal-planet-marker--3 {
-  width: 14px;
-  height: 14px;
-  --planet-radius: 7px;
-}
-
-.homepage-story-signal-planet-marker--4 {
-  width: 18px;
-  height: 18px;
-  --planet-radius: 9px;
 }
 
 .homepage-story-signal-planet-label-anchor {
@@ -209,19 +145,6 @@
   white-space: normal;
   transform: translateX(-50%);
   pointer-events: none;
-}
-
-.homepage-story-signal-planet--2 {
-  background: #ffc078;
-}
-
-.homepage-story-signal-planet--3 {
-  background: #ff6b35;
-}
-
-.homepage-story-signal-planet--4 {
-  background: #d94801;
-  box-shadow: 0 0 10px rgba(255, 119, 0, 0.95);
 }
 
 .homepage-story-signal.is-expanded .homepage-story-signal-orbit {
@@ -276,16 +199,6 @@
   outline: none;
 }
 
-.homepage-story-galaxy-focus-index {
-  position: absolute;
-  top: 22px;
-  right: 16px;
-  margin: 0;
-  color: rgba(255, 184, 120, 0.7);
-  font-size: 9px;
-  letter-spacing: 0.5px;
-}
-
 .homepage-story-galaxy-focus-system {
   position: relative;
   width: min(78vw, 350px);
@@ -317,12 +230,6 @@
   transform: translate(-50%, -50%);
 }
 
-.homepage-story-galaxy-main-planet .mantine-Text-root {
-  max-width: 100%;
-  font-size: 9px;
-  line-height: 1.25;
-}
-
 .homepage-story-galaxy-moon-orbit {
   position: absolute;
   top: 50%;
@@ -332,28 +239,6 @@
   border-radius: 50%;
   transform: translate(-50%, -50%);
   animation: homepage-moon-orbit var(--moon-duration, 14s) linear infinite;
-}
-
-.homepage-story-galaxy-moon-orbit--1 {
-  width: 48%;
-  --moon-duration: 32s;
-}
-
-.homepage-story-galaxy-moon-orbit--2 {
-  width: 66%;
-  --moon-duration: 42s;
-  animation-direction: reverse;
-}
-
-.homepage-story-galaxy-moon-orbit--3 {
-  width: 84%;
-  --moon-duration: 52s;
-}
-
-.homepage-story-galaxy-moon-orbit--4 {
-  width: 100%;
-  --moon-duration: 64s;
-  animation-direction: reverse;
 }
 
 .homepage-story-galaxy-moon {
@@ -396,11 +281,6 @@
   white-space: normal;
   transform: translateX(-50%);
   pointer-events: none;
-}
-
-.homepage-story-galaxy-moon-orbit--2 .homepage-story-galaxy-moon-marker,
-.homepage-story-galaxy-moon-orbit--4 .homepage-story-galaxy-moon-marker {
-  animation-direction: reverse;
 }
 
 @keyframes homepage-galaxy-focus-in {
@@ -446,35 +326,6 @@
   to {
     --galaxy-angle: 360deg;
   }
-}
-
-.homepage-story-signal-crosshair {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: 0;
-  color: #ff7700;
-  font-size: 48px;
-  line-height: 1;
-  transform: translate(-50%, -56%);
-  text-shadow: 0 0 18px rgba(255, 119, 0, 0.9);
-}
-
-.homepage-story-signal-readout {
-  position: absolute;
-  z-index: 5;
-  left: 18px;
-  bottom: 18px;
-  max-width: calc(100% - 36px);
-}
-
-.homepage-story-signal-mark {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.52);
-  font-size: 12px;
 }
 
 .homepage-story-index-item {
@@ -534,17 +385,8 @@
     padding-bottom: 72px !important;
   }
 
-  .homepage-story-visual {
-    display: none;
-  }
-
   .homepage-story-grid {
     display: flex !important;
-  }
-
-  .homepage-story-display {
-    margin-top: 20px;
-    letter-spacing: -3px !important;
   }
 
   .homepage-story-signal {
@@ -558,75 +400,6 @@
 
   .homepage-story-index {
     margin-top: 8px;
-  }
-
-  .homepage-story-copy {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-  }
-
-  .homepage-story-block {
-    min-height: clamp(260px, 54dvh, 440px) !important;
-    padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-left: 2px solid rgba(255, 119, 0, 0.7);
-    border-radius: 8px;
-    background: rgba(8, 8, 8, 0.66);
-    backdrop-filter: blur(6px);
-  }
-
-  .homepage-story-copy > .mantine-Stack-root {
-    gap: clamp(28px, 6dvh, 52px) !important;
-    padding-bottom: 10dvh !important;
-  }
-
-  .homepage-story-visual-column {
-    position: absolute !important;
-    inset: 0;
-    z-index: 0;
-    width: 100%;
-    max-width: none;
-    padding: 0 !important;
-    pointer-events: none;
-  }
-
-  .homepage-story-visual-track {
-    position: sticky !important;
-    top: 0;
-    height: 100dvh !important;
-    padding: 0 !important;
-  }
-
-  .homepage-story-visual-card {
-    width: 100%;
-    height: 100%;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    background-attachment: scroll;
-  }
-
-  .homepage-story-visual-card .mantine-AspectRatio-root {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: auto !important;
-    opacity: 0;
-  }
-
-  .homepage-story-visual-card .mantine-AspectRatio-root::before {
-    display: none;
-  }
-
-  .homepage-story-visual-card .mantine-AspectRatio-root > * {
-    width: 100%;
-    height: 100%;
-  }
-
-  .homepage-story-visual-card .mantine-Image-root {
-    object-fit: cover;
   }
 
   .homepage-memories-track {

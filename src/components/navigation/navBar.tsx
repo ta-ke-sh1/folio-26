@@ -57,7 +57,6 @@ export default function NavigationBar() {
   }
 
   const navLinks = [
-    { label: "ABOUT", href: "/about" },
     { label: "COLLECTIONS", href: "/collections" },
     { label: "GALLERY", href: "/gallery" },
     // { label: "PLAYGROUND", href: "/playground" },
@@ -140,7 +139,7 @@ export default function NavigationBar() {
                   <Button
                     key={link.label}
                     onClick={() => handleNavigation(link.href)}
-                    variant={isActive ? "light" : "subtle"}
+                    variant="filled"
                     color="orange"
                     size="xs"
                     style={{
@@ -148,14 +147,12 @@ export default function NavigationBar() {
                       letterSpacing: "1px",
                       fontWeight: isActive ? 700 : 500,
                       color: isActive
-                        ? "var(--folio-accent)"
-                        : "var(--folio-muted)",
+                        ? "var(--folio-on-accent)"
+                        : "var(--folio-accent-hover)",
                       backgroundColor: isActive
-                        ? "rgba(255, 119, 0, 0.12)"
-                        : "transparent",
-                      border: isActive
-                        ? "1px solid rgba(255, 119, 0, 0.4)"
-                        : "1px solid transparent",
+                        ? "var(--folio-accent)"
+                        : "rgba(255, 119, 0, 0.18)",
+                      border: "1px solid transparent",
                     }}
                   >
                     {isActive ? `[ ${link.label} ]` : link.label}
@@ -248,14 +245,12 @@ export default function NavigationBar() {
                               fontSize: 16,
                               fontWeight: 700,
                               color: isActive
-                                ? "var(--folio-accent)"
-                                : "var(--folio-muted)",
+                                ? "var(--folio-on-accent)"
+                                : "var(--folio-accent-hover)",
                               backgroundColor: isActive
-                                ? "rgba(255, 119, 0, 0.1)"
-                                : "transparent",
-                              borderLeft: isActive
-                                ? "3px solid var(--folio-accent)"
-                                : "3px solid transparent",
+                                ? "var(--folio-accent)"
+                                : "rgba(255, 119, 0, 0.16)",
+                              border: "1px solid transparent",
                               borderRadius: 2,
                             }}
                           >
