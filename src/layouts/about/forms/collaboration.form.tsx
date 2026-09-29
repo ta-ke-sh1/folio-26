@@ -70,7 +70,7 @@ export default function CollaborationForm() {
 
   return (
     <form className="instrument-form" onSubmit={handleSubmit}>
-      <Stack gap="sm">
+      <Stack gap="sm" p="md">
         {/* Decorative ASCII Banner */}
         <Box
           className="instrument-form__beacon"

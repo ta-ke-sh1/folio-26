@@ -58,7 +58,7 @@ const CONTACT_LIST: ContactChannel[] = [
 
 export default function TalkContactsForm() {
   return (
-    <Stack className="instrument-form" gap="sm">
+    <Stack className="instrument-form" gap="sm" p="md">
       {/* Decorative ASCII Radar / Satellite Graphic */}
       <Box
         className="instrument-form__beacon"

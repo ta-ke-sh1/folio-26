@@ -98,6 +98,7 @@ export function DateCard({ data }: DateCardProps) {
         backgroundColor: isHovered ? "var(--folio-card-hover)" : "var(--folio-card)",
         border: isHovered ? "1px solid #FF7700" : "1px solid var(--folio-card-border)",
         boxShadow: isHovered ? "0 0 20px rgba(255, 119, 0, 0.2)" : "none",
+        filter: isHovered ? "grayscale(0)" : "grayscale(1)",
         cursor: data?.id ? "pointer" : "default",
         transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
         padding: "16px 24px",

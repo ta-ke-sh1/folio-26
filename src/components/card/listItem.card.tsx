@@ -115,14 +115,14 @@ export default function CollectionCard({
           ? "0 0 20px rgba(255, 119, 0, 0.2)"
           : "0 2px 8px rgba(0, 0, 0, 0.4)",
         transform: isHovered ? "translateY(-2px)" : "translateY(0)",
+        filter: isHovered ? "grayscale(0)" : "grayscale(1)",
         cursor: "pointer",
         overflow: "hidden",
       }}
     >
        <Grid>
           <Grid.Col span={{ base: 12, sm: 6, md: 8, lg: 9 }}>
-            <Group>
-              <Stack justify="space-between" style={{ width: "100%" }}>
+            <Stack justify="space-between" style={{ width: "100%", height: '100%' }}>
                 <Stack gap="xs" style={{ width: "100%" }}>
                   {/* Header Terminal Tag */}
                   <Group justify="space-between" align="center">
@@ -218,13 +218,12 @@ export default function CollectionCard({
                   </Group>
                 </Group>
               </Stack>
-            </Group>
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
             <Box
               style={{
                 width: "100%",
-                minHeight: "130px",
+                minHeight: "180px",
                 borderRadius: "6px",
                 border: isHovered ? "1px solid #FF7700" : "1px solid #262626",
                 backgroundImage: bgImageUrl

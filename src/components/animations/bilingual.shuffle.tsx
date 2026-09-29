@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const GLYPHS = "電脳未来回路仮想記録光夢夜接続探索情報";
 
@@ -15,9 +15,15 @@ export default function BilingualShuffle({
 }: BilingualShuffleProps) {
   const [displayText, setDisplayText] = useState(english);
   const [isJapanese, setIsJapanese] = useState(false);
+  const previousContent = useRef({ english, japanese });
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const contentChanged =
+      previousContent.current.english !== english ||
+      previousContent.current.japanese !== japanese;
+    previousContent.current = { english, japanese };
 
     let timeoutId: number;
     let intervalId: number;
@@ -55,10 +61,14 @@ export default function BilingualShuffle({
       }, 48);
     };
 
-    timeoutId = window.setTimeout(
-      () => shuffleTo(japanese, true),
-      1800 + Math.random() * 2400,
-    );
+    if (contentChanged) {
+      shuffleTo(english, false);
+    } else {
+      timeoutId = window.setTimeout(
+        () => shuffleTo(japanese, true),
+        1800 + Math.random() * 2400,
+      );
+    }
 
     return () => {
       window.clearTimeout(timeoutId);

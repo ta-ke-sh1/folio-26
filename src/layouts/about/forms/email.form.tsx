@@ -11,15 +11,13 @@ import {
   Textarea,
 } from "@mantine/core";
 import { ShuffleButton as Button } from "../../../components/animations/shuffle.button";
-import { IconCheck, IconSend } from "@tabler/icons-react";
+import { IconSend } from "@tabler/icons-react";
 import { useState } from "react";
 import { commonInputStyles } from "../../../components/modals/form.types";
 
 // ==========================================
 export default function EmailDirectForm() {
-  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "sent">(
-    "idle",
-  );
+  const [formStatus, setFormStatus] = useState<"idle" | "draft-ready">("idle");
   const [senderEmail, setSenderEmail] = useState("");
   const [emailBody, setEmailBody] = useState(
     "I'm reaching out regarding your technical projects and backend engineering setup. Let's connect!",
@@ -27,19 +25,21 @@ export default function EmailDirectForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormStatus("sending");
-    setTimeout(() => {
-      setFormStatus("sent");
-    }, 2000);
+    const recipient = "trunght.yrc@gmail.com";
+    const subject = `Portfolio contact from ${senderEmail}`;
+    const body = `DEAR DEVELOPER,\n\n${emailBody}\n\nREGARDS, ${senderEmail}\n\nDISPATCHED VIA WEB_TERMINAL_V2`;
+
+    window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setFormStatus("draft-ready");
   };
 
-  if (formStatus === "sent") {
+  if (formStatus === "draft-ready") {
     return (
-      <Stack className="instrument-form instrument-form__success" align="center" justify="center" py="xl" gap="sm">
+      <Stack m={"md"} className="instrument-form instrument-form__success" align="center" justify="center" py="xl" gap="sm">
         <Badge size="lg" color="orange" variant="filled">
           <Group gap={4}>
-            <IconCheck size={14} />
-            EMAIL ENCRYPTED & SENT
+            <IconSend size={14} />
+            EMAIL DRAFT READY
           </Group>
         </Badge>
         <Text
@@ -50,7 +50,7 @@ export default function EmailDirectForm() {
           }}
           ta="center"
         >
-          Direct email transmitted to inbox target.
+          Your mail app should open with the message addressed to trunght.yrc@gmail.com. Review and send it there.
         </Text>
         <Button
           size="xs"
@@ -67,7 +67,7 @@ export default function EmailDirectForm() {
 
   return (
     <form className="instrument-form" onSubmit={handleSubmit}>
-      <Stack gap="xs">
+      <Stack gap="xs" p="md">
         {/* Decorative ASCII Envelope Graphic */}
         <Box
           className="instrument-form__beacon"
@@ -87,8 +87,8 @@ export default function EmailDirectForm() {
             }}
           >
             {`+------------------------------------------------+
-|  /\\   TARGET: dev@terminal.local               |
-| /  \\  ENCRYPTION: SHA-256 TLS 1.3              |
+|  /\\   TARGET: trunght.yrc@gmail.com            |
+| /  \\  ACTION: SEND FROM YOUR MAIL APP          |
 +------------------------------------------------+`}
           </Text>
         </Box>
@@ -165,11 +165,10 @@ export default function EmailDirectForm() {
           size="md"
           color="orange"
           variant="filled"
-          loading={formStatus === "sending"}
           rightSection={<IconSend size={18} />}
           mt="xs"
         >
-          {formStatus === "sending" ? "Transmitting..." : "Send Direct Mail"}
+          Send Direct Mail
         </Button>
       </Stack>
     </form>

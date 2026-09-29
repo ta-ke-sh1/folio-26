@@ -257,7 +257,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
               mt="lg"
               size="xs"
               c="dimmed"
-              style={{ fontFamily: "monospace", letterSpacing: "2px" }}
+              style={{ fontFamily: "DotGothic16", letterSpacing: "2px" }}
             >
               CH_NO: 26 // SIGNAL: LOCKED
             </Text>
@@ -265,7 +265,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
               mt="lg"
               size="xs"
               c="primaryOrange"
-              style={{ fontFamily: "monospace", fontWeight: 700 }}
+              style={{ fontFamily: "DotGothic16", fontWeight: 700 }}
             >
               [{progress.toString().padStart(3, "0")}%]
             </Text>
@@ -313,7 +313,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
                       ? "primaryOrange"
                       : "dimmed"
                   }
-                  style={{ fontFamily: "monospace", lineHeight: "1.6" }}
+                  style={{ fontFamily: "DotGothic16", lineHeight: "1.6" }}
                 >
                   {log}
                 </Text>
@@ -327,7 +327,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
               mb="lg"
               size="xs"
               c="dimmed"
-              style={{ fontFamily: "monospace" }}
+              style={{ fontFamily: "DotGothic16" }}
             >
               NTSC 60Hz
             </Text>
@@ -335,7 +335,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
               mb="lg"
               size="xs"
               c="dimmed"
-              style={{ fontFamily: "monospace" }}
+              style={{ fontFamily: "DotGothic16" }}
             >
               PRELOADING VIRTUAL DOM...
             </Text>

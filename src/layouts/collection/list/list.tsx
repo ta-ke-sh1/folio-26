@@ -3,6 +3,7 @@ import { Stack, Group, Select, Text, TextInput } from "@mantine/core";
 import { IconFolder } from "@tabler/icons-react";
 import CollectionCard from "../../../components/card/listItem.card";
 import { type CollectionEntity } from "../../../models/entity/collection.model";
+import BilingualShuffle from "../../../components/animations/bilingual.shuffle";
 
 const SORT_OPTIONS = [
   { value: "name-asc", label: "Name (A–Z)" },
@@ -98,9 +99,9 @@ export default function CollectionListView({
           allowDeselect={false}
         />
         <Text size="sm" c="dimmed" mb={8}>
-              {filteredCollections.length}{" "}
-              {filteredCollections.length === 1 ? "item" : "items"}
-            </Text>
+          {filteredCollections.length}{" "}
+          {filteredCollections.length === 1 ? "item" : "items"}
+        </Text>
       </Group>
 
       {/* Collection Cards */}
@@ -110,9 +111,15 @@ export default function CollectionListView({
         ))}
       </Stack>
       {filteredCollections.length === 0 && (
-        <Text ta="center" c="dimmed" py="xl">
-          No collections match your search.
-        </Text>
+        <Stack justify="center" style={{
+          height: '50dvh'
+        }}>
+          <Group justify="center">
+            <Text ta="center" c="dimmed" py="xl">
+              <BilingualShuffle english="No matching collections found!" japanese="検索に一致するコレクションはありません。" />
+            </Text>
+          </Group>
+        </Stack>
       )}
     </Stack>
   );
