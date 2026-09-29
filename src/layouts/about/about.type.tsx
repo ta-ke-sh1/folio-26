@@ -86,6 +86,22 @@ export const ITEMS: InteractiveItem[] = [
     tag: "PERSONAL_ARCHIVE",
     content: {
       title: "PERSONAL STORY",
+      subtitle: "User Story",
+      description: "",
+      highlights: [],
+      details: [],
+    },
+  },
+  {
+    id: "techonology",
+    windowWidth: 1180,
+    windowHeight: "min(100dvh, 820px)",
+    label: "TECHNOLOGY",
+    category: "SYS_TECHNOLOGY",
+    icon: IconBook2,
+    tag: "PERSONAL_SKILLSETS",
+    content: {
+      title: "PERSONAL SKILLSETS",
       subtitle: "Interactive homepage archive",
       description: "",
       highlights: [],

@@ -122,12 +122,6 @@ export default function CollectionsLayout() {
             </Title>
           </Stack>
         </Group>
-
-        <JapaneseSignal
-          channel="collection"
-          className="section-japanese-signal--center"
-        />
-
         {/* Terminal View Mode Switcher */}
         <Group
           className="collections-toolbar"

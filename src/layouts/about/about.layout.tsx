@@ -19,6 +19,7 @@ import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import { ShuffleButton } from "../../components/animations/shuffle.button";
 import Footer from "../../components/footer/footer";
 import LandingPage from "../homepage/main.layout";
+import { TechnologySection } from "../homepage/technology.section";
 
 const ABOUT_GRADIENT_COLORS = ["#F97316", "#EAB308"];
 
@@ -228,6 +229,7 @@ export default function AboutPage() {
           backgroundColor: "var(--folio-page-bg)",
           overflowX: "hidden",
           borderRadius: 10,
+          overflow: 'hidden'
         }}
       >
         <Box
@@ -515,9 +517,11 @@ export default function AboutPage() {
               onFocus={() => bringToFront(item.id)}
             >
               {item.id === "footer" ? (
-                <Footer compact />
+                <Footer compact={true} />
               ) : item.id === "story" ? (
                 <LandingPage embedded />
+              ) : item.id === "techonology" ? (
+                <TechnologySection embedded />
               ) : null}
             </DraggableWindow>
           );

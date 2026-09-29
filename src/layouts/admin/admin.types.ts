@@ -11,13 +11,14 @@ export interface TagEntity {
   created_at: Date | string;
 }
 
-export type ActiveTab = "items" | "collections" | "categories" | "tags";
+export type ActiveTab = "items" | "collections" | "categories" | "tags" | "blogs";
 
 export const TABLE_MAP: Record<ActiveTab, string> = {
   items: "collection_items",
   collections: "collections",
   categories: "categories",
   tags: "tags",
+  blogs: "blogs",
 };
 
 export const TAB_TITLES: Record<ActiveTab, string> = {
@@ -25,4 +26,5 @@ export const TAB_TITLES: Record<ActiveTab, string> = {
   collections: "Collections",
   categories: "Categories",
   tags: "Tags",
+  blogs: "Blog Entries",
 };

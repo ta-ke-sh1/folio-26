@@ -89,7 +89,7 @@ const PLANET_ORBIT_STYLES = [
   { width: "90%", angle: 62, markerSize: 18, radius: 9, color: "#d94801" },
 ];
 
-export default function StorySection() {
+export default function StorySection({ embedded = false }: { embedded?: boolean }) {
   const [activePanel, setActivePanel] = useState(0);
   const [selectedPlanet, setSelectedPlanet] = useState<number | null>(null);
   const [moonStartDelays, setMoonStartDelays] = useState<number[]>([]);
@@ -107,10 +107,14 @@ export default function StorySection() {
   return (
     <Container
       fluid
-      className="homepage-story-section"
-      style={{ overflow: "visible" }}
+      className={`homepage-story-section${embedded ? " homepage-story-section--embedded" : ""}`}
+      style={{ overflow: embedded ? "hidden" : "visible" }}
     >
-      <Stack gap="sm" pt={20} style={{ minHeight: "100dvh" }}>
+      <Stack
+        gap="sm"
+        pt={20}
+        style={{ minHeight: embedded ? "100%" : "100dvh" }}
+      >
         <Badge
           size="lg"
           variant="dot"
@@ -126,8 +130,8 @@ export default function StorySection() {
                 size="xl"
                 c="var(--folio-text)"
                 style={{
-                  fontSize: 64,
-                  lineHeight: "60px",
+                  fontSize: embedded ? "clamp(28px, 8vw, 48px)" : 64,
+                  lineHeight: embedded ? 1.05 : "60px",
                 }}
               >
                 {`Full-stack software engineer at Toshiba Software Development Vietnam. Specialized in simulation software development, transforming industrial concepts into accessible web platforms.`.toUpperCase()}

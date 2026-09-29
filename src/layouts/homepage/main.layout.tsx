@@ -88,10 +88,9 @@ export default function LandingPage({
               willChange: "transform",
             }}
           >
-            <StorySection />
+            <StorySection embedded={embedded} />
             <PhilosophySection embedded={embedded} />
             <CapabilitySection />
-            <TechnologySection />
           </Box>
         </LayoutWrapper>
       </Box>

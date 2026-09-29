@@ -36,6 +36,8 @@ const LOCATOR_REGIONS = [
 ] as const;
 
 const INITIAL_POINTER: Record<string, number> = { x: 50, y: 50 } as const;
+const RULER_MARKS = ["00", "20", "40", "60", "80", "100"];
+const VERTICAL_RULER_MARKS = ["00", "25", "50", "75", "100"];
 
 // Network lines connect point i -> i+1, skipping every third pair.
 const NETWORK_INDEXES = Array.from(
@@ -190,7 +192,9 @@ export default function Footer({ compact = false }: FooterProps) {
       const { x, y } = pointer;
       const mx = ((x - 50) / 100) * width;
       const my = ((y - 50) / 100) * height;
-      blob.style.translate = `${mx}px ${my}px`;
+      const blobX = ((pointerTarget.x - 50) / 100) * width;
+      const blobY = ((pointerTarget.y - 50) / 100) * height;
+      blob.style.translate = `${blobX}px ${blobY}px`;
       crosshair.style.translate = `${mx}px ${my}px`;
       iris.style.translate = `${iris_.x}px ${iris_.y}px`;
 
@@ -318,10 +322,14 @@ export default function Footer({ compact = false }: FooterProps) {
       component="footer"
       fluid
       className={`footer-console${compact ? " footer-console--modal" : ""}`}
+      style={{
+        height: compact ? "100%" : "calc(100dvh - 80px)",
+        marginBottom: compact ? "25px" : 0,
+      }}
     >
       <Stack
         className="footer-console__layout"
-        style={{ height: compact ? "100%" : "100dvh", width: "100%" }}
+        style={{ height: "100%", width: "100%" }}
       >
         <Box
           className="footer-console__watcher"
@@ -330,10 +338,43 @@ export default function Footer({ compact = false }: FooterProps) {
           p="0"
         >
           <Box
-            className="footer-console__blob"
+            className="footer-console__blob-anchor"
             ref={blobRef}
             aria-hidden="true"
-          />
+          >
+            <Box className="footer-console__blob" />
+          </Box>
+
+          <div className="footer-console__grid-markings" aria-hidden="true">
+            <div className="footer-console__ruler footer-console__ruler--top">
+              {RULER_MARKS.map((mark, index) => (
+                <span
+                  key={mark}
+                  style={{ left: `${(index / (RULER_MARKS.length - 1)) * 100}%` }}
+                >
+                  {mark}
+                </span>
+              ))}
+            </div>
+            <div className="footer-console__ruler footer-console__ruler--left">
+              {VERTICAL_RULER_MARKS.map((mark, index) => (
+                <span
+                  key={mark}
+                  style={{
+                    top: `${(index / (VERTICAL_RULER_MARKS.length - 1)) * 100}%`,
+                  }}
+                >
+                  {mark}
+                </span>
+              ))}
+            </div>
+            <span className="footer-console__grid-note footer-console__grid-note--top">
+              観測座標 // 26
+            </span>
+            <span className="footer-console__grid-note footer-console__grid-note--bottom">
+              実験領域 ・ 記録中
+            </span>
+          </div>
 
           {INITIAL_REGIONS.map((region, index) => (
             <span

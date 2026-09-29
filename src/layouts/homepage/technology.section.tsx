@@ -531,7 +531,7 @@ function TechnologyFlowNode({ data }: NodeProps<TechnologyNode>) {
 
 const NODE_TYPES: NodeTypes = { technology: TechnologyFlowNode };
 
-export function TechnologySection() {
+export function TechnologySection({ embedded = false }: { embedded?: boolean }) {
   const [isMobile, setIsMobile] = useState(
     () => window.matchMedia(MOBILE_BREAKPOINT).matches,
   );
@@ -589,6 +589,12 @@ export function TechnologySection() {
     <section
       className="technology-section"
       aria-labelledby="technology-heading"
+      style={{
+        flex: embedded ? "1 1 auto" : undefined,
+        height: embedded ? "100%" : "100dvh",
+        minHeight: embedded ? 0 : 620,
+        overflow: embedded ? "hidden" : undefined,
+      }}
     >
       <Box className="technology-section__header">
         <Box style={{ width: "100%" }}>
@@ -614,19 +620,18 @@ export function TechnologySection() {
           onNodesChange={onNodesChange}
           fitView
           fitViewOptions={{
-            padding: isMobile ? 0.025 : 0.08,
             minZoom: isMobile ? 0.52 : 0.52,
             maxZoom: 1.1,
           }}
           minZoom={0.4}
           maxZoom={1.6}
-          nodesDraggable={!isMobile}
+          nodesDraggable={true}
           nodesConnectable={false}
           elementsSelectable={false}
-          panOnDrag={!isMobile}
-          zoomOnScroll={false}
-          zoomOnPinch={!isMobile}
-          zoomOnDoubleClick={!isMobile}
+          panOnDrag={true}
+          zoomOnScroll={true}
+          zoomOnPinch={true}
+          zoomOnDoubleClick={true}
           proOptions={{ hideAttribution: true }}
           onNodeMouseEnter={(_, node) =>
             setActiveBranch(

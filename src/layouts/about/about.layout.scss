@@ -6,7 +6,7 @@
   .about-page {
     height: auto !important;
     min-height: 100dvh;
-    overflow-y: visible !important;
+    overflow: hidden !important;
   }
 
   .about-close-all-control {
@@ -20,12 +20,13 @@
     min-height: calc(100dvh - 120px);
     margin-inline: 12px !important;
     padding: 8px 12px !important;
-    overflow: visible !important;
+    overflow: hidden !important;
   }
 
   .about-page__stage > .mantine-Grid-root,
   .about-page__stage .mantine-Grid-inner {
     height: auto !important;
+    overflow: hidden !important;
   }
 
   .about-story-column {

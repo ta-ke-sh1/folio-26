@@ -24,6 +24,7 @@ import "./draggableWindow.modal.scss";
 export interface InteractiveItem {
   id: string;
   windowWidth?: CSSProperties["width"];
+  windowHeight?: CSSProperties["height"];
   label: string;
   category: string;
   icon: React.ElementType;
@@ -352,6 +353,8 @@ export function DraggableWindow({
         top: position.y,
         left: position.x,
         width: item.windowWidth ?? "clamp(320px, 76vw, 520px)",
+        height: item.windowHeight,
+        maxHeight: item.windowHeight ?? undefined,
         maxWidth: item.id === "story" ? "calc(100% - 24px)" : undefined,
         zIndex,
         userSelect: isDragging ? "none" : "auto",
@@ -361,6 +364,10 @@ export function DraggableWindow({
         className={`instrument-window instrument-window--active${item.id === "footer" ? " instrument-window--footer" : ""}`}
         shadow="xl"
         onMouseDown={onFocus}
+        style={{
+          height: item.windowHeight ? "100%" : undefined,
+          minHeight: item.windowHeight ? 0 : undefined,
+        }}
       >
         {/* Draggable Title Bar */}
         <Group
@@ -406,10 +413,12 @@ export function DraggableWindow({
         {/* Window Body Content */}
         <Stack
           className="instrument-window__body"
-          p={item.id === "story" ? 0 : "md"}
+          p={item.id === "story" || item.id === "techonology" ? 0 : "md"}
           gap="md"
           data-lenis-prevent={item.id === "story" ? "" : undefined}
-          style={item.id === "story" ? {
+          style={item.id === "story" || item.id === "techonology" ? {
+            flex: "1 1 auto",
+            minHeight: 0,
             overflowX: "hidden",
             overflowY: "auto",
             overscrollBehavior: "contain",

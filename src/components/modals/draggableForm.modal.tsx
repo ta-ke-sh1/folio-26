@@ -223,7 +223,7 @@ export function DraggableFormWindow({
       <div className="instrument-window__ruler" aria-hidden="true" />
 
       {/* Render Specific Form Component Based On ID */}
-      <Box className="instrument-window__body" p="md">
+      <Box className="instrument-window__body" p={0}>
         {item.id === "collaboration" && <CollaborationForm />}
         {item.id === "say-hi" && <TalkContactsForm />}
         {item.id === "email-me" && <EmailDirectForm />}

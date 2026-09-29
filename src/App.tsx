@@ -6,12 +6,12 @@ import type { JSX } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import AdminLayout from "./layouts/admin/admin.layout";
 import LoginLayout from "./layouts/login/login.layout";
-import MainLayout from "./layouts/homepage/main.layout.tsx";
 
 import "./styles/base.scss";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
+import '@mantine/tiptap/styles.css';
 import "mantine-datatable/styles.layer.css";
 
 import "@fontsource-variable/inter"; // Defaults to wght axis
@@ -41,7 +41,9 @@ import {
   PageTransitionProvider,
 } from "./components/transition/transition.tsx";
 import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
+import MemoriesLayout from "./layouts/memories/memories.layout.tsx";
 import PlaygroundLayout from "./layouts/playground/playground.layout.tsx";
+import PlaygroundDetails from "./layouts/playground/playgroundDetails.layout.tsx";
 
 type RouteItem = {
   element: JSX.Element;
@@ -62,6 +64,14 @@ const routes: RouteItem[] = [
     element: <GalleryLayout />,
   },
   {
+    path: "/memories",
+    element: <MemoriesLayout />,
+  },
+  {
+    path: "/playground/:slug",
+    element: <PlaygroundDetails />,
+  },
+  {
     path: "/playground",
     element: <PlaygroundLayout />,
   },
@@ -72,6 +82,34 @@ const routes: RouteItem[] = [
   {
     path: "/collections",
     element: <CollectionsLayout />,
+  },
+  {
+    path: "/admin/items",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/collections",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/categories",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/tags",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/blogs/new",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/blogs/:blogId/edit",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/blogs",
+    element: <AdminLayout />,
   },
   {
     path: "/admin",
