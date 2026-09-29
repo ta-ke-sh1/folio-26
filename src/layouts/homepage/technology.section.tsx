@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Badge, Box, Text } from "@mantine/core";
+import { Badge, Box, Group, Stack, Text } from "@mantine/core";
 import {
   IconApi,
   IconBrandCSharp,
@@ -24,6 +24,7 @@ import {
   applyNodeChanges,
   Background,
   BackgroundVariant,
+  Controls,
   Handle,
   Position,
   ReactFlow,
@@ -586,17 +587,10 @@ export function TechnologySection({ embedded = false }: { embedded?: boolean }) 
   );
 
   return (
-    <section
-      className="technology-section"
-      aria-labelledby="technology-heading"
-      style={{
-        flex: embedded ? "1 1 auto" : undefined,
-        height: embedded ? "100%" : "100dvh",
-        minHeight: embedded ? 0 : 620,
-        overflow: embedded ? "hidden" : undefined,
-      }}
-    >
-      <Box className="technology-section__header">
+    <Stack pl="md" pr="md" pb="md" gap="0" style={{
+      height: '100%'
+    }}>
+      <Box mt="sm"className="technology-section__header">
         <Box style={{ width: "100%" }}>
           <Badge size="lg" variant="dot" color="primaryOrange">
             <BilingualShuffle
@@ -604,14 +598,24 @@ export function TechnologySection({ embedded = false }: { embedded?: boolean }) 
               japanese="IV. 技術構成"
             />
           </Badge>
-          <JapaneseSignal channel="technology" variant="minimal" />
         </Box>
       </Box>
+      <Group mt="7" gap="xs">
+        <Badge variant="outline" style={{
+          fontFamily: "monospace"
+        }}>Scroll to Zoom</Badge>
+        <Badge variant="outline" style={{
+          fontFamily: "monospace"
+        }}>Pinch to Move Around</Badge>
+      </Group>
       <Box
         className="technology-graph"
         aria-label="Interactive graph of development and database technologies"
       >
         <ReactFlow<TechnologyNode>
+          style={{
+            height: "400px",
+          }}
           key={isMobile ? "mobile-layout" : "desktop-layout"}
           className={`technology-flow${isMobile ? " technology-flow--mobile" : ""}`}
           nodes={displayedNodes}
@@ -640,6 +644,7 @@ export function TechnologySection({ embedded = false }: { embedded?: boolean }) 
           }
           onNodeMouseLeave={() => setActiveBranch(null)}
         >
+          <Controls />
           <Background
             variant={BackgroundVariant.Lines}
             gap={40}
@@ -654,6 +659,6 @@ export function TechnologySection({ embedded = false }: { embedded?: boolean }) 
           <span>19 NODES // 18 LINKS</span>
         </Box>
       </Box>
-    </section>
+    </Stack>
   );
 }

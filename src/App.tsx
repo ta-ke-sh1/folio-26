@@ -45,6 +45,7 @@ import MemoriesLayout from "./layouts/memories/memories.layout.tsx";
 import PlaygroundLayout from "./layouts/playground/playground.layout.tsx";
 import PlaygroundDetails from "./layouts/playground/playgroundDetails.layout.tsx";
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { Analytics } from "@vercel/analytics/react"
 
 type RouteItem = {
   element: JSX.Element;
@@ -157,6 +158,7 @@ export default function App() {
         </BrowserRouter>
       </ModalsProvider>
       <SpeedInsights />
+      <Analytics />
     </MantineProvider>
   );
 }

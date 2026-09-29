@@ -353,14 +353,14 @@
 .technology-graph__legend {
   position: absolute;
   z-index: 4;
-  right: 18px;
-  bottom: 14px;
-  left: 18px;
+  right: 10px;
+  top: 14px;
+  left: 10px;
   display: flex;
   justify-content: space-between;
   color: rgba(255, 255, 255, 0.42);
   font-family: monospace;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.08em;
   pointer-events: none;
 }
