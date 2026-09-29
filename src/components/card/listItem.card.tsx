@@ -18,7 +18,7 @@ import type {
 } from "../../models/entity/collection.model";
 import { getRandomNumber } from "../../services/utils.service";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
 
 /** Helper function to generate Supabase storage image URL or fallback */
 function getImageUrl(item: CollectionItemEntity, collectionId: number): string {

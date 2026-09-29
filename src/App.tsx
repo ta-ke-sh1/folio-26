@@ -44,6 +44,7 @@ import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
 import MemoriesLayout from "./layouts/memories/memories.layout.tsx";
 import PlaygroundLayout from "./layouts/playground/playground.layout.tsx";
 import PlaygroundDetails from "./layouts/playground/playgroundDetails.layout.tsx";
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 type RouteItem = {
   element: JSX.Element;
@@ -155,6 +156,7 @@ export default function App() {
           </PageTransitionProvider>
         </BrowserRouter>
       </ModalsProvider>
+      <SpeedInsights />
     </MantineProvider>
   );
 }

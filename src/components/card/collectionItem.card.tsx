@@ -6,7 +6,7 @@ interface CollectionItemCardProps {
   data: any;
 }
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
 
 export function CollectionItemCard({ data }: CollectionItemCardProps) {
   const [isHovered, setIsHovered] = useState(false);

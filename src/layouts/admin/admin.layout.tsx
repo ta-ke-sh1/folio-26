@@ -13,6 +13,11 @@ import { BlogEditorPage } from "./forms/admin.blog.form";
 const VALID_TABS: ActiveTab[] = ["items", "collections", "categories", "tags", "blogs"];
 
 export default function AdminLayout() {
+
+  if (import.meta.env.IS_LOCAL !== "true") {
+    window.location.href = "/";
+  }
+
   const [opened, { toggle }] = useDisclosure(true);
   const location = useLocation();
   const navigate = useNavigate();

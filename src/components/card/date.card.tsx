@@ -9,7 +9,7 @@ interface DateCardProps {
   data?: any;
 }
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
 
 export function DateCard({ data }: DateCardProps) {
   const animatedNavigate = useAnimatedNavigate();
