@@ -48,7 +48,7 @@ export default function CollaborationForm() {
         <Text
           fz="xs"
           style={{
-            fontFamily: "monospace",
+            fontFamily: "DotGothic16",
             color: "var(--mantine-color-gray-4)",
           }}
           ta="center"
@@ -82,7 +82,7 @@ export default function CollaborationForm() {
           <Text
             component="pre"
             style={{
-              fontFamily: "monospace",
+              fontFamily: "DotGothic16",
               fontSize: "9px",
               lineHeight: 1.1,
               color: "#FF7700",

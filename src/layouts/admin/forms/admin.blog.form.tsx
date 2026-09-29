@@ -148,7 +148,7 @@ export function BlogEditorPage() {
             >
               Back to blog entries
             </Button>
-            <Text size="xs" c="dimmed" ff="monospace">
+            <Text size="xs" c="dimmed" ff="DotGothic16">
               {blogId ? `EDITING ENTRY #${blogId}` : "NEW PLAYGROUND ENTRY"}
             </Text>
           </Group>

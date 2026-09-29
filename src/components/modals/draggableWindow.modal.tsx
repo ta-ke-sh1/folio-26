@@ -439,7 +439,7 @@ export function DraggableWindow({
                   fz="xl"
                   fw={800}
                   style={{
-                    fontFamily: "monospace",
+                    fontFamily: "DotGothic16",
                     color: "var(--folio-text)",
                     letterSpacing: "-0.5px",
                   }}
@@ -449,7 +449,7 @@ export function DraggableWindow({
               </Group>
               <Text
                 fz="xs"
-                style={{ color: "var(--folio-muted)", fontFamily: "monospace" }}
+                style={{ color: "var(--folio-muted)", fontFamily: "DotGothic16" }}
               >
                 {item.content.subtitle}
               </Text>
@@ -458,7 +458,7 @@ export function DraggableWindow({
               variant="outline"
               color="orange"
               size="xs"
-              style={{ fontFamily: "monospace" }}
+              style={{ fontFamily: "DotGothic16" }}
             >
               {item.tag}
             </Badge>
@@ -484,7 +484,7 @@ export function DraggableWindow({
               fz="xs"
               fw={700}
               mb={6}
-              style={{ fontFamily: "monospace", color: "#FF7700" }}
+              style={{ fontFamily: "DotGothic16", color: "#FF7700" }}
             >
               // KEY_FEATURES
             </Text>
@@ -518,7 +518,7 @@ export function DraggableWindow({
                   <Text
                     fz="9px"
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "DotGothic16",
                       color: "var(--folio-muted)",
                     }}
                   >
@@ -528,7 +528,7 @@ export function DraggableWindow({
                     fz="11px"
                     fw={700}
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "DotGothic16",
                       color: "var(--folio-text)",
                     }}
                   >
@@ -549,7 +549,7 @@ export function DraggableWindow({
               variant="filled"
               color="orange"
               onClick={onClose}
-              style={{ cursor: "pointer", fontFamily: "monospace" }}
+              style={{ cursor: "pointer", fontFamily: "DotGothic16" }}
             >
               CLOSE_WINDOW [ESC]
             </Badge>

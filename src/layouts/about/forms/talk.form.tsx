@@ -70,7 +70,7 @@ export default function TalkContactsForm() {
         <Text
           component="pre"
           style={{
-            fontFamily: "monospace",
+            fontFamily: "DotGothic16",
             fontSize: "10px",
             lineHeight: 1.1,
             color: "#FF7700",
@@ -87,7 +87,7 @@ export default function TalkContactsForm() {
         className="instrument-form__intro"
         fz="xs"
         style={{
-          fontFamily: "monospace",
+          fontFamily: "DotGothic16",
           color: "var(--mantine-color-gray-4)",
         }}
       >
@@ -127,7 +127,7 @@ export default function TalkContactsForm() {
                         fz="xs"
                         fw={700}
                         style={{
-                          fontFamily: "monospace",
+                          fontFamily: "DotGothic16",
                           color: "var(--folio-text)",
                         }}
                       >
@@ -137,7 +137,7 @@ export default function TalkContactsForm() {
                         size="xs"
                         color="gray"
                         variant="outline"
-                        ff="monospace"
+                        ff="DotGothic16"
                       >
                         {contact.type}
                       </Badge>
@@ -146,7 +146,7 @@ export default function TalkContactsForm() {
                       className="instrument-contact__handle"
                       fz="11px"
                       style={{
-                        fontFamily: "monospace",
+                        fontFamily: "DotGothic16",
                         color: "var(--mantine-color-gray-5)",
                       }}
                     >

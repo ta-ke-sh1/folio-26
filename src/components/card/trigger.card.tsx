@@ -152,7 +152,7 @@ export default function TriggerCard({
               fz="10px"
               fw={700}
               style={{
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 color: isOpen ? "var(--folio-accent)" : "var(--folio-muted)",
                 letterSpacing: "0.5px",
                 textTransform: "uppercase",
@@ -165,7 +165,7 @@ export default function TriggerCard({
               fw={700}
               fz="sm"
               style={{
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 color: "var(--folio-text)",
                 letterSpacing: "-0.3px",
                 lineHeight: 1.2,
@@ -176,7 +176,7 @@ export default function TriggerCard({
             </Text>
 
             <Badge
-              ff="monospace"
+              ff="DotGothic16"
               fz="xs"
               variant="dot"
               style={{

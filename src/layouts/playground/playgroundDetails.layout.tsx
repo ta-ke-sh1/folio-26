@@ -116,12 +116,12 @@ export default function PlaygroundDetails() {
             <Stack gap="lg">
               <Stack gap="sm">
                 <Group gap="xs">
-                  <Badge variant="outline" color="orange" ff="monospace">
+                  <Badge variant="outline" color="orange" ff="DotGothic16">
                     FIELD NOTE // {post.slug}
                   </Badge>
                   <Group gap={6} c="dimmed">
                     <IconCalendar size={14} />
-                    <Text size="xs" ff="monospace">
+                    <Text size="xs" ff="DotGothic16">
                       {formatDate(post.published_at || post.created_at)}
                     </Text>
                   </Group>

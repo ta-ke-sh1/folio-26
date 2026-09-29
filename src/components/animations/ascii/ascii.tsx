@@ -104,7 +104,7 @@ export function AsciiCanvas({
       if (width === 0 || dynamicHeight === 0) return;
 
       ctx.clearRect(0, 0, width, dynamicHeight);
-      ctx.font = `${fontSize}px monospace`;
+      ctx.font = `${fontSize}px DotGothic16`;
       ctx.fillStyle = color;
 
       frame += 0.02;

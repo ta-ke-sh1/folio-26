@@ -45,7 +45,7 @@ export default function EmailDirectForm() {
         <Text
           fz="xs"
           style={{
-            fontFamily: "monospace",
+            fontFamily: "DotGothic16",
             color: "var(--mantine-color-gray-4)",
           }}
           ta="center"
@@ -79,7 +79,7 @@ export default function EmailDirectForm() {
           <Text
             component="pre"
             style={{
-              fontFamily: "monospace",
+              fontFamily: "DotGothic16",
               fontSize: "10px",
               lineHeight: 1.1,
               color: "#FF7700",
@@ -115,7 +115,7 @@ export default function EmailDirectForm() {
             className="instrument-form__protocol"
             fz="11px"
             fw={700}
-            style={{ fontFamily: "monospace", color: "#FF7700" }}
+            style={{ fontFamily: "DotGothic16", color: "#FF7700" }}
           >
             [PREFIX]: DEAR DEVELOPER,
           </Text>
@@ -136,7 +136,7 @@ export default function EmailDirectForm() {
                 backgroundColor: "transparent",
                 border: "none",
                 color: "var(--folio-text)",
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 fontSize: "13px",
                 padding: 0,
                 "&:focus": {
@@ -151,7 +151,7 @@ export default function EmailDirectForm() {
             className="instrument-form__protocol"
             fz="11px"
             fw={700}
-            style={{ fontFamily: "monospace", color: "#FF7700" }}
+            style={{ fontFamily: "DotGothic16", color: "#FF7700" }}
           >
             [POSTFIX]: REGARDS, {senderEmail || "[SENDER_EMAIL]"}
             <br />

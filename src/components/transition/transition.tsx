@@ -283,7 +283,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
                 fontSize: "clamp(36px, 7vw, 84px)",
                 fontWeight: 900,
                 color: "#FF7700",
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 letterSpacing: "-2px",
                 lineHeight: 1,
                 textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
@@ -301,7 +301,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
                 borderRadius: "4px",
                 minWidth: "320px",
                 maxWidth: "480px",
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
               }}
             >
               {terminalLogs.map((log, index) => (

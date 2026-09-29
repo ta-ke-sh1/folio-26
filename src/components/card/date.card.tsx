@@ -132,7 +132,7 @@ export function DateCard({ data }: DateCardProps) {
               fz="10px"
               fw={700}
               style={{
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
                 letterSpacing: "1px",
                 textTransform: "uppercase",
@@ -147,7 +147,7 @@ export function DateCard({ data }: DateCardProps) {
               size="xs"
               variant="outline"
               style={{
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 borderColor: isHovered
                   ? "var(--folio-accent)"
                   : "var(--folio-card-border)",
@@ -173,7 +173,7 @@ export function DateCard({ data }: DateCardProps) {
             fw={800}
             fz="lg"
             style={{
-              fontFamily: "monospace",
+              fontFamily: "DotGothic16",
               color: "var(--folio-text)",
               transition: "color 0.2s ease",
               letterSpacing: "-0.5px",

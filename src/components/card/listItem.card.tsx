@@ -133,7 +133,7 @@ export default function CollectionCard({
                       />
                       <Text
                         style={{
-                          fontFamily: "monospace",
+                          fontFamily: "DotGothic16",
                           fontSize: "12px",
                           fontWeight: 700,
                           color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
@@ -148,7 +148,7 @@ export default function CollectionCard({
                       size="sm"
                       variant="outline"
                       style={{
-                        fontFamily: "monospace",
+                        fontFamily: "DotGothic16",
                         borderColor: isHovered
                           ? "var(--folio-accent)"
                           : "var(--folio-card-border)",
@@ -169,7 +169,7 @@ export default function CollectionCard({
                       fontSize: "clamp(22px, 3vw, 32px)",
                       fontWeight: 900,
                       color: "var(--folio-text)",
-                      fontFamily: "monospace",
+                      fontFamily: "DotGothic16",
                       letterSpacing: "-1px",
                       lineHeight: 1.1,
                       textShadow: isHovered
@@ -186,7 +186,7 @@ export default function CollectionCard({
                 <Group justify="space-between" align="center" mt="md">
                   <Text
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "DotGothic16",
                       fontSize: "12px",
                       color: "var(--folio-muted)",
                     }}
@@ -197,7 +197,7 @@ export default function CollectionCard({
                   <Group gap={4}>
                     <Text
                       style={{
-                        fontFamily: "monospace",
+                        fontFamily: "DotGothic16",
                         fontSize: "12px",
                         fontWeight: 700,
                         color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
@@ -247,7 +247,7 @@ export default function CollectionCard({
                 <Badge
                   size="xs"
                   style={{
-                    fontFamily: "monospace",
+                    fontFamily: "DotGothic16",
                     backgroundColor: "rgba(0, 0, 0, 0.7)",
                     color: "#FF7700",
                     border: "1px solid rgba(255, 119, 0, 0.4)",
@@ -259,7 +259,7 @@ export default function CollectionCard({
                 {itemCount > 1 && (
                   <Text
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "DotGothic16",
                       fontSize: "10px",
                       color: "#FF7700",
                       backgroundColor: "rgba(0,0,0,0.7)",

@@ -220,7 +220,7 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                     ← GALAXY
                   </button>
                   <Text
-                    ff="monospace"
+                    ff="DotGothic16"
                     style={{
                       position: "absolute",
                       top: 22,
@@ -267,7 +267,7 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                     <Box className="homepage-story-galaxy-main-planet">
                       <Text
                         size="xs"
-                        ff="monospace"
+                        ff="DotGothic16"
                         fw={700}
                         ta="center"
                         style={{
@@ -292,23 +292,23 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                   maxWidth: "calc(100% - 36px)",
                 }}
               >
-                <Text size="xs" c="orange.4" ff="monospace" fw={700}>
+                <Text size="xs" c="orange.4" ff="DotGothic16" fw={700}>
                   CLICK TO VIEW / {STORY_PANELS[activePanel].index}
                 </Text>
-                <Text size="xs" c="dimmed" ff="monospace">
+                <Text size="xs" c="dimmed" ff="DotGothic16">
                   ORBITAL SYSTEM / ACTIVE
                 </Text>
                 <Text
                   className="homepage-story-signal-speed"
                   size="xs"
                   c="orange.3"
-                  ff="monospace"
+                  ff="DotGothic16"
                 >
                   ROTATION // GALAXY 48s · MOONS 32–64s
                 </Text>
               </Stack>
               <Text
-                ff="monospace"
+                ff="DotGothic16"
                 style={{
                   position: "absolute",
                   top: 18,
@@ -351,14 +351,14 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                           : undefined,
                     }}
                   >
-                    <Text size="xs" ff="monospace" c="orange.4" fw={700}>
+                    <Text size="xs" ff="DotGothic16" c="orange.4" fw={700}>
                       {panel.index}
                     </Text>
                     <Stack gap={2}>
-                      <Text c="white" fw={700} ff="monospace" size="sm">
+                      <Text c="white" fw={700} ff="DotGothic16" size="sm">
                         {panel.title}
                       </Text>
-                      <Text size="xs" c="dimmed" ff="monospace">
+                      <Text size="xs" c="dimmed" ff="DotGothic16">
                         {panel.meta}
                       </Text>
                     </Stack>

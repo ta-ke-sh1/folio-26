@@ -66,7 +66,7 @@ export default function MemoriesLayout({
                 fz="xs"
                 fw={700}
                 style={{
-                  fontFamily: "monospace",
+                  fontFamily: "DotGothic16",
                   letterSpacing: "1px",
                   color: isActive
                     ? "var(--mantine-color-orange-5, #ff5500)"
@@ -194,7 +194,7 @@ export default function MemoriesLayout({
               marginTop: 24,
               color: "var(--folio-media-text)",
               borderColor: "var(--folio-media-line)",
-              fontFamily: "monospace",
+              fontFamily: "DotGothic16",
               fontWeight: 200,
             }}
           >

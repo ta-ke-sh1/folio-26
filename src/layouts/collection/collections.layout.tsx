@@ -30,6 +30,14 @@ function formatMonthYear(year: number, monthIndex: number): string {
   return formatted.toUpperCase().replace(/^([A-Z]{3})\b/, "$1.");
 }
 
+function formatMonthYearJP(year: number, monthIndex: number): string {
+  const date = new Date(year, monthIndex, 1);
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "long", // Outputs as "9月"
+  }).format(date);
+}
+
 enum ViewMode {
   LIST = "List",
   CALENDAR = "Calendar",
@@ -109,15 +117,15 @@ export default function CollectionsLayout() {
                 fontSize: "clamp(36px, 7vw, 84px)",
                 fontWeight: 900,
                 color: "#FF7700",
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 letterSpacing: "-2px",
                 lineHeight: 1,
                 textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
                 textAlign: "center",
               }}
             >
-              {currentLabel}
-              <br />
+              <BilingualShuffle english={currentLabel} japanese={formatMonthYearJP(currentDate.year, currentDate.month)} />
+              <br/>
               <BilingualShuffle english="COLLECTIONS" japanese="コレクション" />
             </Title>
           </Stack>
@@ -156,7 +164,7 @@ export default function CollectionsLayout() {
             >
               <Text
                 style={{
-                  fontFamily: "monospace",
+                  fontFamily: "DotGothic16",
                   fontWeight: 700,
                   fontSize: "14px",
                   color: "#FF7700",
@@ -188,7 +196,7 @@ export default function CollectionsLayout() {
                 boxShadow: "0 0 12px rgba(255, 119, 0, 0.5)",
               },
               label: {
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 color: "#737373",
                 fontWeight: 700,
                 fontSize: "12px",
@@ -228,7 +236,7 @@ export default function CollectionsLayout() {
             >
               <Text
                 style={{
-                  fontFamily: "monospace",
+                  fontFamily: "DotGothic16",
                   fontWeight: 700,
                   fontSize: "14px",
                   color: "#FF7700",

@@ -81,7 +81,7 @@ function AsciiWaveBackground() {
       const fontSize = 16;
       const cols = Math.floor(canvas.width / fontSize);
       const rows = Math.floor(canvas.height / fontSize);
-      ctx.font = `${fontSize}px monospace`;
+      ctx.font = `${fontSize}px DotGothic16`;
 
       for (let r = 0; r < rows; r += 2) {
         for (let c = 0; c < cols; c += 2) {

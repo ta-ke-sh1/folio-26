@@ -5,7 +5,7 @@ export const commonInputStyles = {
     borderColor: "var(--folio-card-border)",
     borderRadius: "3px",
     color: "var(--folio-text)",
-    fontFamily: "monospace",
+    fontFamily: "DotGothic16",
     "&:focus": {
       borderColor: "var(--folio-accent)",
       boxShadow: "0 0 0 1px rgba(255, 119, 0, 0.18)",
@@ -13,7 +13,7 @@ export const commonInputStyles = {
   },
   label: {
     color: "var(--folio-muted)",
-    fontFamily: "monospace",
+    fontFamily: "DotGothic16",
     fontSize: "9px",
     letterSpacing: "1px",
     marginBottom: "4px",

@@ -71,7 +71,7 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                     <Text
                       size="xs"
                       fw={700}
-                      ff="monospace"
+                      ff="DotGothic16"
                       c={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
                       style={{ letterSpacing: 1 }}
                     >
@@ -82,7 +82,7 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                     size="sm"
                     variant="outline"
                     color="orange"
-                    style={{ fontFamily: "monospace", backgroundColor: "transparent" }}
+                    style={{ fontFamily: "DotGothic16", backgroundColor: "transparent" }}
                   >
                     FIELD NOTE
                   </Badge>
@@ -94,7 +94,7 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                     fontSize: "clamp(22px, 3vw, 32px)",
                     fontWeight: 900,
                     color: "var(--folio-text)",
-                    fontFamily: "monospace",
+                    fontFamily: "DotGothic16",
                     letterSpacing: "-1px",
                     lineHeight: 1.1,
                     textShadow: isHovered ? "0 0 10px rgba(255, 119, 0, 0.4)" : "none",
@@ -110,14 +110,14 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
               </Stack>
 
               <Group justify="space-between" align="center" mt="md">
-                <Text size="xs" ff="monospace" c="dimmed">
+                <Text size="xs" ff="DotGothic16" c="dimmed">
                   PUBLISHED: {date}
                 </Text>
                 <Group gap={4}>
                   <Text
                     size="xs"
                     fw={700}
-                    ff="monospace"
+                    ff="DotGothic16"
                     c={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
                     style={{ letterSpacing: 0.5 }}
                   >
@@ -160,7 +160,7 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                 <Badge
                   size="xs"
                   style={{
-                    fontFamily: "monospace",
+                    fontFamily: "DotGothic16",
                     backgroundColor: "rgba(0, 0, 0, 0.7)",
                     color: "var(--folio-accent)",
                     border: "1px solid rgba(255, 119, 0, 0.4)",
@@ -170,7 +170,7 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                 </Badge>
                 <IconBook2 size={16} color="var(--folio-accent)" />
               </Group>
-              <Text size="xs" fw={700} ff="monospace" c="white" lineClamp={1}>
+              <Text size="xs" fw={700} ff="DotGothic16" c="white" lineClamp={1}>
                 {post.slug.toUpperCase()}
               </Text>
             </Box>
@@ -233,7 +233,7 @@ export default function PlaygroundLayout() {
                 fontSize: "clamp(36px, 7vw, 84px)",
                 fontWeight: 900,
                 color: "#FF7700",
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 letterSpacing: "-2px",
                 lineHeight: 1,
                 textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
@@ -255,12 +255,12 @@ export default function PlaygroundLayout() {
         >
           <Group gap="xs">
             <IconBook2 size={18} color="#FF7700" />
-            <Text size="xs" fw={700} ff="monospace" c="#FF7700" style={{ letterSpacing: 1 }}>
+            <Text size="xs" fw={700} ff="DotGothic16" c="#FF7700" style={{ letterSpacing: 1 }}>
               EXPERIMENTAL // PLAYGROUND
             </Text>
           </Group>
 
-          <Text size="xs" c="dimmed" ff="monospace">
+          <Text size="xs" c="dimmed" ff="DotGothic16">
             ENTRIES: {String(posts.length).padStart(2, "0")}
           </Text>
         </Group>
@@ -269,11 +269,11 @@ export default function PlaygroundLayout() {
           <Group justify="space-between" align="center" mb="xs">
             <Group gap="xs">
               <IconTerminal size={18} color="#FF7700" />
-              <Text size="xs" fw={700} ff="monospace" c="#FF7700" style={{ letterSpacing: 1 }}>
+              <Text size="xs" fw={700} ff="DotGothic16" c="#FF7700" style={{ letterSpacing: 1 }}>
                 // PLAYGROUND_ARCHIVE
               </Text>
             </Group>
-            <Text size="xs" ff="monospace" c="#737373">
+            <Text size="xs" ff="DotGothic16" c="#737373">
               TOTAL: {sortedPosts.length}
             </Text>
           </Group>
@@ -294,7 +294,7 @@ export default function PlaygroundLayout() {
           ) : (
             <Paper p="lg" radius={8} style={{ background: "var(--folio-card)", border: "1px solid var(--folio-card-border)" }}>
               <Stack gap="xs">
-                <Text size="xs" c="orange" ff="monospace">// NO_PUBLISHED_ENTRIES</Text>
+                <Text size="xs" c="orange" ff="DotGothic16">// NO_PUBLISHED_ENTRIES</Text>
                 <Title order={3} c="var(--folio-text)">The playground is still taking shape.</Title>
                 <Text c="dimmed">Published journal entries will appear here when they are ready.</Text>
               </Stack>

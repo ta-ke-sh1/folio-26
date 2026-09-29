@@ -228,7 +228,7 @@ export default function MemoriesSection() {
                   </Card.Section>
 
                   <Box p="md">
-                    <Text size="xs" c="orange.4" ff="monospace" fw={700} mb={4}>
+                    <Text size="xs" c="orange.4" ff="DotGothic16" fw={700} mb={4}>
                       {item.date || "// MEMORY"}
                     </Text>
                     <Text

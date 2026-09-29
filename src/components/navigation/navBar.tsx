@@ -113,7 +113,7 @@ export default function NavigationBar() {
                 userSelect: "none",
                 fontSize: 16,
                 fontWeight: 800,
-                fontFamily: "monospace",
+                fontFamily: "DotGothic16",
                 color: "var(--folio-accent)",
                 letterSpacing: "-0.5px",
                 textShadow: "0 0 8px rgba(255, 119, 0, 0.5)",
@@ -125,7 +125,7 @@ export default function NavigationBar() {
               size="xs"
               c="dimmed"
               visibleFrom="xs"
-              style={{ fontFamily: "monospace", marginLeft: 4 }}
+              style={{ fontFamily: "DotGothic16", marginLeft: 4 }}
             >
               [SYS_26]
             </Text>
@@ -144,7 +144,7 @@ export default function NavigationBar() {
                     color="orange"
                     size="xs"
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "DotGothic16",
                       letterSpacing: "1px",
                       fontWeight: isActive ? 700 : 500,
                       color: isActive ? "var(--folio-accent)" : "var(--folio-accent-hover)",
@@ -219,11 +219,11 @@ export default function NavigationBar() {
                         <Text
                           size="xs"
                           c="primaryOrange"
-                          style={{ fontFamily: "monospace", fontWeight: 700 }}
+                          style={{ fontFamily: "DotGothic16", fontWeight: 700 }}
                         >
                           {"> TERMINAL_MENU"}
                         </Text>
-                        <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+                        <Text size="xs" c="dimmed" style={{ fontFamily: "DotGothic16" }}>
                           CH_NO: 26
                         </Text>
                       </Group>
@@ -240,7 +240,7 @@ export default function NavigationBar() {
                             onClick={() => handleNavigation(link.href)}
                             style={{
                               minHeight: 46,
-                              fontFamily: "monospace",
+                              fontFamily: "DotGothic16",
                               fontSize: 16,
                               fontWeight: 700,
                               color: isActive ? "var(--folio-accent)" : "var(--folio-accent-hover)",
@@ -265,13 +265,13 @@ export default function NavigationBar() {
                       style={{ borderTop: "1px dashed rgba(255, 119, 0, 0.2)" }}
                     >
                       <Group justify="space-between">
-                        <Text size="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+                        <Text size="xs" c="dimmed" style={{ fontFamily: "DotGothic16" }}>
                           SIGNAL:
                         </Text>
                         <Text
                           size="xs"
                           c="green.5"
-                          style={{ fontFamily: "monospace", fontWeight: 700 }}
+                          style={{ fontFamily: "DotGothic16", fontWeight: 700 }}
                         >
                           ONLINE
                         </Text>
@@ -306,7 +306,7 @@ export default function NavigationBar() {
         <Group
           justify="space-between"
           w="100%"
-          style={{ fontFamily: "monospace" }}
+          style={{ fontFamily: "DotGothic16" }}
         >
           {/* Server Location & Signal */}
           <Group gap="xs">

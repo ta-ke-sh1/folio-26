@@ -200,7 +200,7 @@ export default function AboutPage() {
               "0 8px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28)",
             backdropFilter: "blur(16px) saturate(145%)",
             WebkitBackdropFilter: "blur(16px) saturate(145%)",
-            fontFamily: "monospace",
+            fontFamily: "DotGothic16",
             fontWeight: 700,
             letterSpacing: "0.08em",
           }}
@@ -298,7 +298,7 @@ export default function AboutPage() {
               <Stack pt="25" gap={5}>
                 <Text
                   style={{
-                    fontFamily: "monospace",
+                    fontFamily: "DotGothic16",
                   }}
                 >
                   <BilingualShuffle english="[ Story ]" japanese="[ 物語 ]" />
@@ -332,7 +332,7 @@ export default function AboutPage() {
                         fontSize: "clamp(12px, 3.5vw, 15px)",
                         fontWeight: 400,
                         color: "var(--folio-text)",
-                        fontFamily: "monospace",
+                        fontFamily: "DotGothic16",
                         letterSpacing: "-1px",
                         lineHeight: 1.4,
                         textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
@@ -356,7 +356,7 @@ export default function AboutPage() {
                 <Group justify="start" mr={5}>
                   <Text
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "DotGothic16",
                     }}
                   >
                     <BilingualShuffle
@@ -468,7 +468,7 @@ export default function AboutPage() {
               <Group justify="end" mr={5}>
                 <Text
                   style={{
-                    fontFamily: "monospace",
+                    fontFamily: "DotGothic16",
                   }}
                 >
                   [ Personal Information ]

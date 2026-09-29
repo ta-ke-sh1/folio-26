@@ -16,14 +16,17 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
   }
 
   return (
-    <Stack gap={0}>
+    <Stack gap={0} style={{
+      height: '50dvh',
+      minHeight: '300px'
+    }}>
       <Box
         onClick={handleNavigate}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{
-          height: "24dvh",
-          minHeight: "100px",
+          height: "40dvh",
+          minHeight: "200px",
           borderRadius: "6px",
           border: isHovered
             ? "1px solid var(--folio-accent)"
@@ -32,6 +35,7 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
           cursor: data?.id ? "pointer" : "default",
           transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
           backgroundColor: isHovered ? "#ffa94d" : undefined,
+          filter: isHovered ? "grayscale(0)" : "grayscale(1)",
           padding: "16px 24px",
           position: "relative",
           overflow: "hidden",
