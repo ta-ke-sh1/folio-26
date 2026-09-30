@@ -5,22 +5,20 @@
 @media (max-width: 62em) {
   .about-page {
     height: auto !important;
-    min-height: 100dvh;
-    overflow: hidden !important;
-  }
-
-  .about-close-all-control {
-    top: calc(100dvh - 88px);
-    bottom: auto !important;
+    min-height: calc(100dvh / var(--folio-viewport-scale, 1));
+    overflow-x: clip !important;
+    overflow-y: visible !important;
   }
 
   .about-page__stage {
     box-sizing: border-box;
     height: auto !important;
-    min-height: calc(100dvh - 120px);
+    flex: 0 0 auto !important;
+    min-height: calc((100dvh - 120px) / var(--folio-viewport-scale, 1));
     margin-inline: 12px !important;
     padding: 8px 12px !important;
-    overflow: hidden !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
   }
 
   .about-page__stage > .mantine-Grid-root,
@@ -118,5 +116,11 @@
   .about-mobile-controls__card__content .mantine-Badge-root {
     max-width: 100%;
     font-size: clamp(8px, 2vw, 10px) !important;
+  }
+}
+
+@media (max-width: 340px), (max-height: 420px) {
+  .about-close-all-control {
+    display: none !important;
   }
 }

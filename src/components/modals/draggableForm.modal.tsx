@@ -1,6 +1,7 @@
 import { Text, Paper, Group, ActionIcon, Box } from "@mantine/core";
 import { IconGripHorizontal, IconX } from "@tabler/icons-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import CollaborationForm from "../../layouts/about/forms/collaboration.form";
@@ -18,7 +19,6 @@ interface DraggableFormWindowProps {
   item: FormWindowItem;
   itemIndex: number;
   zIndex: number;
-  containerRef: React.RefObject<HTMLDivElement | null>;
   isClosing: boolean;
   onClose: () => void;
   onFocus: () => void;
@@ -28,7 +28,6 @@ export function DraggableFormWindow({
   item,
   itemIndex,
   zIndex,
-  containerRef,
   isClosing,
   onClose,
   onFocus,
@@ -90,38 +89,30 @@ export function DraggableFormWindow({
     return () => mediaQuery.removeEventListener("change", updateMobile);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const updatePosition = () => {
-      const container = containerRef.current;
       const windowElement = windowRef.current;
-      if (!container || !windowElement) return;
+      if (!windowElement) return;
 
-      const maxX = Math.max(
-        0,
-        container.clientWidth - windowElement.offsetWidth,
-      );
-      const maxY = Math.max(
-        0,
-        container.clientHeight - windowElement.offsetHeight,
-      );
+      const maxX = Math.max(12, window.innerWidth - windowElement.offsetWidth - 12);
+      const maxY = Math.max(12, window.innerHeight - windowElement.offsetHeight - 12);
       const offset = itemIndex * 28;
       const centeredX =
-        (container.clientWidth - windowElement.offsetWidth) / 2 + offset;
+        (window.innerWidth - windowElement.offsetWidth) / 2 + offset;
       const centeredY =
-        (container.clientHeight - windowElement.offsetHeight) / 2 + offset;
+        (window.innerHeight - windowElement.offsetHeight) / 2 + offset;
       setPosition({
         x: Math.min(Math.max(12, centeredX), maxX),
         y: Math.min(Math.max(12, centeredY), maxY),
       });
     };
 
-    const frame = requestAnimationFrame(updatePosition);
+    updatePosition();
     window.addEventListener("resize", updatePosition);
     return () => {
-      cancelAnimationFrame(frame);
       window.removeEventListener("resize", updatePosition);
     };
-  }, [containerRef, itemIndex]);
+  }, [itemIndex]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     onFocus();
@@ -140,17 +131,10 @@ export function DraggableFormWindow({
       if (!isDragging) return;
       const dx = e.clientX - dragRef.current.startX;
       const dy = e.clientY - dragRef.current.startY;
-      const container = containerRef.current;
       const windowElement = windowRef.current;
-      if (!container || !windowElement) return;
-      const maxX = Math.max(
-        0,
-        container.clientWidth - windowElement.offsetWidth,
-      );
-      const maxY = Math.max(
-        0,
-        container.clientHeight - windowElement.offsetHeight,
-      );
+      if (!windowElement) return;
+      const maxX = Math.max(0, window.innerWidth - windowElement.offsetWidth);
+      const maxY = Math.max(0, window.innerHeight - windowElement.offsetHeight);
       setPosition({
         x: Math.min(Math.max(0, dragRef.current.initialX + dx), maxX),
         y: Math.min(Math.max(0, dragRef.current.initialY + dy), maxY),
@@ -174,17 +158,18 @@ export function DraggableFormWindow({
 
   const HeaderIcon = item.icon;
 
-  return (
+  return createPortal(
     <Paper
       ref={windowRef}
       className="instrument-window instrument-window--active"
       shadow="xl"
       onMouseDown={onFocus}
       style={{
-        position: "absolute",
+        position: "fixed",
         top: position.y,
         left: position.x,
         width: `clamp(320px, 82vw, ${width}px)`,
+        maxWidth: "calc(100vw - 24px)",
         zIndex: zIndex,
         userSelect: isDragging ? "none" : "auto",
       }}
@@ -192,12 +177,10 @@ export function DraggableFormWindow({
       {/* Draggable Title Bar */}
       <Group
         className="instrument-window__titlebar"
+        data-cursor={isDragging ? "grabbing" : "grab"}
         justify="space-between"
         px="md"
         onMouseDown={handleMouseDown}
-        style={{
-          cursor: isDragging ? "grabbing" : "grab",
-        }}
       >
         <Group gap="xs">
           <span className="instrument-window__signal" />
@@ -228,6 +211,7 @@ export function DraggableFormWindow({
         {item.id === "say-hi" && <TalkContactsForm />}
         {item.id === "email-me" && <EmailDirectForm />}
       </Box>
-    </Paper>
+    </Paper>,
+    document.body,
   );
 }

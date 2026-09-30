@@ -159,7 +159,6 @@ export default function CollectionsLayout() {
                 transform: isPrevHovered ? "translateY(-2px)" : "translateY(0)",
                 transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                 padding: "8px 18px",
-                cursor: "pointer",
               }}
             >
               <Text
@@ -204,7 +203,6 @@ export default function CollectionsLayout() {
                 textTransform: "uppercase",
                 padding: "6px 16px",
                 borderRadius: "4px",
-                cursor: "pointer",
               },
             }}
           />
@@ -231,7 +229,6 @@ export default function CollectionsLayout() {
                 transform: isNextHovered ? "translateY(-2px)" : "translateY(0)",
                 transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                 padding: "8px 18px",
-                cursor: "pointer",
               }}
             >
               <Text

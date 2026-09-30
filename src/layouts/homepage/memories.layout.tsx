@@ -55,9 +55,9 @@ export default function MemoriesLayout({
             <Group
               key={word}
               gap="xs"
+              data-cursor="pointer"
               onClick={() => scrollToSection(index)}
               style={{
-                cursor: "pointer",
                 userSelect: "none",
                 transition: "all 0.3s ease",
               }}

@@ -7,6 +7,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router";
 import { Box, Text, Group, Stack } from "@mantine/core";
 import { useLenis } from "lenis/react";
@@ -224,30 +225,29 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
     <PageTransitionContext.Provider value={{ navigateTo, isTransitioning }}>
       {children}
 
-      {isTransitioning && (
-        <Box
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "var(--folio-page-bg)",
-            zIndex: ZIndexLevel.HIGH + 1000,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            padding: "40px",
-            overflow: "hidden",
-            pointerEvents: "all",
-            animation:
-              stage === "enter"
-                ? "crtTurnOn 0.2s ease-out forwards"
-                : stage === "exit"
-                  ? "crtTurnOff 0.45s cubic-bezier(0.77, 0, 0.175, 1) forwards"
-                  : "none",
-          }}
-        >
+      {isTransitioning &&
+        createPortal(
+          <Box
+            style={{
+              position: "fixed",
+              inset: 0,
+              boxSizing: "border-box",
+              backgroundColor: "var(--folio-page-bg)",
+              zIndex: ZIndexLevel.HIGH + 1000,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              padding: "40px",
+              overflow: "hidden",
+              pointerEvents: "all",
+              animation:
+                stage === "enter"
+                  ? "crtTurnOn 0.2s ease-out forwards"
+                  : stage === "exit"
+                    ? "crtTurnOff 0.45s cubic-bezier(0.77, 0, 0.175, 1) forwards"
+                    : "none",
+            }}
+          >
           {/* Static Scanline Background */}
           <CrtNoiseCanvas />
 
@@ -377,8 +377,9 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
               }
             }
           `}</style>
-        </Box>
-      )}
+          </Box>,
+          document.body,
+        )}
     </PageTransitionContext.Provider>
   );
 }

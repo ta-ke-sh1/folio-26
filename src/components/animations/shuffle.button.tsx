@@ -1,8 +1,20 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import {
+  useRef,
+  type ButtonHTMLAttributes,
+  type FocusEvent,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import { Button as MantineButton, type ButtonProps } from "@mantine/core";
 import { useTextShuffle } from "./use-text-shuffle";
 
-type ShuffleButtonProps = ButtonProps & ButtonHTMLAttributes<HTMLButtonElement>;
+type ShuffleButtonProps = ButtonProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    component?: "button" | "a";
+    href?: string;
+    target?: string;
+    rel?: string;
+  };
 
 function getText(children: ReactNode): string {
   if (typeof children === "string" || typeof children === "number") {
@@ -17,33 +29,52 @@ function getText(children: ReactNode): string {
   return "";
 }
 
-export function ShuffleButton({ children, ...props }: ShuffleButtonProps) {
+export function ShuffleButton({
+  children,
+  component = "button",
+  href,
+  target,
+  rel,
+  ...props
+}: ShuffleButtonProps) {
   const textLabel = getText(children).replace(/\s+/g, " ").trim();
   const isPlainText =
     typeof children === "string" || typeof children === "number";
   const { displayText, start, stop } = useTextShuffle(
     isPlainText ? String(children) : "",
   );
+  const hoverAudioRef = useRef<HTMLAudioElement | null>(null);
   const { onMouseEnter, onMouseLeave, onFocus, onBlur, ...buttonProps } = props;
 
   return (
     <MantineButton
       variant="filled"
+      component={component as any}
+      href={href}
+      target={target}
+      rel={rel}
       {...buttonProps}
       aria-label={buttonProps["aria-label"] ?? (textLabel || undefined)}
-      onMouseEnter={(event) => {
+      onMouseEnter={(event: MouseEvent<HTMLButtonElement>) => {
         onMouseEnter?.(event);
+        if (localStorage.getItem("folio-sound-enabled") === "true") {
+          const hoverAudio = hoverAudioRef.current ?? new Audio("/sfx/hover.mp3");
+          hoverAudioRef.current = hoverAudio;
+          hoverAudio.volume = 0.12;
+          hoverAudio.currentTime = 0;
+          void hoverAudio.play().catch(() => undefined);
+        }
         if (isPlainText) start();
       }}
-      onMouseLeave={(event) => {
+      onMouseLeave={(event: MouseEvent<HTMLButtonElement>) => {
         onMouseLeave?.(event);
         if (isPlainText) stop();
       }}
-      onFocus={(event) => {
+      onFocus={(event: FocusEvent<HTMLButtonElement>) => {
         onFocus?.(event);
         if (isPlainText) start();
       }}
-      onBlur={(event) => {
+      onBlur={(event: FocusEvent<HTMLButtonElement>) => {
         onBlur?.(event);
         if (isPlainText) stop();
       }}

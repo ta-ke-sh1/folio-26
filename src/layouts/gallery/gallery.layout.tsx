@@ -11,6 +11,7 @@ import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import "./gallery.layout.scss";
 import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
+import Footer from "../../components/footer/footer";
 
 type SortKey = "iso" | "aperture" | "shutter";
 
@@ -517,7 +518,9 @@ export default function GalleryLayout() {
             </Box>
           </Box>
         </section>
+        
       </main>
+      <Footer />
     </LayoutWrapper>
   );
 }

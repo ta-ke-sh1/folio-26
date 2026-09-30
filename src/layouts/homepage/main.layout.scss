@@ -22,7 +22,6 @@
     auto;
   border: 1px solid rgba(255, 119, 0, 0.45);
   border-radius: 2px;
-  cursor: none;
   isolation: isolate;
   transition: background 0.25s ease;
 }
@@ -101,7 +100,6 @@
   height: 8px;
   transform: translateX(-50%);
   pointer-events: auto;
-  cursor: pointer;
 }
 
 .homepage-story-signal-planet {
@@ -112,7 +110,6 @@
   background: #ff8a3d;
   box-shadow: 0 0 8px rgba(255, 119, 0, 0.9);
   pointer-events: auto;
-  cursor: help;
 }
 
 .homepage-story-signal-planet-label-anchor {
@@ -189,7 +186,6 @@
   color: #ffb36b;
   font: 700 10px monospace;
   letter-spacing: 0.5px;
-  cursor: pointer;
 }
 
 .homepage-story-galaxy-back:hover,

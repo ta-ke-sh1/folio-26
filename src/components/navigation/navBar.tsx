@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Container,
   Group,
@@ -14,7 +15,7 @@ import {
 import { ShuffleButton as Button } from "../animations/shuffle.button";
 import { ShuffleText } from "../animations/shuffle.text";
 import { useDisclosure } from "@mantine/hooks";
-import { IconMoon, IconSun } from "@tabler/icons-react";
+import { IconMoon, IconSun, IconVolume, IconVolumeOff } from "@tabler/icons-react";
 import { ZIndexLevel } from "../../enums/styles.enum";
 import { useLocation } from "react-router";
 import { useAnimatedNavigate } from "../transition/transition";
@@ -29,6 +30,9 @@ export default function NavigationBar() {
   // Telemetry state: Mouse coordinates & dynamic local time
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [timeStr, setTimeStr] = useState<string>("");
+  const [soundEnabled, setSoundEnabled] = useState(
+    () => localStorage.getItem("folio-sound-enabled") === "true",
+  );
 
   useEffect(() => {
     // 1. Mouse move tracker
@@ -60,7 +64,7 @@ export default function NavigationBar() {
     { label: "COLLECTIONS", href: "/collections" },
     { label: "GALLERY", href: "/gallery" },
     { label: "MEMORIES", href: "/memories" },
-    { label: "PLAYGROUND", href: "/playground" },
+    // { label: "PLAYGROUND", href: "/playground" },
   ];
 
   const handleNavigation = (href: string) => {
@@ -72,7 +76,15 @@ export default function NavigationBar() {
     setColorScheme(computedColorScheme === "dark" ? "light" : "dark");
   };
 
-  return (
+  const toggleSound = () => {
+    const enabled = !soundEnabled;
+    setSoundEnabled(enabled);
+    document.dispatchEvent(
+      new CustomEvent("folio-sound-change", { detail: { enabled } }),
+    );
+  };
+
+  return createPortal(
     <>
       {/* Top Header Navigation */}
       <Container
@@ -84,7 +96,8 @@ export default function NavigationBar() {
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100dvw",
+          width: "100%",
+          boxSizing: "border-box",
           zIndex: ZIndexLevel.HIGHEST,
           backgroundColor: "var(--folio-header-bg)",
           backdropFilter: "blur(8px)",
@@ -95,7 +108,7 @@ export default function NavigationBar() {
           {/* Brand Logo / CRT Header Title */}
           <Group
             gap="xs"
-            style={{ cursor: "pointer" }}
+            data-cursor="pointer"
             onClick={() => handleNavigation("/")}
           >
             <Box
@@ -147,7 +160,9 @@ export default function NavigationBar() {
                       fontFamily: "DotGothic16",
                       letterSpacing: "1px",
                       fontWeight: isActive ? 700 : 500,
-                      color: isActive ? "var(--folio-accent)" : "var(--folio-accent-hover)",
+                      color: isActive
+                        ? "var(--folio-accent)"
+                        : "var(--folio-accent-hover)",
                       backgroundColor: "transparent",
                       border: isActive
                         ? "1px solid rgba(255, 119, 0, 0.48)"
@@ -160,128 +175,122 @@ export default function NavigationBar() {
               })}
             </Group>
 
-            <Button
-              variant="subtle"
-              color="orange"
-              size="compact-xs"
-              onClick={toggleColorScheme}
-              aria-label={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
-              title={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
-              px={6}
+            {/* Mobile CRT Menu */}
+            <Menu
+              opened={opened}
+              onChange={(nextOpened) => (nextOpened ? open() : close())}
+              position="bottom-end"
+              offset={10}
+              withinPortal
+              zIndex={ZIndexLevel.HIGHEST + 1}
+              transitionProps={{ transition: "pop-top-right", duration: 140 }}
             >
-              {computedColorScheme === "dark" ? (
-                <IconSun size={16} />
-              ) : (
-                <IconMoon size={16} />
-              )}
-            </Button>
-
-                {/* Mobile CRT Menu */}
-                <Menu
+              <Menu.Target>
+                <Burger
                   opened={opened}
-                  onChange={(nextOpened) => (nextOpened ? open() : close())}
-                  position="bottom-end"
-                  offset={10}
-                  withinPortal
-                  zIndex={ZIndexLevel.HIGHEST + 1}
-                  transitionProps={{ transition: "pop-top-right", duration: 140 }}
+                  hiddenFrom="sm"
+                  size="sm"
+                  color="var(--folio-accent)"
+                  aria-label="Toggle navigation menu"
+                />
+              </Menu.Target>
+
+              <Menu.Dropdown
+                style={{
+                  width: 300,
+                  padding: 0,
+                  overflow: "hidden",
+                  backgroundColor: "var(--folio-surface)",
+                  border: "1px solid rgba(255, 119, 0, 0.4)",
+                  borderRadius: 4,
+                  boxShadow:
+                    "0 12px 36px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 119, 0, 0.12)",
+                }}
+              >
+                <Box
+                  px="md"
+                  py="sm"
+                  style={{
+                    borderBottom: "1px dashed rgba(255, 119, 0, 0.28)",
+                    background: "rgba(255, 119, 0, 0.045)",
+                  }}
                 >
-                  <Menu.Target>
-                    <Burger
-                      opened={opened}
-                      hiddenFrom="sm"
-                      size="sm"
-                      color="var(--folio-accent)"
-                      aria-label="Toggle navigation menu"
-                    />
-                  </Menu.Target>
-
-                  <Menu.Dropdown
-                    style={{
-                      width: 300,
-                      padding: 0,
-                      overflow: "hidden",
-                      backgroundColor: "var(--folio-surface)",
-                      border: "1px solid rgba(255, 119, 0, 0.4)",
-                      borderRadius: 4,
-                      boxShadow: "0 12px 36px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 119, 0, 0.12)",
-                    }}
-                  >
-                    <Box
-                      px="md"
-                      py="sm"
-                      style={{
-                        borderBottom: "1px dashed rgba(255, 119, 0, 0.28)",
-                        background: "rgba(255, 119, 0, 0.045)",
-                      }}
+                  <Group justify="space-between">
+                    <Text
+                      size="xs"
+                      c="primaryOrange"
+                      style={{ fontFamily: "DotGothic16", fontWeight: 700 }}
                     >
-                      <Group justify="space-between">
-                        <Text
-                          size="xs"
-                          c="primaryOrange"
-                          style={{ fontFamily: "DotGothic16", fontWeight: 700 }}
-                        >
-                          {"> TERMINAL_MENU"}
-                        </Text>
-                        <Text size="xs" c="dimmed" style={{ fontFamily: "DotGothic16" }}>
-                          CH_NO: 26
-                        </Text>
-                      </Group>
-                    </Box>
-
-                    <Stack gap={4} p="xs">
-                      {navLinks.map((link) => {
-                        const isActive = location.pathname === link.href;
-                        return (
-                          <Menu.Item
-                            key={link.label}
-                            aria-label={link.label}
-                            aria-current={isActive ? "page" : undefined}
-                            onClick={() => handleNavigation(link.href)}
-                            style={{
-                              minHeight: 46,
-                              fontFamily: "DotGothic16",
-                              fontSize: 16,
-                              fontWeight: 700,
-                              color: isActive ? "var(--folio-accent)" : "var(--folio-accent-hover)",
-                              backgroundColor: "transparent",
-                              border: isActive
-                                ? "1px solid rgba(255, 119, 0, 0.48)"
-                                : "1px solid transparent",
-                              borderRadius: 2,
-                            }}
-                          >
-                            <ShuffleText
-                              text={isActive ? `> ${link.label}` : link.label}
-                            />
-                          </Menu.Item>
-                        );
-                      })}
-                    </Stack>
-
-                    <Box
-                      px="md"
-                      py="sm"
-                      style={{ borderTop: "1px dashed rgba(255, 119, 0, 0.2)" }}
+                      {"> TERMINAL_MENU"}
+                    </Text>
+                    <Text
+                      size="xs"
+                      c="dimmed"
+                      style={{ fontFamily: "DotGothic16" }}
                     >
-                      <Group justify="space-between">
-                        <Text size="xs" c="dimmed" style={{ fontFamily: "DotGothic16" }}>
-                          SIGNAL:
-                        </Text>
-                        <Text
-                          size="xs"
-                          c="green.5"
-                          style={{ fontFamily: "DotGothic16", fontWeight: 700 }}
-                        >
-                          ONLINE
-                        </Text>
-                      </Group>
-                    </Box>
-                  </Menu.Dropdown>
-                </Menu>
+                      CH_NO: 26
+                    </Text>
+                  </Group>
+                </Box>
+
+                <Stack gap={4} p="xs">
+                  {navLinks.map((link) => {
+                    const isActive = location.pathname === link.href;
+                    return (
+                      <Menu.Item
+                        key={link.label}
+                        aria-label={link.label}
+                        aria-current={isActive ? "page" : undefined}
+                        onClick={() => handleNavigation(link.href)}
+                        style={{
+                          minHeight: 46,
+                          fontFamily: "DotGothic16",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          color: isActive
+                            ? "var(--folio-accent)"
+                            : "var(--folio-accent-hover)",
+                          backgroundColor: "transparent",
+                          border: isActive
+                            ? "1px solid rgba(255, 119, 0, 0.48)"
+                            : "1px solid transparent",
+                          borderRadius: 2,
+                        }}
+                      >
+                        <ShuffleText
+                          text={isActive ? `> ${link.label}` : link.label}
+                        />
+                      </Menu.Item>
+                    );
+                  })}
+                </Stack>
+
+                <Box
+                  px="md"
+                  py="sm"
+                  style={{ borderTop: "1px dashed rgba(255, 119, 0, 0.2)" }}
+                >
+                  <Group justify="space-between">
+                    <Text
+                      size="xs"
+                      c="dimmed"
+                      style={{ fontFamily: "DotGothic16" }}
+                    >
+                      SIGNAL:
+                    </Text>
+                    <Text
+                      size="xs"
+                      c="green.5"
+                      style={{ fontFamily: "DotGothic16", fontWeight: 700 }}
+                    >
+                      ONLINE
+                    </Text>
+                  </Group>
+                </Box>
+              </Menu.Dropdown>
+            </Menu>
           </Group>
         </Group>
-
       </Container>
 
       {/* Bottom Telemetry Bar */}
@@ -294,7 +303,8 @@ export default function NavigationBar() {
           position: "fixed",
           bottom: 0,
           left: 0,
-          width: "100dvw",
+          width: "100%",
+          boxSizing: "border-box",
           zIndex: ZIndexLevel.HIGHEST,
           backgroundColor: "var(--folio-header-bg)",
           backdropFilter: "blur(8px)",
@@ -340,6 +350,32 @@ export default function NavigationBar() {
 
           {/* Real-time Digital Clock */}
           <Group gap="xs">
+            {/* <Button
+              variant="subtle"
+              color="orange"
+              size="compact-xs"
+              onClick={toggleSound}
+              aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
+              title={soundEnabled ? "Turn sound off" : "Turn sound on"}
+              px={6}
+            >
+              {soundEnabled ? <IconVolume size={16} /> : <IconVolumeOff size={16} />}
+            </Button> */}
+            <Button
+              variant="subtle"
+              color="orange"
+              size="compact-xs"
+              onClick={toggleColorScheme}
+              aria-label={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
+              title={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
+              px={6}
+            >
+              {computedColorScheme === "dark" ? (
+                <IconSun size={16} />
+              ) : (
+                <IconMoon size={16} />
+              )}
+            </Button>
             <Text size="xs" c="dimmed" style={{ letterSpacing: "0.5px" }}>
               SYS_TIME:{" "}
               <Text component="span" c="orange.4" fw={700} inherit>
@@ -351,6 +387,7 @@ export default function NavigationBar() {
       </Container>
       <div className="tv-noise-overlay" />
       <div className="tv-scanlines" />
-    </>
+    </>,
+    document.body,
   );
 }

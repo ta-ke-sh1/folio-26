@@ -121,23 +121,10 @@
   --xy-controls-button-background-color-hover: rgba(57, 30, 10, 0.98);
 }
 
-.technology-flow .react-flow__pane {
-  cursor: grab;
-}
-
-.technology-flow .react-flow__pane:active {
-  cursor: grabbing;
-}
-
 .technology-flow .react-flow__node {
-  cursor: grab;
   transition:
     opacity 180ms ease,
     filter 180ms ease;
-}
-
-.technology-flow .react-flow__node:active {
-  cursor: grabbing;
 }
 
 .technology-flow .react-flow__edge-path {
@@ -398,11 +385,6 @@
 
   .technology-graph {
     touch-action: pan-y;
-  }
-
-  .technology-flow--mobile .react-flow__pane,
-  .technology-flow--mobile .react-flow__node {
-    cursor: default;
   }
 
   .technology-node {

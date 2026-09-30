@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Box, Group, Stack, Title, Text, Grid } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import gsap from "gsap";
@@ -34,7 +35,6 @@ export default function AboutPage() {
   const [zIndices, setZIndices] = useState<Record<string, number>>({});
   const [closingWindowIds, setClosingWindowIds] = useState<string[]>([]);
   const [closingFormIds, setClosingFormIds] = useState<string[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
   const closeAllControlRef = useRef<HTMLDivElement>(null);
   const hasOpenItems = openWindows.length + openForms.length > 0;
 
@@ -53,10 +53,8 @@ export default function AboutPage() {
     gsap.killTweensOf(control);
 
     if (hasOpenItems) {
-      control.style.pointerEvents = "auto";
-      gsap.set(control, { xPercent: -50, y: 88, autoAlpha: 0 });
+      gsap.set(control, { y: 60, autoAlpha: 0 });
       gsap.to(control, {
-        xPercent: -50,
         y: 0,
         autoAlpha: 1,
         duration: 0.55,
@@ -65,15 +63,11 @@ export default function AboutPage() {
       });
     } else {
       gsap.to(control, {
-        xPercent: -50,
-        y: 88,
+        y: 30,
         autoAlpha: 0,
         duration: 0.36,
         ease: "power3.in",
         overwrite: "auto",
-        onComplete: () => {
-          control.style.pointerEvents = "none";
-        },
       });
     }
   }, [hasOpenItems]);
@@ -166,65 +160,77 @@ export default function AboutPage() {
   return (
     <Stack
       className="about-page"
-      pt={60}
-      pb={60}
       style={{
-        height: "100dvh",
+        height: "calc(100dvh / var(--folio-viewport-scale, 1))",
+        boxSizing: "border-box",
+        paddingTop: "calc(60px / var(--folio-viewport-scale, 1))",
+        paddingBottom: "calc(60px / var(--folio-viewport-scale, 1))",
+        gap: 0,
         position: "relative",
         overflowX: "hidden",
         overflowY: "hidden",
         borderRadius: 10,
       }}
     >
-      <div
-        ref={closeAllControlRef}
-        className="about-close-all-control"
-        style={{
-          position: "absolute",
-          zIndex: 2_147_483_647,
-          bottom: 56,
-          left: "50%",
-          opacity: 0,
-          visibility: "hidden",
-          pointerEvents: "none",
-        }}
-        aria-hidden={!hasOpenItems}
-      >
-        <ShuffleButton
+      {createPortal(
+        <div
+          ref={closeAllControlRef}
+          className="about-close-all-control"
           style={{
-            border: "1px solid rgba(255, 190, 135, 0.65)",
-            background:
-              "linear-gradient(135deg, rgba(255, 149, 64, 0.34), rgba(30, 24, 20, 0.58))",
-            color: "#fff4e8",
-            boxShadow:
-              "0 8px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28)",
-            backdropFilter: "blur(16px) saturate(145%)",
-            WebkitBackdropFilter: "blur(16px) saturate(145%)",
-            fontFamily: "DotGothic16",
-            fontWeight: 700,
-            letterSpacing: "0.08em",
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 56,
+            display: "flex",
+            justifyContent: "center",
+            zIndex: 2_147_483_647,
+            opacity: 0,
+            visibility: "hidden",
+            pointerEvents: "none",
           }}
-          leftSection={<IconX size={14} />}
-          onClick={requestCloseAll}
-          size="sm"
-          variant="default"
-          aria-label="Close all open windows and forms"
-          disabled={!hasOpenItems}
-          tabIndex={hasOpenItems ? 0 : -1}
+          aria-hidden={!hasOpenItems}
         >
-          CLOSE ALL
-        </ShuffleButton>
-      </div>
+          <ShuffleButton
+            style={{
+              border: "1px solid rgba(255, 190, 135, 0.65)",
+              background:
+                "linear-gradient(135deg, rgba(255, 149, 64, 0.34), rgba(30, 24, 20, 0.58))",
+              color: "#fff4e8",
+              boxShadow:
+                "0 8px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28)",
+              backdropFilter: "blur(16px) saturate(145%)",
+              WebkitBackdropFilter: "blur(16px) saturate(145%)",
+              fontFamily: "DotGothic16",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              fontSize: "14px",
+              pointerEvents: "auto",
+            }}
+            leftSection={<IconX size={14} />}
+            onClick={requestCloseAll}
+            size="sm"
+            variant="default"
+            aria-label="Close all open windows and forms"
+            disabled={!hasOpenItems}
+            tabIndex={hasOpenItems ? 0 : -1}
+          >
+            CLOSE ALL
+          </ShuffleButton>
+        </div>,
+        document.body,
+      )}
       <Stack
         className="about-page__stage"
-        ref={containerRef}
         ml="lg"
         mr="lg"
         pl="xl"
         pr="xl"
         style={{
           border: "1px solid var(--folio-border)",
-          height: "100%",
+          height:
+            "calc((100dvh - 120px) / var(--folio-viewport-scale, 1))",
+          boxSizing: "border-box",
+          flex: "0 0 calc((100dvh - 120px) / var(--folio-viewport-scale, 1))",
           position: "relative",
           backgroundColor: "var(--folio-page-bg)",
           overflowX: "hidden",
@@ -511,7 +517,6 @@ export default function AboutPage() {
               item={item}
               itemIndex={itemIndex}
               zIndex={zIndex}
-              containerRef={containerRef}
               isClosing={closingWindowIds.includes(item.id)}
               onClose={() => requestCloseWindow(item.id)}
               onFocus={() => bringToFront(item.id)}
@@ -537,13 +542,13 @@ export default function AboutPage() {
               item={item}
               itemIndex={index}
               zIndex={zIndex}
-              containerRef={containerRef}
               isClosing={closingFormIds.includes(item.id)}
               onClose={() => requestCloseForm(item.id)}
               onFocus={() => bringToFront(item.id)}
             />
           );
         })}
+
       </Stack>
     </Stack>
   );

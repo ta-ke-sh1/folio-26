@@ -79,6 +79,7 @@ export default function TriggerCard({
   return (
     <Box
       className={className}
+      data-cursor="pointer"
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -97,7 +98,6 @@ export default function TriggerCard({
         borderRadius: "16px",
         backdropFilter: "blur(18px) saturate(135%)",
         WebkitBackdropFilter: "blur(18px) saturate(135%)",
-        cursor: "pointer",
         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
         boxShadow: isOpen
           ? "0 0 24px rgba(255, 119, 0, 0.28), 10px 10px 24px rgba(0, 0, 0, 0.32), -8px -8px 20px rgba(255, 255, 255, 0.055), inset 1px 1px 0 rgba(255, 255, 255, 0.2), inset -1px -1px 0 rgba(0, 0, 0, 0.18)"

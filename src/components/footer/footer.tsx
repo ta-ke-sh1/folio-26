@@ -4,6 +4,12 @@ import { useLocation } from "react-router";
 import gsap from "gsap";
 import { ShuffleButton } from "../animations/shuffle.button";
 import { useAnimatedNavigate } from "../transition/transition";
+import {
+  IconBrandDiscord,
+  IconBrandGithub,
+  IconBrandMatrix,
+  IconBrandTelegram,
+} from "@tabler/icons-react";
 import "./footer.scss";
 
 /* ----------------------------- static data ------------------------------ */
@@ -47,13 +53,37 @@ const NETWORK_INDEXES = Array.from(
 
 const sitemapLinks = [
   { label: "HOME", path: "/" },
-  // { label: "ABOUT", path: "/about" },
   { label: "COLLECTIONS", path: "/collections" },
   { label: "GALLERY", path: "/gallery" },
   { label: "PLAYGROUND", path: "/playground" },
-  // { label: "LOGIN", path: "/login" },
 ];
-const SIDE_LINK_COLUMNS = [sitemapLinks.slice(0, 3), sitemapLinks.slice(3)];
+
+const socialLinks = [
+  {
+    label: "Discord",
+    handle: "developer#0001",
+    href: "https://discord.com/",
+    icon: IconBrandDiscord,
+  },
+  {
+    label: "Facebook",
+    handle: "@dev_terminal",
+    href: "https://t.me/dev_terminal",
+    icon: IconBrandTelegram,
+  },
+  {
+    label: "Instagram",
+    handle: "@dev:matrix.org",
+    href: "https://matrix.to/#/@dev:matrix.org",
+    icon: IconBrandMatrix,
+  },
+  {
+    label: "Github",
+    handle: "github.com/dev-profile",
+    href: "https://github.com/dev-profile",
+    icon: IconBrandGithub,
+  },
+];
 
 /* ------------------------------- helpers -------------------------------- */
 
@@ -333,6 +363,7 @@ export default function Footer({ compact = false }: FooterProps) {
       >
         <Box
           className="footer-console__watcher"
+          data-cursor="crosshair"
           ref={watcherRef}
           aria-label="Interactive location tracker"
           p="0"
@@ -462,30 +493,58 @@ export default function Footer({ compact = false }: FooterProps) {
 
           <Box
             className="footer-console__side-sitemap"
-            aria-label="Footer navigation"
+            aria-label="Footer links and social networks"
           >
-            {SIDE_LINK_COLUMNS.map((links, columnIndex) => (
-              <Stack
-                key={columnIndex}
-                className={`footer-console__side-link-column${columnIndex === 1 ? " is-right" : ""}`}
-                justify="space-between"
-                mr="sm"
-                ml="sm"
-              >
-                {links.map((link) => (
+            <Stack
+              component="nav"
+              className="footer-console__side-link-column"
+              aria-label="Site navigation"
+              justify="space-between"
+              ml="sm"
+            >
+              {sitemapLinks.map((link) => (
+                <ShuffleButton
+                  key={link.path}
+                  variant="filled"
+                  color="orange"
+                  className={`footer-console__link${location.pathname === link.path ? " is-active" : ""}`}
+                  aria-label={`Navigate to ${link.label.toLowerCase()}`}
+                  onClick={() => navigate(link.path)}
+                >
+                  {`> ${link.label}`}
+                </ShuffleButton>
+              ))}
+            </Stack>
+
+            <Stack
+              component="nav"
+              className="footer-console__social-column"
+              aria-label="Social networks"
+              justify="space-between"
+              align="flex-end"
+              mr="sm"
+            >
+              {socialLinks.map((link) => {
+                const SocialIcon = link.icon;
+                return (
                   <ShuffleButton
-                    key={link.path}
+                    key={link.label}
+                    component="a"
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     variant="filled"
                     color="orange"
-                    className={`footer-console__link${location.pathname === link.path ? " is-active" : ""}`}
-                    aria-label={`Navigate to ${link.label.toLowerCase()}`}
-                    onClick={() => navigate(link.path)}
+                    className="footer-console__link footer-console__social-link"
+                    aria-label={`${link.label}: ${link.handle} (opens in a new tab)`}
+                    title={link.handle}
+                    leftSection={<SocialIcon style={{marginLeft: '5px'}} size={14} aria-hidden="true" />}
                   >
                     {`> ${link.label}`}
                   </ShuffleButton>
-                ))}
-              </Stack>
-            ))}
+                );
+              })}
+            </Stack>
           </Box>
         </Box>
       </Stack>

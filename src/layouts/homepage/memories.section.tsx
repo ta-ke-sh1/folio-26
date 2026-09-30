@@ -178,6 +178,7 @@ export default function MemoriesSection() {
                 <Card
                   key={`${item.id}-${idx}`}
                   className="homepage-memory-card"
+                  data-cursor="pointer"
                   onClick={() => navigate(item.link)}
                   onMouseEnter={handleMouseEnterCard}
                   onMouseLeave={(e) => handleMouseLeaveCard(e, baseRotation)}
@@ -185,7 +186,6 @@ export default function MemoriesSection() {
                     minWidth: "300px",
                     maxWidth: "300px",
                     minHeight: "440px",
-                    cursor: "pointer",
                     backgroundColor:
                       "light-dark(rgba(255, 255, 255, 0.85), rgba(20, 20, 20, 0.85))",
                     border: "1px solid rgba(255, 255, 255, 0.12)",

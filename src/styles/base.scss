@@ -39,6 +39,10 @@ body,
   min-height: 100%;
 }
 
+#root {
+  zoom: var(--folio-viewport-scale, 1);
+}
+
 body {
   margin: 0;
   background: var(--folio-page-bg);

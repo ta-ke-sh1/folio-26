@@ -149,7 +149,6 @@ export default function CollectionDetailsLayout() {
                 transform: isPrevHovered ? "translateY(-2px)" : "translateY(0)",
                 transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                 padding: "8px 18px",
-                cursor: "pointer",
               }}
             >
               <Text

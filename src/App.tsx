@@ -2,10 +2,15 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 
 import { Notifications } from "@mantine/notifications";
-import type { JSX } from "react";
+import { useEffect, type JSX } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
+
 import AdminLayout from "./layouts/admin/admin.layout";
 import LoginLayout from "./layouts/login/login.layout";
+import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
+import MemoriesLayout from "./layouts/memories/memories.layout.tsx";
+import PlaygroundLayout from "./layouts/playground/playground.layout.tsx";
+import PlaygroundDetails from "./layouts/playground/playgroundDetails.layout.tsx";
 
 import "./styles/base.scss";
 import "@mantine/core/styles.css";
@@ -40,10 +45,7 @@ import {
   PageEntrance,
   PageTransitionProvider,
 } from "./components/transition/transition.tsx";
-import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
-import MemoriesLayout from "./layouts/memories/memories.layout.tsx";
-import PlaygroundLayout from "./layouts/playground/playground.layout.tsx";
-import PlaygroundDetails from "./layouts/playground/playgroundDetails.layout.tsx";
+
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
 
@@ -58,7 +60,7 @@ const routes: RouteItem[] = [
     element: <LoginLayout />,
   },
   {
-    path: "/",
+    path: "/*",
     element: <AboutLayout />,
   },
   {
@@ -69,14 +71,14 @@ const routes: RouteItem[] = [
     path: "/memories",
     element: <MemoriesLayout />,
   },
-  {
-    path: "/playground/:slug",
-    element: <PlaygroundDetails />,
-  },
-  {
-    path: "/playground",
-    element: <PlaygroundLayout />,
-  },
+  // {
+  //   path: "/playground/:slug",
+  //   element: <PlaygroundDetails />,
+  // },
+  // {
+  //   path: "/playground",
+  //   element: <PlaygroundLayout />,
+  // },
   {
     path: "/collections/:id",
     element: <CollectionDetailsLayout />,
@@ -85,41 +87,108 @@ const routes: RouteItem[] = [
     path: "/collections",
     element: <CollectionsLayout />,
   },
-  {
-    path: "/admin/items",
-    element: <AdminLayout />,
-  },
-  {
-    path: "/admin/collections",
-    element: <AdminLayout />,
-  },
-  {
-    path: "/admin/categories",
-    element: <AdminLayout />,
-  },
-  {
-    path: "/admin/tags",
-    element: <AdminLayout />,
-  },
-  {
-    path: "/admin/blogs/new",
-    element: <AdminLayout />,
-  },
-  {
-    path: "/admin/blogs/:blogId/edit",
-    element: <AdminLayout />,
-  },
-  {
-    path: "/admin/blogs",
-    element: <AdminLayout />,
-  },
-  {
-    path: "/admin",
-    element: <AdminLayout />,
-  },
+  // {
+  //   path: "/admin/items",
+  //   element: <AdminLayout />,
+  // },
+  // {
+  //   path: "/admin/collections",
+  //   element: <AdminLayout />,
+  // },
+  // {
+  //   path: "/admin/categories",
+  //   element: <AdminLayout />,
+  // },
+  // {
+  //   path: "/admin/tags",
+  //   element: <AdminLayout />,
+  // },
+  // {
+  //   path: "/admin/blogs/new",
+  //   element: <AdminLayout />,
+  // },
+  // {
+  //   path: "/admin/blogs/:blogId/edit",
+  //   element: <AdminLayout />,
+  // },
+  // {
+  //   path: "/admin/blogs",
+  //   element: <AdminLayout />,
+  // },
+  // {
+  //   path: "/admin",
+  //   element: <AdminLayout />,
+  // },
 ];
 
 export default function App() {
+  useEffect(() => {
+    const root = document.getElementById("root");
+    if (!root) return;
+
+    const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const updateViewportScale = () => {
+      const scale = pointerQuery.matches
+        ? Math.max(
+            0.7,
+            Math.min(1, window.innerWidth / 1280, window.innerHeight / 720),
+          )
+        : 1;
+
+      root.style.setProperty("--folio-viewport-scale", String(scale));
+    };
+
+    updateViewportScale();
+    window.addEventListener("resize", updateViewportScale);
+    pointerQuery.addEventListener("change", updateViewportScale);
+
+    return () => {
+      window.removeEventListener("resize", updateViewportScale);
+      pointerQuery.removeEventListener("change", updateViewportScale);
+      root.style.removeProperty("--folio-viewport-scale");
+    };
+  }, []);
+
+  useEffect(() => {
+    const initialSoundEnabled =
+      localStorage.getItem("folio-sound-enabled") === "true";
+    const applySoundPreference = (node: ParentNode) => {
+      const soundEnabled = localStorage.getItem("folio-sound-enabled") === "true";
+      if (node instanceof HTMLMediaElement) {
+        node.muted = !soundEnabled;
+      }
+      node.querySelectorAll("audio, video").forEach((media) => {
+        (media as HTMLMediaElement).muted = !soundEnabled;
+      });
+    };
+
+    const handleSoundChange = (event: Event) => {
+      const enabled = (event as CustomEvent<{ enabled: boolean }>).detail.enabled;
+      localStorage.setItem("folio-sound-enabled", String(enabled));
+      document.querySelectorAll("audio, video").forEach((media) => {
+        (media as HTMLMediaElement).muted = !enabled;
+      });
+    };
+
+    document.querySelectorAll("audio, video").forEach((media) => {
+      (media as HTMLMediaElement).muted = !initialSoundEnabled;
+    });
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) applySoundPreference(node);
+        });
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    document.addEventListener("folio-sound-change", handleSoundChange);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("folio-sound-change", handleSoundChange);
+    };
+  }, []);
+
   const theme = createTheme({
     fontFamily: "Inter Variable",
     fontFamilyMonospace: "DM Mono",

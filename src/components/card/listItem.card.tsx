@@ -102,6 +102,7 @@ export default function CollectionCard({
 
   return (
     <Paper
+      data-cursor="pointer"
       onClick={handleNavigate}
       p="lg"
       onMouseEnter={() => setIsHovered(true)}
@@ -116,7 +117,6 @@ export default function CollectionCard({
           : "0 2px 8px rgba(0, 0, 0, 0.4)",
         transform: isHovered ? "translateY(-2px)" : "translateY(0)",
         filter: isHovered ? "grayscale(0)" : "grayscale(1)",
-        cursor: "pointer",
         overflow: "hidden",
       }}
     >
