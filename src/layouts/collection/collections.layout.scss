@@ -1,4 +1,6 @@
-@media (max-width: 48em) {
+@use "../../styles/breakpoints" as bp;
+
+@media (max-width: bp.$sm) {
   .collections-toolbar {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

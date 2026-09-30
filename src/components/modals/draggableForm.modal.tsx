@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import CollaborationForm from "../../layouts/about/forms/collaboration.form";
 import EmailDirectForm from "../../layouts/about/forms/email.form";
 import TalkContactsForm from "../../layouts/about/forms/talk.form";
+import { maxWidth } from "../../styles/breakpoints";
 import "./draggableWindow.modal.scss";
 
 export interface FormWindowItem {
@@ -82,7 +83,7 @@ export function DraggableFormWindow({
   );
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 48em)");
+    const mediaQuery = window.matchMedia(maxWidth("sm"));
     const updateMobile = () => setIsMobile(mediaQuery.matches);
     updateMobile();
     mediaQuery.addEventListener("change", updateMobile);

@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as bp;
+
 .instrument-window {
   --instrument-space: clamp(10px, 1.8vw, 16px);
   --instrument-titlebar-height: clamp(34px, 4vw, 38px);
@@ -447,7 +449,7 @@
   background: #ffffff;
 }
 
-@media (max-width: 48em) {
+@media (max-width: bp.$sm) {
   .instrument-window-frame {
     width: calc(100% - 24px) !important;
   }
@@ -503,7 +505,7 @@
   }
 }
 
-@media (max-height: 680px) {
+@media (max-height: bp.$short-height) {
   .instrument-window {
     max-height: calc(100dvh - 80px);
   }

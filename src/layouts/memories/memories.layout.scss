@@ -1,15 +1,12 @@
+@use "../../styles/breakpoints" as bp;
+
 .memories-page {
   --memories-orange: #ff7700;
-  position: relative;
-  display: flex;
-  width: 100dvw;
-  height: 100dvh;
-  min-height: 0;
-  box-sizing: border-box;
-  flex-direction: column;
+  height: calc(100dvh / var(--folio-viewport-scale, 1));
   justify-content: center;
   gap: clamp(12px, 2vh, 22px);
-  padding: 40px clamp(16px, 4vw, 64px);
+  padding: calc(40px / var(--folio-viewport-scale, 1))
+    clamp(16px, 4vw, 64px);
   overflow: hidden;
   background:
     radial-gradient(ellipse at 32% 44%, rgba(255, 119, 0, 0.09), transparent 46%),
@@ -45,14 +42,10 @@
 
 .memories-page__header,
 .memories-console {
-  position: relative;
-  z-index: 1;
-  width: 100%;
   margin-inline: 0;
 }
 
 .memories-page__header {
-  display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 18px;
@@ -127,21 +120,10 @@
 }
 
 .memories-console {
-  display: grid;
-  min-height: 0;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  grid-auto-rows: minmax(0, 1fr);
-  align-items: center;
   gap: clamp(18px, 3vw, 38px);
 }
 
-.memories-deck {
-  min-width: 0;
-}
-
 .memories-tv {
-  position: relative;
-  box-sizing: border-box;
   padding: clamp(10px, 1.6vw, 20px);
   border: 1px solid rgba(255, 154, 66, 0.55);
   border-radius: clamp(12px, 2vw, 22px);
@@ -150,21 +132,10 @@
 }
 
 .memories-tv__screen-frame {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
   border: 1px solid rgba(255, 119, 0, 0.3);
   border-radius: 8px;
   background: #030303;
   box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.9), 0 0 0 4px rgba(0, 0, 0, 0.34);
-}
-
-.memories-tv__video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #030303;
 }
 
 .memories-tv__screen-frame::after {
@@ -175,41 +146,12 @@
   pointer-events: none;
 }
 
-.memories-tv__screen-overlay {
-  position: absolute;
-  right: 12px;
-  bottom: 10px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 8px;
-  border: 1px solid rgba(255, 119, 0, 0.25);
-  border-radius: 2px;
-  background: rgba(5, 5, 5, 0.72);
-  color: #ffd2a6;
-  font: 700 9px monospace;
-  letter-spacing: 0.08em;
-  pointer-events: none;
-}
-
 .memories-tv__screen-frame:focus-visible {
   outline: 2px solid #ffad66;
   outline-offset: 4px;
 }
 
-.memories-tv__screen-light {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--memories-orange);
-  box-shadow: 0 0 8px var(--memories-orange);
-}
-
 .memories-tv__bezel {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 12px;
   padding: 12px 4px 2px;
 }
@@ -218,32 +160,6 @@
   color: #a8a096;
   font: 800 10px monospace;
   letter-spacing: 0.24em;
-}
-
-.memories-tv__bezel-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.memories-tv__channel {
-  color: #8f8980;
-  font-size: 8px;
-}
-
-.memories-tv__led {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #40c057;
-  box-shadow: 0 0 7px rgba(64, 192, 87, 0.8);
-}
-
-.memories-controller__previews {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 6px;
-  margin-bottom: 12px;
 }
 
 .memories-preview {
@@ -270,21 +186,9 @@
 }
 
 .memories-preview__video-wrap {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 2px;
   background: #030303;
-}
-
-.memories-preview__video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  filter: grayscale(1) contrast(1.08);
-  object-fit: cover;
-  pointer-events: none;
 }
 
 .memories-fullscreen {
@@ -299,16 +203,6 @@
   opacity: 1;
   pointer-events: auto;
   touch-action: manipulation;
-}
-
-.memories-fullscreen__content {
-  position: relative;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .memories-fullscreen__frame {
@@ -330,25 +224,12 @@
   border-radius: 8px;
 }
 
-.memories-fullscreen__video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: #020202;
-  pointer-events: none;
-}
-
 .memories-fullscreen__controls {
   position: absolute;
   bottom: max(16px, env(safe-area-inset-bottom));
   left: 50%;
   width: min(calc(100vw - 32px), 980px);
   box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
   gap: 10px;
   padding: 10px;
   border: 1px solid rgba(255, 119, 0, 0.24);
@@ -398,7 +279,16 @@
 }
 
 .memories-controller {
-  padding: 18px 16px;
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "station"
+    "navigation"
+    "channels";
+  align-items: center;
+  gap: 8px 14px;
+  padding: 10px 14px;
   border: 1px solid rgba(255, 119, 0, 0.34);
   border-radius: 5px;
   background: linear-gradient(150deg, rgba(255, 119, 0, 0.07), transparent 42%), rgba(10, 10, 9, 0.94);
@@ -406,11 +296,13 @@
 }
 
 .memories-controller__heading {
-  display: flex;
-  align-items: center;
   gap: 10px;
-  padding-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 1px dashed rgba(255, 119, 0, 0.28);
+}
+
+.memories-controller__station {
+  grid-area: station;
 }
 
 .memories-controller__eyebrow {
@@ -426,7 +318,22 @@
 }
 
 .memories-controller__current {
-  padding: 15px 0 13px;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0;
+}
+
+.memories-controller__navigation {
+  display: grid;
+  min-width: 0;
+  grid-area: navigation;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.memories-controller__channels {
+  grid-area: channels;
+  padding-top: 8px;
 }
 
 .memories-controller__current-title {
@@ -448,18 +355,8 @@
 }
 
 .memories-controller__time {
-  display: flex;
-  justify-content: space-between;
   color: var(--folio-muted);
   font: 9px monospace;
-}
-
-.memories-controller__transport {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 16px 0;
 }
 
 .memories-controller__button {
@@ -537,20 +434,13 @@
   height: 32px;
 }
 
-// Mantine default breakpoints: xs 36em, sm 48em, md 62em.
-@media (min-width: 62em) {
-  .memories-console {
-    align-items: stretch;
-  }
-}
-
-@media (max-width: 61.99em) {
+@media (max-width: bp.$md) {
   .memories-page {
-    height: 100dvh;
+    height: calc(100dvh / var(--folio-viewport-scale, 1));
     min-height: 0;
     justify-content: flex-start;
     gap: 12px;
-    padding: 52px 16px 48px;
+    padding: calc(40px / var(--folio-viewport-scale, 1)) 16px;
     overflow: hidden;
   }
 
@@ -563,18 +453,21 @@
   .memories-console {
     flex: 1 1 auto;
     grid-template-columns: minmax(0, 1fr);
-    align-content: center;
     gap: 10px;
   }
 
-  .memories-controller__previews {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
-    margin-bottom: 10px;
+  .memories-controller {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "station"
+      "navigation"
+      "channels";
+    gap: 8px 12px;
+    padding: 10px 12px;
   }
 
-  .memories-controller {
-    padding: 10px 12px;
+  .memories-controller__navigation {
+    gap: 6px;
   }
 
   .memories-preview {
@@ -583,7 +476,6 @@
   }
 
   .memories-controller__current {
-    display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(120px, 0.7fr);
     align-items: center;
     column-gap: 16px;
@@ -604,10 +496,6 @@
     margin: 0;
   }
 
-  .memories-controller__transport {
-    margin: 5px 0 7px;
-  }
-
   .memories-controller__button {
     width: 32px;
     height: 32px;
@@ -622,16 +510,12 @@
     padding-top: 8px;
   }
 
-  .memories-controller {
-    position: relative;
-  }
 }
 
-@media (min-width: 48em) and (max-width: 61.99em) {
+@media (min-width: bp.$sm) and (max-width: bp.$md) {
   .memories-page {
-    height: calc(100dvh - 80px);
-    margin-top: 40px;
-    padding: 10px 16px;
+    height: calc(100dvh / var(--folio-viewport-scale, 1));
+    padding: calc(40px / var(--folio-viewport-scale, 1)) 16px;
     justify-content: center;
     gap: 8px;
   }
@@ -643,26 +527,18 @@
   }
 
   .memories-console {
-    flex: 0 1 auto;
-    grid-template-columns: minmax(0, 1fr) 210px;
-    align-items: stretch;
+    flex: 1 1 auto;
     gap: 14px;
   }
 
-  .memories-controller__previews {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .memories-controller__navigation {
     gap: 7px;
-    margin-bottom: 9px;
   }
 
   .memories-preview {
     grid-template-columns: 54px minmax(0, 1fr);
     gap: 6px;
     padding: 5px;
-  }
-
-  .memories-controller {
-    padding: 12px 10px;
   }
 
   .memories-controller__heading {
@@ -694,11 +570,6 @@
     grid-column: 1;
   }
 
-  .memories-controller__transport {
-    gap: 8px;
-    margin: 7px 0;
-  }
-
   .memories-controller__button {
     width: 32px;
     height: 32px;
@@ -714,10 +585,10 @@
   }
 }
 
-@media (max-width: 35.99em) {
+@media (max-width: bp.$xs) {
   .memories-page {
     gap: 9px;
-    padding: 48px 12px 46px;
+    padding: calc(40px / var(--folio-viewport-scale, 1)) 12px;
   }
 
   .memories-page__header {
@@ -753,10 +624,8 @@
     font-size: 8px;
   }
 
-  .memories-controller__previews {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .memories-controller__navigation {
     gap: 6px;
-    margin-bottom: 8px;
   }
 
   .memories-preview {
@@ -824,11 +693,10 @@
 
 }
 
-@media (min-width: 36em) and (max-width: 47.99em) {
+@media (min-width: bp.$xs) and (max-width: bp.$sm) {
   .memories-page {
-    height: calc(100dvh - 80px);
-    margin-top: 40px;
-    padding: 10px 12px;
+    height: calc(100dvh / var(--folio-viewport-scale, 1));
+    padding: calc(40px / var(--folio-viewport-scale, 1)) 12px;
     gap: 8px;
     justify-content: center;
   }
@@ -849,16 +717,12 @@
   }
 
   .memories-console {
-    flex: 0 1 auto;
-    grid-template-columns: minmax(0, 1fr) clamp(170px, 27vw, 200px);
-    align-items: stretch;
+    flex: 1 1 auto;
     gap: 10px;
   }
 
-  .memories-controller__previews {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .memories-controller__navigation {
     gap: 6px;
-    margin-top: 6px;
   }
 
   .memories-preview {
@@ -910,11 +774,6 @@
 
   .memories-controller__current-title {
     font-size: 12px;
-  }
-
-  .memories-controller__transport {
-    gap: 6px;
-    margin: 6px 0;
   }
 
   .memories-controller__button {

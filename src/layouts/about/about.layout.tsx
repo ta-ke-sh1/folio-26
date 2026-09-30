@@ -358,7 +358,7 @@ export default function AboutPage() {
               </Stack>
 
               {/* Form Trigger Cards */}
-              <Stack className="about-desktop-contacts" gap={5}>
+              <Stack className="about-desktop-contacts" gap={5} visibleFrom="md">
                 <Group justify="start" mr={5}>
                   <Text
                     style={{
@@ -399,8 +399,11 @@ export default function AboutPage() {
               </Stack>
             </Stack>
 
-            <section
+            <Box
+              component="section"
               className="about-mobile-controls"
+              display="grid"
+              hiddenFrom="md"
               aria-label="Contacts and information"
             >
               <Text className="about-mobile-controls__heading">
@@ -450,12 +453,13 @@ export default function AboutPage() {
                   );
                 })}
               </Box>
-            </section>
+            </Box>
           </Grid.Col>
 
           {/* Right Column: Interactive Deck Trigger Cards */}
           <Grid.Col
             className="about-information-column"
+            hiddenFrom="md"
             span={{ base: 12, md: 5, lg: 6 }}
             style={{
               display: "flex",

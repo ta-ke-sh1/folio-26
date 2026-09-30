@@ -19,6 +19,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { maxWidth } from "../../styles/breakpoints";
 import "./draggableWindow.modal.scss";
 
 export interface InteractiveItem {
@@ -155,7 +156,7 @@ export function DraggableWindow({
   );
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 48em)");
+    const mediaQuery = window.matchMedia(maxWidth("sm"));
     const updateMobile = () => setIsMobile(mediaQuery.matches);
     updateMobile();
     mediaQuery.addEventListener("change", updateMobile);

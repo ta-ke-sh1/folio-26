@@ -354,6 +354,7 @@ export default function Footer({ compact = false }: FooterProps) {
       className={`footer-console${compact ? " footer-console--modal" : ""}`}
       style={{
         height: compact ? "100%" : "calc(100dvh - 80px)",
+        width: compact ? "100%" : "100dvw",
         marginBottom: compact ? "25px" : 0,
       }}
     >

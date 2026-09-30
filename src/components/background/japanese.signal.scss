@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as bp;
+
 .section-japanese-signal {
   position: relative;
   z-index: 1;
@@ -242,7 +244,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: bp.$xs) {
   .section-japanese-signal {
     grid-template-rows: repeat(2, minmax(22px, auto));
     gap: 2px 0;

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
+import { maxWidth } from "../../styles/breakpoints";
 
 type CursorMode =
   | "default"
@@ -26,7 +27,7 @@ function getCursorMode(target: Element | null, isPressed: boolean): CursorMode {
     ".technology-flow .react-flow__pane, .technology-flow .react-flow__node",
   );
   if (flowTarget) {
-    if (window.matchMedia("(max-width: 48em)").matches) return "default";
+    if (window.matchMedia(maxWidth("sm")).matches) return "default";
     return isPressed ? "grabbing" : "grab";
   }
 
@@ -34,7 +35,7 @@ function getCursorMode(target: Element | null, isPressed: boolean): CursorMode {
 
   if (
     target.closest(".instrument-window__titlebar") &&
-    window.matchMedia("(max-width: 48em)").matches
+    window.matchMedia(maxWidth("sm")).matches
   ) {
     return "default";
   }
@@ -51,7 +52,7 @@ function getCursorMode(target: Element | null, isPressed: boolean): CursorMode {
   }
 
   if (target.closest(".instrument-window__titlebar")) {
-    if (window.matchMedia("(max-width: 48em)").matches) return "default";
+    if (window.matchMedia(maxWidth("sm")).matches) return "default";
     return isPressed ? "grabbing" : "grab";
   }
 

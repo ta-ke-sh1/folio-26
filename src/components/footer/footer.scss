@@ -1,8 +1,13 @@
+@use "../../styles/breakpoints" as bp;
+
 .footer-console {
   position: relative;
   z-index: 10;
-  width: 100%;
-  padding: 0;
+  width: calc(100dvw / var(--folio-viewport-scale, 1)) !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+  box-sizing: border-box;
+  padding: 0 0 calc(60px / var(--folio-viewport-scale, 1)) !important;
   background: var(--folio-page-bg);
   color: var(--folio-text);
   border-bottom: 1px solid rgba(105, 67, 41, 0.58);
@@ -55,9 +60,8 @@
   min-height: clamp(310px, 30vw, 460px);
   flex: 1 1 auto;
   flex-direction: column;
-  width: 100vw;
-  margin: 0 0 12px -50vw;
-  left: 50%;
+  width: 100%;
+  margin: 0 0 12px;
   overflow: hidden;
   isolation: isolate;
   background:
@@ -532,10 +536,10 @@
   color: var(--folio-text) !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: bp.$xs) {
   .footer-console {
     height: calc(100dvh - 50px) !important;
-    padding: 0 !important;
+    padding: 0 0 calc(50px / var(--folio-viewport-scale, 1)) !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
   }
@@ -551,7 +555,7 @@
   .footer-console__watcher {
     position: absolute !important;
     z-index: 2;
-    inset: 0 !important;
+    inset: 0 0 calc(50px / var(--folio-viewport-scale, 1)) !important;
     width: 100% !important;
     min-height: 0 !important;
     max-height: none !important;
@@ -647,6 +651,9 @@
 }
 
 .footer-console--modal {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
   height: 100% !important;
   min-height: 0 !important;
   max-height: 100% !important;

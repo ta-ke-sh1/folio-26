@@ -1,5 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Box, Text } from "@mantine/core";
+import {
+  Box,
+  Flex,
+  Group,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -17,6 +24,7 @@ import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import "./memories.layout.scss";
 import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
+import { maxWidth } from "../../styles/breakpoints";
 
 gsap.registerPlugin(Flip);
 
@@ -188,7 +196,7 @@ export default function MemoriesLayout() {
       void document.documentElement
         .requestFullscreen()
         .then(() => {
-          const orientation = window.matchMedia("(max-width: 48em)").matches
+          const orientation = window.matchMedia(maxWidth("sm")).matches
             ? "portrait"
             : "landscape";
           return window.screen.orientation
@@ -249,6 +257,7 @@ export default function MemoriesLayout() {
 
   const selectReel = (index: number) => {
     fullscreenTimeRef.current = 0;
+    wasPlayingRef.current = true;
     setCurrentTime(0);
     setIsPlaying(true);
     setActiveIndex(index);
@@ -264,10 +273,27 @@ export default function MemoriesLayout() {
         onClick={() => selectReel(index)}
         aria-label={`Play ${direction.toLowerCase()} video: ${reel.title}`}
       >
-        <span className="memories-preview__video-wrap">
+        <Box
+          component="span"
+          className="memories-preview__video-wrap"
+          style={{
+            position: "relative",
+            display: "block",
+            overflow: "hidden",
+            aspectRatio: "16 / 9",
+          }}
+        >
           <video
             className="memories-preview__video"
             src={reel.src}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "100%",
+              filter: "grayscale(1) contrast(1.08)",
+              objectFit: "cover",
+              pointerEvents: "none",
+            }}
             muted
             playsInline
             preload="auto"
@@ -277,56 +303,103 @@ export default function MemoriesLayout() {
             }}
             aria-hidden="true"
           />
-        </span>
-        <span>
-          <span className="memories-preview__label">
+        </Box>
+        <Box component="span">
+          <Box component="span" className="memories-preview__label">
             {direction} // CH_{String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="memories-preview__title">{reel.title}</span>
-        </span>
+          </Box>
+          <Box component="span" className="memories-preview__title">
+            {reel.title}
+          </Box>
+        </Box>
       </button>
     );
   };
 
   return (
     <LayoutWrapper>
-      <main className="memories-page">
-        <header className="memories-page__header" style={{
-            marginTop: '20px'
-        }}>
-          <Box>
+      <Box
+        component="main"
+        className="memories-page"
+        style={{
+          position: "relative",
+          display: "flex",
+          width: "calc(100dvw / var(--folio-viewport-scale, 1))",
+          minHeight: 0,
+          boxSizing: "border-box",
+          flexDirection: "column",
+        }}
+      >
+        <Flex
+          component="header"
+          className="memories-page__header"
+          style={{
+            marginTop: 20,
+            position: "relative",
+            zIndex: 1,
+            width: "100%",
+          }}
+        >
+          <Stack gap={0}>
             <Text className="memories-page__eyebrow">
               [ PERSONAL ARCHIVE // VIDEO ]
             </Text>
-            <h1 className="memories-page__title">
+            <Title order={1} className="memories-page__title">
               <BilingualShuffle
                 className="memories-page__title-shuffle"
                 english="MOVING MEMORIES"
                 japanese="動く記憶"
               />
-            </h1>
-          </Box>
+            </Title>
+          </Stack>
           <Text className="memories-page__status">ARCHIVE SIGNAL ONLINE</Text>
-        </header>
+        </Flex>
 
-        <section className="memories-console" aria-label="Video archive player">
-          <div
+        <Box
+          component="section"
+          className="memories-console"
+          aria-label="Video archive player"
+          style={{
+            position: "relative",
+            zIndex: 1,
+            display: "grid",
+            width: "100%",
+            flex: "1 1 auto",
+            minHeight: 0,
+            gridTemplateColumns: "minmax(0, 1fr)",
+            gridTemplateRows: "minmax(0, 1fr) auto",
+            alignItems: "stretch",
+          }}
+        >
+          <Box
             className="memories-deck"
-            style={{ display: "flex", minHeight: 0, alignSelf: "stretch" }}
+            style={{
+              display: "flex",
+              minWidth: 0,
+              minHeight: 0,
+              alignSelf: "stretch",
+            }}
           >
-            <div
+            <Flex
               className="memories-tv"
+              direction="column"
               style={{
-                display: "flex",
+                position: "relative",
+                boxSizing: "border-box",
                 width: "100%",
                 minHeight: 0,
-                flexDirection: "column",
               }}
             >
-              <div
+              <Box
                 ref={screenFrameRef}
                 className="memories-tv__screen-frame"
-                style={{ flex: "1 1 auto", minHeight: 0 }}
+                style={{
+                  position: "relative",
+                  flex: "1 1 auto",
+                  minHeight: 0,
+                  overflow: "hidden",
+                  aspectRatio: "16 / 9",
+                }}
                 data-flip-id="memories-video-screen"
                 role="button"
                 tabIndex={0}
@@ -343,13 +416,20 @@ export default function MemoriesLayout() {
                   ref={videoRef}
                   className="memories-tv__video"
                   src={VIDEO_REELS[activeIndex].src}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    background: "#030303",
+                  }}
                   autoPlay={!isFullscreenMounted}
                   muted={isMuted}
-                  loop
                   playsInline
                   preload="metadata"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
+                  onEnded={() => selectReel(nextIndex)}
                   onTimeUpdate={(event) =>
                     setCurrentTime(event.currentTarget.currentTime)
                   }
@@ -357,95 +437,150 @@ export default function MemoriesLayout() {
                     setDuration(event.currentTarget.duration)
                   }
                 />
-                <div className="memories-tv__screen-overlay">
-                  <span className="memories-tv__screen-light" />
+                <Flex
+                  className="memories-tv__screen-overlay"
+                  align="center"
+                  style={{
+                    position: "absolute",
+                    right: 12,
+                    bottom: 10,
+                    zIndex: 1,
+                    gap: 7,
+                    padding: "5px 8px",
+                    border: "1px solid rgba(255, 119, 0, 0.25)",
+                    borderRadius: 2,
+                    background: "rgba(5, 5, 5, 0.72)",
+                    color: "#ffd2a6",
+                    font: "700 9px monospace",
+                    letterSpacing: "0.08em",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <Box
+                    component="span"
+                    className="memories-tv__screen-light"
+                    style={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: "50%",
+                      background: "var(--memories-orange)",
+                      boxShadow: "0 0 8px var(--memories-orange)",
+                    }}
+                  />
                   PLAYING // {String(activeIndex + 1).padStart(2, "0")}
                   <IconMaximize size={13} />
-                </div>
-              </div>
-              <div className="memories-tv__bezel">
-                <span className="memories-tv__brand">FOLIO / CRT-26</span>
-                <span className="memories-tv__bezel-right">
-                  <span className="memories-tv__channel">
+                </Flex>
+              </Box>
+              <Flex
+                className="memories-tv__bezel"
+                align="center"
+                justify="space-between"
+              >
+                <Box component="span" className="memories-tv__brand">
+                  FOLIO / CRT-26
+                </Box>
+                <Group className="memories-tv__bezel-right" gap={14} align="center">
+                  <Box
+                    component="span"
+                    className="memories-tv__channel"
+                    style={{ color: "#8f8980", fontSize: 8 }}
+                  >
                     CH {String(activeIndex + 1).padStart(2, "0")}
-                  </span>
-                  <span className="memories-tv__led" />
-                </span>
-              </div>
-            </div>
-          </div>
+                  </Box>
+                  <Box
+                    component="span"
+                    className="memories-tv__led"
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: "#40c057",
+                      boxShadow: "0 0 7px rgba(64, 192, 87, 0.8)",
+                    }}
+                  />
+                </Group>
+              </Flex>
+            </Flex>
+          </Box>
 
-          <aside
+          <Box
+            component="aside"
             className="memories-controller"
             style={{
               boxSizing: "border-box",
-              display: "flex",
               minHeight: 0,
-              flexDirection: "column",
-              justifyContent: "center",
               alignSelf: "stretch",
             }}
             aria-label="TV controller"
           >
-            <div
-              className="memories-controller__previews"
-              aria-label="Adjacent video previews"
+            <Box
+              className="memories-controller__station"
+              style={{
+                display: "grid",
+                minWidth: 0,
+                gridTemplateRows: "auto minmax(0, 1fr)",
+                gap: 6,
+              }}
+            >
+              <Flex className="memories-controller__heading" align="center">
+                <Text className="memories-controller__eyebrow">REMOTE / 01</Text>
+                <Text className="memories-controller__readout">POWER: ON</Text>
+                <Group className="memories-controller__volume" gap={0}>
+                  <button
+                    className="memories-controller__button"
+                    type="button"
+                    onClick={toggleMute}
+                    aria-label={isMuted ? "Unmute video" : "Mute video"}
+                  >
+                    {isMuted ? (
+                      <IconVolumeOff size={17} />
+                    ) : (
+                      <IconVolume size={17} />
+                    )}
+                  </button>
+                </Group>
+              </Flex>
+
+              <Box
+                className="memories-controller__current"
+                style={{
+                  display: "grid",
+                  minWidth: 0,
+                  alignContent: "center",
+                }}
+              >
+                <Text className="memories-controller__eyebrow">NOW VIEWING</Text>
+                <Text className="memories-controller__current-title">
+                  {VIDEO_REELS[activeIndex].title}
+                </Text>
+                <input
+                  className="memories-controller__scrubber"
+                  aria-label="Seek video"
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step={0.1}
+                  value={Math.min(currentTime, duration || 0)}
+                  onChange={(event) => {
+                    const time = Number(event.currentTarget.value);
+                    seekVideo(time);
+                  }}
+                />
+                <Flex
+                  className="memories-controller__time"
+                  justify="space-between"
+                >
+                  <Box component="span">{formatTime(currentTime)}</Box>
+                  <Box component="span">{formatTime(duration)}</Box>
+                </Flex>
+              </Box>
+            </Box>
+
+            <Box
+              className="memories-controller__navigation"
+              aria-label="Video playback navigation"
             >
               {renderPreview(previousIndex, "PREVIOUS")}
-              {renderPreview(nextIndex, "NEXT")}
-            </div>
-            <div className="memories-controller__heading">
-              <Text className="memories-controller__eyebrow">REMOTE / 01</Text>
-              <Text className="memories-controller__readout">POWER: ON</Text>
-              <div className="memories-controller__volume">
-                <button
-                  className="memories-controller__button"
-                  type="button"
-                  onClick={toggleMute}
-                  aria-label={isMuted ? "Unmute video" : "Mute video"}
-                >
-                  {isMuted ? (
-                    <IconVolumeOff size={17} />
-                  ) : (
-                    <IconVolume size={17} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="memories-controller__current">
-              <Text className="memories-controller__eyebrow">NOW VIEWING</Text>
-              <Text className="memories-controller__current-title">
-                {VIDEO_REELS[activeIndex].title}
-              </Text>
-              <input
-                className="memories-controller__scrubber"
-                aria-label="Seek video"
-                type="range"
-                min={0}
-                max={duration || 0}
-                step={0.1}
-                value={Math.min(currentTime, duration || 0)}
-                onChange={(event) => {
-                  const time = Number(event.currentTarget.value);
-                  seekVideo(time);
-                }}
-              />
-              <div className="memories-controller__time">
-                <span>{formatTime(currentTime)}</span>
-                <span>{formatTime(duration)}</span>
-              </div>
-            </div>
-
-            <div className="memories-controller__transport">
-              <button
-                className="memories-controller__button"
-                type="button"
-                onClick={() => selectReel(previousIndex)}
-                aria-label="Previous video"
-              >
-                <IconChevronLeft size={18} />
-              </button>
               <button
                 className="memories-controller__button memories-controller__button--play"
                 type="button"
@@ -458,17 +593,10 @@ export default function MemoriesLayout() {
                   <IconPlayerPlay size={20} />
                 )}
               </button>
-              <button
-                className="memories-controller__button"
-                type="button"
-                onClick={() => selectReel(nextIndex)}
-                aria-label="Next video"
-              >
-                <IconChevronRight size={18} />
-              </button>
-            </div>
+              {renderPreview(nextIndex, "NEXT")}
+            </Box>
 
-            <div
+            <Box
               className="memories-controller__channels"
               aria-label="Select a video"
             >
@@ -483,19 +611,25 @@ export default function MemoriesLayout() {
                   CH_{String(index + 1).padStart(2, "0")}
                 </button>
               ))}
-            </div>
-          </aside>
-        </section>
+            </Box>
+          </Box>
+        </Box>
 
         {isFullscreenMounted &&
           createPortal(
-            <div
+            <Box
               ref={fullscreenBackdropRef}
               className="memories-fullscreen"
               aria-label="Fullscreen video player"
             >
-              <div className="memories-fullscreen__content">
-                <div
+              <Flex
+                className="memories-fullscreen__content"
+                direction="column"
+                align="center"
+                justify="center"
+                style={{ position: "relative", width: "100%", height: "100%" }}
+              >
+                <Box
                   ref={fullscreenFrameRef}
                   className={`memories-fullscreen__frame${!isFullscreen ? " memories-fullscreen__frame--closing" : ""}`}
                   data-flip-id="memories-video-screen"
@@ -514,10 +648,19 @@ export default function MemoriesLayout() {
                     ref={fullscreenVideoRef}
                     className="memories-fullscreen__video"
                     src={VIDEO_REELS[activeIndex].src}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      background: "#020202",
+                      pointerEvents: "none",
+                    }}
                     muted={isMuted}
                     playsInline
                     preload="auto"
                     autoPlay={wasPlayingRef.current}
+                    onEnded={() => selectReel(nextIndex)}
                     onLoadedMetadata={(event) => {
                       event.currentTarget.currentTime =
                         fullscreenTimeRef.current;
@@ -536,10 +679,13 @@ export default function MemoriesLayout() {
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
                   />
-                </div>
+                </Box>
                 {isFullscreen && (
-                  <div
+                  <Flex
                     className="memories-fullscreen__controls"
+                    wrap="wrap"
+                    align="center"
+                    justify="center"
                     onClick={(event) => event.stopPropagation()}
                   >
                     <input
@@ -604,13 +750,13 @@ export default function MemoriesLayout() {
                     >
                       <IconX size={20} />
                     </button>
-                  </div>
+                  </Flex>
                 )}
-              </div>
-            </div>,
+              </Flex>
+            </Box>,
             document.body,
           )}
-      </main>
+      </Box>
       <Footer />
     </LayoutWrapper>
   );

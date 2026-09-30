@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as bp;
+
 @property --galaxy-angle {
   syntax: "<angle>";
   inherits: true;
@@ -340,7 +342,7 @@
   transform: translateY(-4px);
 }
 
-@media (max-width: 48em) {
+@media (max-width: bp.$sm) {
   .homepage-hud {
     top: auto !important;
     right: 50% !important;

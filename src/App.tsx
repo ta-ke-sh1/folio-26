@@ -48,6 +48,7 @@ import {
 
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
+import { MANTINE_BREAKPOINTS } from "./styles/breakpoints";
 
 type RouteItem = {
   element: JSX.Element;
@@ -190,6 +191,7 @@ export default function App() {
   }, []);
 
   const theme = createTheme({
+    breakpoints: MANTINE_BREAKPOINTS,
     fontFamily: "Inter Variable",
     fontFamilyMonospace: "DM Mono",
     primaryColor: "primaryOrange",

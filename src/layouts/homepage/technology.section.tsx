@@ -38,6 +38,7 @@ import "@xyflow/react/dist/style.css";
 import "./technology.section.scss";
 import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
+import { maxWidth } from "../../styles/breakpoints";
 
 type Branch = "left" | "right";
 const ICONS = {
@@ -271,7 +272,7 @@ const CATEGORY_WIDTH = 250;
 const CATEGORY_HEIGHT = 62;
 const TECHNOLOGY_WIDTH = 200;
 const TECHNOLOGY_HEIGHT = 50;
-const MOBILE_BREAKPOINT = "(max-width: 48em)";
+const MOBILE_BREAKPOINT = maxWidth("sm");
 
 function createInitialNodes(isMobile: boolean): TechnologyNode[] {
   const hub = isMobile ? MOBILE_HUB : HUB;

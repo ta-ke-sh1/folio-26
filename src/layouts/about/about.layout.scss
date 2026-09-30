@@ -1,8 +1,6 @@
-.about-mobile-controls {
-  display: none;
-}
+@use "../../styles/breakpoints" as bp;
 
-@media (max-width: 62em) {
+@media (max-width: bp.$md) {
   .about-page {
     height: auto !important;
     min-height: calc(100dvh / var(--folio-viewport-scale, 1));
@@ -44,13 +42,7 @@
     padding-top: 0 !important;
   }
 
-  .about-desktop-contacts,
-  .about-information-column {
-    display: none !important;
-  }
-
   .about-mobile-controls {
-    display: grid;
     gap: 10px;
     margin: 12px 0 18px;
   }
@@ -119,7 +111,7 @@
   }
 }
 
-@media (max-width: 340px), (max-height: 420px) {
+@media (max-height: bp.$close-control-height) {
   .about-close-all-control {
     display: none !important;
   }
