@@ -10,6 +10,7 @@ import { type ActiveTab } from "./admin.types";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
 import { BlogEditorPage } from "./forms/admin.blog.form";
+import { CannisterEditorPage } from "./forms/admin.cannisterEditor.modal";
 
 const VALID_TABS: ActiveTab[] = ["items", "collections", "categories", "tags", "blogs", "cannisters"];
 
@@ -17,10 +18,13 @@ export default function AdminLayout() {
   const [opened, { toggle }] = useDisclosure(true);
   const location = useLocation();
   const navigate = useNavigate();
+
   const isBlogPath = location.pathname.startsWith("/admin/blogs");
   const isBlogEditor =
     location.pathname === "/admin/blogs/new" ||
     /^\/admin\/blogs\/\d+\/edit$/.test(location.pathname);
+  const isCannisterEditor = /^\/admin\/cannisters\/\d+\/edit$/.test(location.pathname);
+
   const pathTab = location.pathname.split("/")[2] as ActiveTab | undefined;
   const queryTab = new URLSearchParams(location.search).get("tab");
   const activeTab: ActiveTab = isBlogPath
@@ -28,10 +32,6 @@ export default function AdminLayout() {
     : VALID_TABS.includes(pathTab as ActiveTab)
       ? (pathTab as ActiveTab)
       : "items";
-
-  useEffect(() => {
-    if (import.meta.env.IS_LOCAL !== "true") window.location.href = "/";
-  }, []);
 
   useEffect(() => {
     if (location.pathname !== "/admin" || !queryTab) return;
@@ -43,9 +43,8 @@ export default function AdminLayout() {
     });
   }, [location.pathname, navigate, queryTab]);
 
-  if (import.meta.env.IS_LOCAL !== "true") return null;
-
   const renderActiveTab = () => {
+    if (isCannisterEditor) return <CannisterEditorPage />;
     if (isBlogEditor) return <BlogEditorPage />;
     if (isBlogPath) return <BlogsTab />;
 

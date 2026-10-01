@@ -10,8 +10,10 @@ import {
   Title,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { openConfirmModal } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
+import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { useNavigate } from "react-router";
 import { type DataTableColumn } from "mantine-datatable";
 import { ShuffleButton as Button } from "../../../components/animations/shuffle.button";
 import ViewTable from "../../../components/table/view.table";
@@ -19,7 +21,6 @@ import type CannisterEntity from "../../../models/entity/cannister.model";
 import CannisterService from "../../../services/cannister.service";
 import DatabaseService from "../../../services/database.service";
 import { CannisterCreateModal, type CannisterFormValues } from "../forms/admin.cannister.form";
-import { CannisterEditorModal } from "../forms/admin.cannisterEditor.modal";
 
 interface CategoryRecord {
   id: number;
@@ -30,9 +31,8 @@ export function CannistersTab() {
   const [data, setData] = useState<CannisterEntity[]>([]);
   const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
   const [loading, setLoading] = useState(false);
-  const [editingCannister, setEditingCannister] = useState<CannisterEntity | null>(null);
   const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false);
-  const [editorOpened, { open: openEditor, close: closeEditor }] = useDisclosure(false);
+  const navigate = useNavigate();
   const db = DatabaseService.getInstance();
   const service = CannisterService.getInstance();
 
@@ -143,6 +143,30 @@ export function CannistersTab() {
     }
   };
 
+  const deleteCannister = async (cannister: CannisterEntity) => {
+    setLoading(true);
+    try {
+      const deletedFileCount = await service.deleteCannister(
+        cannister.id,
+        cannister.name,
+      );
+      notifications.show({
+        title: "Cannister deleted",
+        message: `${cannister.name} and ${deletedFileCount} storage file(s) were deleted.`,
+        color: "green",
+      });
+      await fetchData();
+    } catch (error) {
+      notifications.show({
+        title: "Cannister deletion failed",
+        message: error instanceof Error ? error.message : "Please try again.",
+        color: "red",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns: DataTableColumn<CannisterEntity>[] = [
     { accessor: "id", title: "ID", sortable: true, width: 80 },
     { accessor: "name", title: "Cannister", sortable: true },
@@ -159,7 +183,7 @@ export function CannistersTab() {
     { accessor: "created_at", title: "Created At", sortable: true },
     {
       accessor: "actions",
-      title: "Images / Edit",
+      title: "Actions",
       textAlign: "right",
       render: (record) => (
         <Group justify="flex-end">
@@ -168,12 +192,30 @@ export function CannistersTab() {
               variant="subtle"
               color="blue"
               aria-label={`Manage ${record.name}`}
-              onClick={() => {
-                setEditingCannister(record);
-                openEditor();
-              }}
+              onClick={() => navigate(`/admin/cannisters/${record.id}/edit`)}
             >
               <IconEdit size={17} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Delete cannister and its storage folder">
+            <ActionIcon
+              variant="subtle"
+              color="red"
+              aria-label={`Delete ${record.name} and its images`}
+              onClick={() => openConfirmModal({
+                title: `Delete ${record.name}?`,
+                children: (
+                  <Text size="sm">
+                    This permanently deletes the cannister record and every file in
+                    its <strong>{record.name}</strong> storage folder.
+                  </Text>
+                ),
+                labels: { confirm: "Delete cannister", cancel: "Cancel" },
+                confirmProps: { color: "red" },
+                onConfirm: () => void deleteCannister(record),
+              })}
+            >
+              <IconTrash size={17} />
             </ActionIcon>
           </Tooltip>
         </Group>
@@ -201,16 +243,6 @@ export function CannistersTab() {
         onClose={closeCreate}
         categories={categories}
         onSubmit={createCannister}
-      />
-      <CannisterEditorModal
-        opened={editorOpened}
-        cannister={editingCannister}
-        categories={categories}
-        onClose={() => {
-          closeEditor();
-          setEditingCannister(null);
-        }}
-        onUpdated={fetchData}
       />
     </Container>
   );

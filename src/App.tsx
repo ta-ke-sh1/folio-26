@@ -95,38 +95,42 @@ const routes: RouteItem[] = [
     path: "/collections",
     element: <CollectionsLayout />,
   },
-  // {
-  //   path: "/admin/items",
-  //   element: <AdminLayout />,
-  // },
-  // {
-  //   path: "/admin/collections",
-  //   element: <AdminLayout />,
-  // },
-  // {
-  //   path: "/admin/categories",
-  //   element: <AdminLayout />,
-  // },
-  // {
-  //   path: "/admin/tags",
-  //   element: <AdminLayout />,
-  // },
-  // {
-  //   path: "/admin/blogs/new",
-  //   element: <AdminLayout />,
-  // },
-  // {
-  //   path: "/admin/blogs/:blogId/edit",
-  //   element: <AdminLayout />,
-  // },
-  // {
-  //   path: "/admin/blogs",
-  //   element: <AdminLayout />,
-  // },
-  // {
-  //   path: "/admin",
-  //   element: <AdminLayout />,
-  // },
+  {
+    path: "/admin/items",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/collections",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/categories",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/tags",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/blogs/new",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/blogs/:blogId/edit",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/cannisters/:cannisterId/edit",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin/blogs",
+    element: <AdminLayout />,
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+  },
 ];
 
 export default function App() {

@@ -353,7 +353,7 @@ export default function Footer({ compact = false }: FooterProps) {
       fluid
       className={`footer-console${compact ? " footer-console--modal" : ""}`}
       style={{
-        height: compact ? "100%" : "calc(100dvh - 80px)",
+        height: compact ? "100%" : "calc(100dvh - 40px)",
         width: compact ? "100%" : "100dvw",
         marginBottom: compact ? "25px" : 0,
       }}

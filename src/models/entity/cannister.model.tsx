@@ -4,4 +4,5 @@ export default interface CannisterEntity {
     tags: string[];
     category_id: number;
     created_at: Date;
+    description?: string;
 }

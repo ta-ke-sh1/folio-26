@@ -1,5 +1,40 @@
 import { DatabaseTables } from "../enums/database.enums";
+import { parse } from "exifr";
 import DatabaseService from "./database.service";
+
+interface ExposureMetadata {
+  iso?: number;
+  exposureTime?: number;
+  aperture?: number;
+}
+
+async function readExposureMetadata(file: File): Promise<ExposureMetadata> {
+  try {
+    const tags = await parse(file, {
+      pick: ["ISO", "PhotographicSensitivity", "ExposureTime", "ShutterSpeedValue", "FNumber"],
+    });
+    const shutterSpeed = Number(tags?.ExposureTime);
+    const shutterSpeedValue = Number(tags?.ShutterSpeedValue);
+    const exposureTime = Number.isFinite(shutterSpeed) && shutterSpeed > 0
+      ? shutterSpeed
+      : Number.isFinite(shutterSpeedValue)
+        ? 2 ** -shutterSpeedValue
+        : undefined;
+    const iso = Number(tags?.ISO ?? tags?.PhotographicSensitivity);
+    const aperture = Number(tags?.FNumber);
+
+    return {
+      ...(Number.isFinite(iso) && iso > 0 ? { iso } : {}),
+      ...(exposureTime && Number.isFinite(exposureTime) && exposureTime > 0
+        ? { exposureTime }
+        : {}),
+      ...(Number.isFinite(aperture) && aperture > 0 ? { aperture } : {}),
+    };
+  } catch {
+    // EXIF is optional; uploading should still work for images without camera metadata.
+    return {};
+  }
+}
 
 export interface CannisterImageFile {
   name: string;
@@ -8,7 +43,10 @@ export interface CannisterImageFile {
   updated_at?: string;
 }
 
-async function convertImageToJpeg(file: File, outputName: string): Promise<File> {
+async function convertImageToJpeg(
+  file: File,
+  outputName: string,
+): Promise<File> {
   const bitmap = await createImageBitmap(file);
   const canvas = document.createElement("canvas");
   canvas.width = bitmap.width;
@@ -24,7 +62,10 @@ async function convertImageToJpeg(file: File, outputName: string): Promise<File>
 
   const blob = await new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
-      (result) => (result ? resolve(result) : reject(new Error("Could not encode image as JPEG."))),
+      (result) =>
+        result
+          ? resolve(result)
+          : reject(new Error("Could not encode image as JPEG.")),
       "image/jpeg",
       0.92,
     );
@@ -65,14 +106,13 @@ export default class CannisterService {
       .getDatabase()
       .storage.from(DatabaseTables.Cannisters)
       .list(name);
+
     if (storageError) {
-      console.error(
-        `Failed to fetch storage items for canister ${name}:`,
-        storageError.message,
+      throw new Error(
+        `Failed to list cannister folder "${name}" in bucket "${DatabaseTables.Cannisters}": ${storageError.message}`,
       );
-      return [];
     }
-    return storageFiles;
+    return storageFiles ?? [];
   }
 
   public async createCannister(payload: {
@@ -100,14 +140,18 @@ export default class CannisterService {
   }
 
   public async uploadImages(name: string, files: File[], startIndex: number) {
-    const bucket = this.dbService.getDatabase().storage.from(DatabaseTables.Cannisters);
+    const bucket = this.dbService
+      .getDatabase()
+      .storage.from(DatabaseTables.Cannisters);
     let nextIndex = startIndex;
 
     for (const file of files) {
+      const exposureMetadata = await readExposureMetadata(file);
       const jpeg = await convertImageToJpeg(file, `${nextIndex}.jpg`);
       const { error } = await bucket.upload(`${name}/${jpeg.name}`, jpeg, {
         contentType: "image/jpeg",
         upsert: false,
+        metadata: exposureMetadata,
       });
       if (error) {
         throw new Error(`Failed to upload ${file.name}: ${error.message}`);
@@ -123,6 +167,67 @@ export default class CannisterService {
       .getDatabase()
       .storage.from(DatabaseTables.Cannisters)
       .remove([`${name}/${fileName}`]);
-    if (error) throw new Error(`Failed to delete ${fileName}: ${error.message}`);
+    if (error)
+      throw new Error(`Failed to delete ${fileName}: ${error.message}`);
+  }
+
+  public async deleteCannister(id: number, name: string) {
+    const bucket = this.dbService
+      .getDatabase()
+      .storage.from(DatabaseTables.Cannisters);
+    const objectPaths: string[] = [];
+
+    const collectFolderObjects = async (folderPath: string): Promise<void> => {
+      const pageSize = 1000;
+      let offset = 0;
+
+      while (true) {
+        const { data, error } = await bucket.list(folderPath, {
+          limit: pageSize,
+          offset,
+        });
+        if (error) {
+          throw new Error(
+            `Failed to list cannister folder "${folderPath}": ${error.message}`,
+          );
+        }
+
+        const entries = data ?? [];
+        for (const entry of entries) {
+          const entryPath = `${folderPath}/${entry.name}`;
+          if (entry.id == null && entry.metadata == null) {
+            await collectFolderObjects(entryPath);
+          } else {
+            objectPaths.push(entryPath);
+          }
+        }
+
+        if (entries.length < pageSize) break;
+        offset += pageSize;
+      }
+    };
+
+    await collectFolderObjects(name);
+
+    for (let offset = 0; offset < objectPaths.length; offset += 1000) {
+      const { error } = await bucket.remove(objectPaths.slice(offset, offset + 1000));
+      if (error) {
+        throw new Error(
+          `Failed to remove cannister storage objects: ${error.message}`,
+        );
+      }
+    }
+
+    const { error } = await this.dbService.deleteById(
+      DatabaseTables.Cannisters,
+      id,
+    );
+    if (error) {
+      throw new Error(
+        `Storage folder was deleted, but the cannister record could not be deleted: ${error.message}`,
+      );
+    }
+
+    return objectPaths.length;
   }
 }

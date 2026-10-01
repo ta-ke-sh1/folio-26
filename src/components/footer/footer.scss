@@ -7,7 +7,7 @@
   max-width: none !important;
   margin-inline: 0 !important;
   box-sizing: border-box;
-  padding: 0 0 calc(60px / var(--folio-viewport-scale, 1)) !important;
+  padding: 0 0 calc(40px / var(--folio-viewport-scale, 1)) !important;
   background: var(--folio-page-bg);
   color: var(--folio-text);
   border-bottom: 1px solid rgba(105, 67, 41, 0.58);
@@ -61,7 +61,7 @@
   flex: 1 1 auto;
   flex-direction: column;
   width: 100%;
-  margin: 0 0 12px;
+  margin: 0;
   overflow: hidden;
   isolation: isolate;
   background:
@@ -538,8 +538,8 @@
 
 @media (max-width: bp.$xs) {
   .footer-console {
-    height: calc(100dvh - 50px) !important;
-    padding: 0 0 calc(50px / var(--folio-viewport-scale, 1)) !important;
+    height: calc(100dvh - 40px) !important;
+    padding: 0 0 calc(40px / var(--folio-viewport-scale, 1)) !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
   }
@@ -555,7 +555,7 @@
   .footer-console__watcher {
     position: absolute !important;
     z-index: 2;
-    inset: 0 0 calc(50px / var(--folio-viewport-scale, 1)) !important;
+    inset: 0 0 calc(40px / var(--folio-viewport-scale, 1)) !important;
     width: 100% !important;
     min-height: 0 !important;
     max-height: none !important;
