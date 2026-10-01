@@ -120,10 +120,5 @@ export const FORM_TYPES: FormWindowItem[] = [
     id: "say-hi",
     title: "FORM // DIRECT_COMMUNICATION",
     icon: IconMessageDots,
-  },
-  {
-    id: "email-me",
-    title: "FORM // DIRECT_EMAIL_TERMINAL",
-    icon: IconMail,
-  },
+  }
 ];

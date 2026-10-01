@@ -3,5 +3,6 @@ export enum DatabaseTables {
     Collections = "collections",
     CollectionItems = "collection_items",
     Tags = "tags",
-    Blogs = "blogs"
+    Blogs = "blogs",
+    Cannisters = "cannisters"
 }

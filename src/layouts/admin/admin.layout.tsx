@@ -5,19 +5,15 @@ import { CollectionsTab } from "./tabs/admin.collection.tab";
 import { ItemsTab } from "./tabs/admin.collectionItem.tab";
 import { TagsTab } from "./tabs/admin.tags.tab";
 import { BlogsTab } from "./tabs/admin.blog.tab";
+import { CannistersTab } from "./tabs/admin.cannister.tab";
 import { type ActiveTab } from "./admin.types";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
 import { BlogEditorPage } from "./forms/admin.blog.form";
 
-const VALID_TABS: ActiveTab[] = ["items", "collections", "categories", "tags", "blogs"];
+const VALID_TABS: ActiveTab[] = ["items", "collections", "categories", "tags", "blogs", "cannisters"];
 
 export default function AdminLayout() {
-
-  if (import.meta.env.IS_LOCAL !== "true") {
-    window.location.href = "/";
-  }
-
   const [opened, { toggle }] = useDisclosure(true);
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,6 +30,10 @@ export default function AdminLayout() {
       : "items";
 
   useEffect(() => {
+    if (import.meta.env.IS_LOCAL !== "true") window.location.href = "/";
+  }, []);
+
+  useEffect(() => {
     if (location.pathname !== "/admin" || !queryTab) return;
     const normalizedTab = VALID_TABS.includes(queryTab as ActiveTab)
       ? (queryTab as ActiveTab)
@@ -42,6 +42,8 @@ export default function AdminLayout() {
       replace: true,
     });
   }, [location.pathname, navigate, queryTab]);
+
+  if (import.meta.env.IS_LOCAL !== "true") return null;
 
   const renderActiveTab = () => {
     if (isBlogEditor) return <BlogEditorPage />;
@@ -58,6 +60,8 @@ export default function AdminLayout() {
         return <TagsTab />;
       case "blogs":
         return <BlogsTab />;
+      case "cannisters":
+        return <CannistersTab />;
     }
   };
 
@@ -112,6 +116,7 @@ function AdminHeader({ opened, onToggleNavbar }: any) {
 
 const NAV_ITEMS: { label: string; value: ActiveTab }[] = [
   { label: "Collection Items", value: "items" },
+  { label: "Cannisters", value: "cannisters" },
   { label: "Collections", value: "collections" },
   { label: "Categories", value: "categories" },
   { label: "Tags", value: "tags" },

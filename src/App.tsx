@@ -8,9 +8,8 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import AdminLayout from "./layouts/admin/admin.layout";
 import LoginLayout from "./layouts/login/login.layout";
 import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
+import CannisterDetailsLayout from "./layouts/gallery/cannisterDetails.layout.tsx";
 import MemoriesLayout from "./layouts/memories/memories.layout.tsx";
-import PlaygroundLayout from "./layouts/playground/playground.layout.tsx";
-import PlaygroundDetails from "./layouts/playground/playgroundDetails.layout.tsx";
 
 import "./styles/base.scss";
 import "@mantine/core/styles.css";
@@ -61,12 +60,20 @@ const routes: RouteItem[] = [
     element: <LoginLayout />,
   },
   {
+    path: "/admin/*",
+    element: <AdminLayout />,
+  },
+  {
     path: "/*",
     element: <AboutLayout />,
   },
   {
     path: "/gallery",
     element: <GalleryLayout />,
+  },
+  {
+    path: "/gallery/:id",
+    element: <CannisterDetailsLayout />,
   },
   {
     path: "/memories",
@@ -131,7 +138,7 @@ export default function App() {
     const updateViewportScale = () => {
       const scale = pointerQuery.matches
         ? Math.max(
-            0.7,
+            1,
             Math.min(1, window.innerWidth / 1280, window.innerHeight / 720),
           )
         : 1;

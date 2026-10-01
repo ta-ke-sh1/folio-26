@@ -1,525 +1,219 @@
-import { ActionIcon, Box, Group, Stack, Text } from "@mantine/core";
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconFocusCentered,
-  IconRefresh,
-} from "@tabler/icons-react";
-import { useState } from "react";
-import { ShuffleText } from "../../components/animations/shuffle.text";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Box, Group, Stack, Text } from "@mantine/core";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
-import "./gallery.layout.scss";
-import JapaneseSignal from "../../components/background/japanese.signal";
-import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import Footer from "../../components/footer/footer";
+import { ShuffleButton } from "../../components/animations/shuffle.button";
+import { ShuffleText } from "../../components/animations/shuffle.text";
+import type CannisterEntity from "../../models/entity/cannister.model";
+import { DatabaseTables } from "../../enums/database.enums";
+import { useAnimatedNavigate } from "../../components/transition/transition";
+import CannisterService from "../../services/cannister.service";
+import CannisterOrbitItem from "./cannisterOrbitItem.component";
 
-type SortKey = "iso" | "aperture" | "shutter";
-
-type Shot = {
-  id: number;
-  title: string;
-  location: string;
-  iso: number;
-  aperture: number;
-  shutter: number;
-};
-
-const SHOTS: Shot[] = [
-  {
-    id: 1,
-    title: "Still Water",
-    location: "West Lake",
-    iso: 100,
-    aperture: 8,
-    shutter: 250,
-  },
-  {
-    id: 2,
-    title: "Passing Light",
-    location: "Hanoi",
-    iso: 400,
-    aperture: 2.8,
-    shutter: 60,
-  },
-  {
-    id: 3,
-    title: "Concrete Study",
-    location: "Ba Dinh",
-    iso: 200,
-    aperture: 5.6,
-    shutter: 125,
-  },
-  {
-    id: 4,
-    title: "After Rain",
-    location: "Old Quarter",
-    iso: 800,
-    aperture: 2,
-    shutter: 30,
-  },
-  {
-    id: 5,
-    title: "Last Commute",
-    location: "Ring Road",
-    iso: 200,
-    aperture: 11,
-    shutter: 500,
-  },
-  {
-    id: 6,
-    title: "Quiet Facade",
-    location: "Dong Da",
-    iso: 100,
-    aperture: 8,
-    shutter: 125,
-  },
-  {
-    id: 7,
-    title: "Open Window",
-    location: "Tay Ho",
-    iso: 400,
-    aperture: 4,
-    shutter: 60,
-  },
-  {
-    id: 8,
-    title: "Night Signal",
-    location: "Long Bien",
-    iso: 1600,
-    aperture: 1.8,
-    shutter: 15,
-  },
-  {
-    id: 9,
-    title: "Canopy",
-    location: "Botanical Garden",
-    iso: 400,
-    aperture: 5.6,
-    shutter: 250,
-  },
-];
-
-const ISO_VALUES = [100, 200, 400, 800, 1600, 2400];
-const APERTURE_VALUES = [1.4, 1.8, 2, 2.8, 4, 5.6, 8, 11, 16];
-const SHUTTER_VALUES = [15, 30, 60, 125, 250, 500, 1000];
-
-type ExposureRange = {
-  min: number;
-  max: number;
-};
-
-type CameraSettings = {
-  iso: ExposureRange;
-  aperture: ExposureRange;
-  shutter: ExposureRange;
-};
-
-type CameraDialProps = {
-  label: string;
-  edge: "MIN" | "MAX";
-  values: number[];
-  value: number;
-  active: boolean;
-  formatValue?: (value: number) => string;
-  onChange: (value: number) => void;
-};
-
-function CameraDial({
-  label,
-  edge,
-  values,
-  value,
-  active,
-  formatValue = String,
-  onChange,
-}: CameraDialProps) {
-  const valueIndex = values.indexOf(value);
-  const rotation = -130 + (valueIndex / (values.length - 1)) * 260;
-
-  return (
-    <label className={`camera-dial ${active ? "camera-dial--active" : ""}`}>
-      <Text className="camera-dial__label">
-        {label} / {edge}
-      </Text>
-      <Box className="camera-dial__control">
-        <Box
-          className="camera-dial__knob"
-          style={{ transform: `rotate(${rotation}deg)` }}
-        >
-          <span />
-        </Box>
-        <input
-          aria-label={`${label} sort target`}
-          type="range"
-          min={0}
-          max={values.length - 1}
-          step={1}
-          value={valueIndex}
-          onChange={(event) => onChange(values[Number(event.target.value)])}
-        />
-      </Box>
-      <Text className="camera-dial__value">{formatValue(value)}</Text>
-    </label>
-  );
-}
+const ITEMS_PER_ORBIT = 12;
 
 export default function GalleryLayout() {
-  const [settings, setSettings] = useState<CameraSettings>({
-    iso: { min: 100, max: 1600 },
-    aperture: { min: 1.8, max: 11 },
-    shutter: { min: 15, max: 500 },
-  });
-  const [sortKey, setSortKey] = useState<SortKey>("iso");
-  const [activeShotId, setActiveShotId] = useState(1);
-  const [isCanisterLoaded, setIsCanisterLoaded] = useState(false);
+  const [cannisters, setCannisters] = useState<CannisterEntity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hoveredCannisterId, setHoveredCannisterId] = useState<number | null>(null);
+  const orbitRef = useRef<HTMLDivElement>(null);
+  const navigate = useAnimatedNavigate();
 
-  const activeRange = settings[sortKey];
-  const rangeCenter = (activeRange.min + activeRange.max) / 2;
-  const sortedShots = SHOTS.filter((shot) =>
-    (Object.keys(settings) as SortKey[]).every((key) => {
-      const range = settings[key];
-      return shot[key] >= range.min && shot[key] <= range.max;
-    }),
-  ).sort((first, second) => {
-    const distance =
-      Math.abs(first[sortKey] - rangeCenter) -
-      Math.abs(second[sortKey] - rangeCenter);
-    return distance || first.id - second.id;
-  });
-  const activeShot = SHOTS.find((shot) => shot.id === activeShotId) ?? SHOTS[0];
-  const activeIndex = sortedShots.findIndex(
-    (shot) => shot.id === activeShot.id,
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchCannisters() {
+      try {
+        const records = await CannisterService.getInstance().fetchCannisters();
+        if (!isMounted) return;
+        const sorted = [...(records as CannisterEntity[])].sort((first, second) => {
+          const firstDate = new Date(first.created_at).getTime();
+          const secondDate = new Date(second.created_at).getTime();
+          return secondDate - firstDate || second.id - first.id;
+        });
+        setCannisters(sorted);
+      } catch (error) {
+        console.error("Unable to load the cannister index:", error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    void fetchCannisters();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const pageCount = Math.ceil(cannisters.length / ITEMS_PER_ORBIT);
+  const orbitItems = useMemo(
+    () => cannisters.slice(page * ITEMS_PER_ORBIT, (page + 1) * ITEMS_PER_ORBIT),
+    [cannisters, page],
   );
-  const hasMatchingShots = sortedShots.length > 0;
 
-  const changeSetting = (key: SortKey, edge: "min" | "max", value: number) => {
-    setSettings((current) => {
-      const currentRange = current[key];
-      const nextRange =
-        edge === "min"
-          ? { min: Math.min(value, currentRange.max), max: currentRange.max }
-          : { min: currentRange.min, max: Math.max(value, currentRange.min) };
-      return { ...current, [key]: nextRange };
-    });
-    setSortKey(key);
-    const nextRange =
-      edge === "min"
-        ? { min: Math.min(value, settings[key].max), max: settings[key].max }
-        : { min: settings[key].min, max: Math.max(value, settings[key].min) };
-    const closest = SHOTS.filter((shot) =>
-      (Object.keys(settings) as SortKey[]).every((filterKey) => {
-        const range = filterKey === key ? nextRange : settings[filterKey];
-        return shot[filterKey] >= range.min && shot[filterKey] <= range.max;
-      }),
-    ).sort(
-      (first, second) =>
-        Math.abs(first[key] - (nextRange.min + nextRange.max) / 2) -
-          Math.abs(second[key] - (nextRange.min + nextRange.max) / 2) ||
-        first.id - second.id,
-    )[0];
-    if (closest) setActiveShotId(closest.id);
-  };
+  useEffect(() => {
+    const orbit = orbitRef.current;
+    if (!orbit || isPaused || orbitItems.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const stepFrame = (direction: -1 | 1) => {
-    if (!sortedShots.length) return;
-    const nextIndex =
-      (activeIndex + direction + sortedShots.length) % sortedShots.length;
-    setActiveShotId(sortedShots[nextIndex].id);
-  };
+    const orbitAnimation = orbit.animate(
+      [
+        { transform: "translate(-50%, -50%) rotate(0deg)" },
+        { transform: "translate(-50%, -50%) rotate(360deg)" },
+      ],
+      { duration: 72000, iterations: Infinity, easing: "linear" },
+    );
+    const counterAnimations = Array.from(
+      orbit.querySelectorAll<HTMLElement>("[data-orbit-counter]"),
+      (element) =>
+        element.animate(
+          [{ transform: "rotate(0deg)" }, { transform: "rotate(-360deg)" }],
+          { duration: 72000, iterations: Infinity, easing: "linear" },
+        ),
+    );
 
-  const resetCamera = () => {
-    setSettings({
-      iso: { min: 100, max: 1600 },
-      aperture: { min: 1.8, max: 11 },
-      shutter: { min: 15, max: 500 },
-    });
-    setSortKey("iso");
-    setActiveShotId(1);
+    return () => {
+      orbitAnimation.cancel();
+      counterAnimations.forEach((animation) => animation.cancel());
+    };
+  }, [isPaused, orbitItems.length, page]);
+
+  const goToPage = (nextPage: number) => {
+    if (pageCount < 2) return;
+    setPage((nextPage + pageCount) % pageCount);
   };
 
   return (
     <LayoutWrapper>
-      <main className="camera-gallery">
-        <header className="camera-gallery__header">
-          <Box>
-            <Text mb="sm" className="camera-gallery__eyebrow">
-              <BilingualShuffle
-                english="OPTICAL ARCHIVE / ROLL 026"
-                japanese="光学アーカイブ / ROLL 026"
-              />
+      <Box
+        component="main"
+        px="clamp(18px, 4vw, 64px)"
+        pt="clamp(78px, 8vw, 112px)"
+        pb={40}
+        c="var(--folio-text)"
+        bg="var(--folio-page-bg)"
+        style={{
+          minHeight: "100dvh",
+          height: '100dvh',
+          boxSizing: "border-box",
+          overflow: "hidden",
+          fontFamily: "DM Mono, monospace",
+          backgroundImage:
+            "linear-gradient(rgba(255,119,0,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,119,0,.035) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      >
+        <Group justify="space-between" align="flex-start" mb="md">
+          <Stack gap={2}>
+            <Text c="primaryOrange" size="xs" style={{ fontFamily: "DotGothic16, sans-serif", letterSpacing: ".16em" }}>
+              ARCHIVE / 01
             </Text>
-          </Box>
-          <Group gap="xs" className="camera-gallery__status">
-            <span className="camera-gallery__status-light" />
-            <Text>
-              {isCanisterLoaded
-                ? `FRAME ${String(activeShot.id).padStart(2, "0")} / ${String(SHOTS.length).padStart(2, "0")}`
-                : "ROLL NOT LOADED"}
+            <Text size="xs" c="dimmed" tt="uppercase">
+              A rotating index of collected studies
             </Text>
-          </Group>
-        </header>
+          </Stack>
+          <Text c="dimmed" size="xs" style={{ fontFamily: "DotGothic16, sans-serif" }}>
+            {String(cannisters.length).padStart(3, "0")} RECORDS
+          </Text>
+        </Group>
 
-        <JapaneseSignal
-          channel="gallery"
-          variant="telemetry"
-          className="section-japanese-signal--wide"
-        />
-
-        <section
-          className="camera-body"
-          aria-label="Interactive film camera gallery"
+        <Box
+          aria-label="Rotating cannister collections"
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "max(220px, min(68vw, calc(100dvh - 340px), 680px))",
+            isolation: "isolate",
+          }}
         >
-          <Box className="camera-body__topline">
-            <Text>FOLIO // 35MM</Text>
-            <Group gap="xs">
-              <IconFocusCentered size={15} />
-              <Text>MANUAL FOCUS</Text>
-            </Group>
-            <ActionIcon
-              variant="subtle"
-              color="orange"
-              aria-label="Reset camera settings"
-              title="Reset camera settings"
-              onClick={resetCamera}
-            >
-              <IconRefresh size={16} />
-            </ActionIcon>
-          </Box>
-
-          <Box className="camera-body__workspace">
-            <aside
-              className="exposure-panel"
-              aria-label="Exposure sorting controls"
-            >
-              <Text className="exposure-panel__heading">
-                <BilingualShuffle
-                  english="EXPOSURE / SORT"
-                  japanese="露出 / 並び替え"
+          <Box
+            ref={orbitRef}
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              width: "min(100%, max(180px, min(68vw, calc(100dvh - 340px))), 680px)",
+              aspectRatio: "1 / 1",
+              transform: "translate(-50%, -50%)",
+              containerType: "size",
+            }}
+          >
+            {orbitItems.map((cannister, index) => {
+              const angle = (index / orbitItems.length) * Math.PI * 2 - Math.PI / 2;
+              const x = 50 + Math.cos(angle) * 41;
+              const y = 50 + Math.sin(angle) * 41;
+              const url = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${DatabaseTables.Cannisters}/${cannister.name}/1.jpg`
+              return (
+                <CannisterOrbitItem
+                  key={cannister.id}
+                  cannister={cannister}
+                  previewUrl={url}
+                  onOpen={() => navigate(`/gallery/${cannister.id}`)}
+                  isSelected={hoveredCannisterId === cannister.id}
+                  isBlurred={hoveredCannisterId !== null && hoveredCannisterId !== cannister.id}
+                  onHover={(isHovered) => setHoveredCannisterId(isHovered ? cannister.id : null)}
+                  position={{ left: `${x}%`, top: `${y}%` }}
                 />
-              </Text>
-              <Stack gap="lg" align="center">
-                <Box className="camera-dial-pair">
-                  <CameraDial
-                    label="ISO"
-                    edge="MIN"
-                    values={ISO_VALUES}
-                    value={settings.iso.min}
-                    active={sortKey === "iso"}
-                    onChange={(value) => changeSetting("iso", "min", value)}
-                  />
-                  <CameraDial
-                    label="ISO"
-                    edge="MAX"
-                    values={ISO_VALUES}
-                    value={settings.iso.max}
-                    active={sortKey === "iso"}
-                    onChange={(value) => changeSetting("iso", "max", value)}
-                  />
-                </Box>
-                <Box className="camera-dial-pair">
-                  <CameraDial
-                    label="APERTURE"
-                    edge="MIN"
-                    values={APERTURE_VALUES}
-                    value={settings.aperture.min}
-                    active={sortKey === "aperture"}
-                    formatValue={(value) => `f/${value}`}
-                    onChange={(value) =>
-                      changeSetting("aperture", "min", value)
-                    }
-                  />
-                  <CameraDial
-                    label="APERTURE"
-                    edge="MAX"
-                    values={APERTURE_VALUES}
-                    value={settings.aperture.max}
-                    active={sortKey === "aperture"}
-                    formatValue={(value) => `f/${value}`}
-                    onChange={(value) =>
-                      changeSetting("aperture", "max", value)
-                    }
-                  />
-                </Box>
-                <Box className="camera-dial-pair">
-                  <CameraDial
-                    label="SHUTTER"
-                    edge="MIN"
-                    values={SHUTTER_VALUES}
-                    value={settings.shutter.min}
-                    active={sortKey === "shutter"}
-                    formatValue={(value) => `1/${value}`}
-                    onChange={(value) => changeSetting("shutter", "min", value)}
-                  />
-                  <CameraDial
-                    label="SHUTTER"
-                    edge="MAX"
-                    values={SHUTTER_VALUES}
-                    value={settings.shutter.max}
-                    active={sortKey === "shutter"}
-                    formatValue={(value) => `1/${value}`}
-                    onChange={(value) => changeSetting("shutter", "max", value)}
-                  />
-                </Box>
-              </Stack>
-              <Text className="exposure-panel__note">
-                ACTIVE SORT: {sortKey.toUpperCase()} / {sortedShots.length}{" "}
-                MATCHES
-              </Text>
-            </aside>
-
-            <Box className="viewfinder-shell">
-              <Box className="ruler ruler--top" aria-hidden="true" />
-              <Box className="ruler ruler--left" aria-hidden="true" />
-              <figure
-                className={`viewfinder ${isCanisterLoaded && hasMatchingShots ? "" : "viewfinder--empty"}`}
-              >
-                {isCanisterLoaded && hasMatchingShots ? (
-                  <>
-                    <img
-                      src={`/pictures/${activeShot.id}.jpg`}
-                      alt={`${activeShot.title}, ${activeShot.location}`}
-                    />
-                    <Box className="viewfinder__grid" aria-hidden="true" />
-                    <Box className="viewfinder__focus" aria-hidden="true">
-                      <span />
-                    </Box>
-                    <figcaption className="viewfinder__caption">
-                      <Box>
-                        <Text className="viewfinder__frame">
-                          FRAME {String(activeShot.id).padStart(2, "0")}
-                        </Text>
-                      </Box>
-                      <Text>
-                        {activeShot.iso} / f{activeShot.aperture} / 1/
-                        {activeShot.shutter}
-                      </Text>
-                    </figcaption>
-                    <ActionIcon
-                      className="viewfinder__nav viewfinder__nav--previous"
-                      variant="filled"
-                      aria-label="Previous frame"
-                      title="Previous frame"
-                      onClick={() => stepFrame(-1)}
-                    >
-                      <IconChevronLeft size={20} />
-                    </ActionIcon>
-                    <ActionIcon
-                      className="viewfinder__nav viewfinder__nav--next"
-                      variant="filled"
-                      aria-label="Next frame"
-                      title="Next frame"
-                      onClick={() => stepFrame(1)}
-                    >
-                      <IconChevronRight size={20} />
-                    </ActionIcon>
-                  </>
-                ) : (
-                  <figcaption className="viewfinder__empty-message">
-                    <Text>
-                      {isCanisterLoaded
-                        ? "NO MATCHING FRAMES"
-                        : "NO FILM DETECTED"}
-                    </Text>
-                    <Text>
-                      {isCanisterLoaded
-                        ? "WIDEN EXPOSURE RANGES TO CONTINUE"
-                        : "SELECT ROLL 026 BELOW TO LOAD"}
-                    </Text>
-                  </figcaption>
-                )}
-              </figure>
-            </Box>
+              );
+            })}
           </Box>
 
-          <Box className="pathfinder" aria-label="Film archive pathfinder">
-            <Box className="pathfinder__label">
-              <Text>FILM VAULT</Text>
-              <Text>
-                {isCanisterLoaded
-                  ? `${sortKey.toUpperCase()} / NEAREST FIRST`
-                  : "01 ROLL AVAILABLE"}
-              </Text>
-            </Box>
-            <Box className="pathfinder__archive">
-              {isCanisterLoaded ? (
-                <>
-                  <Box className="pathfinder__roll-header">
-                    <Text>ROLL 026 // 09 FRAMES</Text>
-                    <button
-                      type="button"
-                      aria-label="Eject roll"
-                      onClick={() => setIsCanisterLoaded(false)}
-                    >
-                      <ShuffleText text="EJECT ROLL" />
-                    </button>
-                  </Box>
-                  <Box
-                    className="film-strip"
-                    aria-label="Frames inside roll 026"
-                  >
-                    {sortedShots.map((shot, index) => (
-                      <button
-                        type="button"
-                        className={
-                          shot.id === activeShot.id
-                            ? "film-strip__frame film-strip__frame--active"
-                            : "film-strip__frame"
-                        }
-                        key={shot.id}
-                        onClick={() => setActiveShotId(shot.id)}
-                        aria-label={`View film strip ${shot.id}: ${shot.title}`}
-                        aria-pressed={shot.id === activeShot.id}
-                      >
-                        <span className="film-strip__index">
-                          <ShuffleText
-                            text={String(index + 1).padStart(2, "0")}
-                          />
-                        </span>
-                        <span className="film-strip__image">
-                          <img src={`/pictures/${shot.id}.jpg`} alt="" />
-                        </span>
-                        <span className="film-strip__code">
-                          <ShuffleText
-                            text={`26A-${String(shot.id).padStart(2, "0")}`}
-                          />
-                        </span>
-                      </button>
-                    ))}
-                  </Box>
-                </>
-              ) : (
-                <Box
-                  className="canister-rack"
-                  aria-label="Available film canisters"
-                >
-                  <button
-                    type="button"
-                    className="film-canister"
-                    onClick={() => setIsCanisterLoaded(true)}
-                    aria-label="Load canister Roll 026 containing 9 pictures"
-                  >
-                    <span className="film-canister__spool" aria-hidden="true">
-                      <span className="film-canister__label">
-                        <img src="/pictures/1.jpg" alt="" />
-                          <ShuffleText text="026" />
-                      </span>
-                    </span>
-                    <span className="film-canister__name">
-                      <ShuffleText text="ROLL 026 // 09 EXP" />
-                    </span>
-                  </button>
-                  <Box className="canister-rack__manifest">
-                    <Text>35MM COLOR NEGATIVE</Text>
-                    <Text>ISO 100-1600 / 09 FRAMES</Text>
-                    <Text>SELECT CANISTER TO LOAD</Text>
-                  </Box>
-                </Box>
-              )}
-            </Box>
-          </Box>
-        </section>
-        
-      </main>
+          <Stack
+            align="center"
+            justify="center"
+            gap={5}
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              width: "min(250px, max(100px, calc(min(68vw, 100dvh - 340px) * .34)))",
+              height: "min(250px, max(100px, calc(min(68vw, 100dvh - 340px) * .34)))",
+              padding: 18,
+              transform: "translate(-50%, -50%)",
+              textAlign: "center",
+              boxSizing: "border-box",
+            }}
+          >
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Select a study to open
+            </Text>
+            <Text size="10px" c="dimmed" mt={6}>
+              {pageCount > 1 ? `${page + 1} / ${pageCount} · ` : ""}
+              {isLoading ? "SCANNING ARCHIVE" : `${cannisters.length} STUDIES`}
+            </Text>
+          </Stack>
+        </Box>
+
+        <Group justify="center" gap="sm" mt="md">
+          {pageCount > 1 && (
+            <ShuffleButton
+              onClick={() => goToPage(page - 1)}
+              leftSection={<IconChevronLeft size={14} />}
+              variant="outline"
+              color="primaryOrange"
+              size="xs"
+              styles={{ root: { borderRadius: 0, fontFamily: "DotGothic16, sans-serif" } }}
+            >
+              PREVIOUS SET
+            </ShuffleButton>
+          )}
+          {pageCount > 1 && (
+            <ShuffleButton
+              onClick={() => goToPage(page + 1)}
+              rightSection={<IconChevronRight size={14} />}
+              variant="outline"
+              color="primaryOrange"
+              size="xs"
+              styles={{ root: { borderRadius: 0, fontFamily: "DotGothic16, sans-serif" } }}
+            >
+              NEXT SET
+            </ShuffleButton>
+          )}
+        </Group>
+      </Box>
       <Footer />
     </LayoutWrapper>
   );

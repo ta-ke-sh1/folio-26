@@ -249,6 +249,7 @@ export default function AboutPage() {
             zIndex: 0, // Ensures the gradient blinds stay behind other content
           }}
         >
+          {/* Background */}
           <GradientBlinds
             gradientColors={ABOUT_GRADIENT_COLORS}
             angle={252}
@@ -285,7 +286,7 @@ export default function AboutPage() {
           {/* Left Column: Hero Headers & Interactive Form Cards */}
           <Grid.Col
             className="about-story-column"
-            span={{ base: 12, md: 7, lg: 6 }}
+            span={{ base: 12 }}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -348,6 +349,23 @@ export default function AboutPage() {
                       Currently working full-time at Toshiba Software
                       Development Vietnam.
                     </Text>
+                     <Text
+                      className="vhs-title"
+                      data-text="Currently working full-time at Toshiba Software Development Vietnam"
+                      style={{
+                        fontSize: "clamp(12px, 3.5vw, 15px)",
+                        fontWeight: 400,
+                        color: "var(--folio-text)",
+                        fontFamily: "DotGothic16",
+                        letterSpacing: "-1px",
+                        lineHeight: 1.4,
+                        textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
+                        maxWidth: "340px",
+                      }}
+                    >
+                      Currently working full-time at Toshiba Software
+                      Development Vietnam.
+                    </Text>
                   </Box>
                 </Group>
                 <JapaneseSignal
@@ -366,8 +384,8 @@ export default function AboutPage() {
                     }}
                   >
                     <BilingualShuffle
-                      english="[ Contacts ]"
-                      japanese="[ 連絡先 ]"
+                      english="[ Controls ]"
+                      japanese="[ 操作方法 ]"
                     />
                   </Text>
                 </Group>
@@ -391,10 +409,28 @@ export default function AboutPage() {
                         isFocused={isFocused}
                         onClick={() => handleToggleForm(item)}
                         flex="1 1 180px"
-                        maxWidth="240px"
+                        maxWidth="200px"
                       />
                     );
                   })}
+                  {ITEMS.map((item) => {
+                  const isOpen = openWindows.some((w) => w.id === item.id);
+                  const isFocused = focusedWindowId === item.id;
+                  return (
+                    <Box key={item.id}>
+                      <TriggerCard
+                          category={item.category}
+                          label={item.label}
+                          icon={item.icon}
+                          appIconUrl={item.appIconUrl}
+                          isOpen={isOpen}
+                          isFocused={isFocused}
+                          onClick={() => handleToggleWindow(item)}
+                          width="240px"
+                        />
+                    </Box>
+                  );
+                })}
                 </Group>
               </Stack>
             </Stack>
@@ -454,60 +490,6 @@ export default function AboutPage() {
                 })}
               </Box>
             </Box>
-          </Grid.Col>
-
-          {/* Right Column: Interactive Deck Trigger Cards */}
-          <Grid.Col
-            className="about-information-column"
-            hiddenFrom="md"
-            span={{ base: 12, md: 5, lg: 6 }}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-            }}
-          >
-            <Stack
-              gap={5}
-              justify="flex-end"
-              style={{
-                flex: 1,
-                height: "100%",
-              }}
-            >
-              <Group justify="end" mr={5}>
-                <Text
-                  style={{
-                    fontFamily: "DotGothic16",
-                  }}
-                >
-                  [ Personal Information ]
-                </Text>
-              </Group>
-
-              <Grid gap="xs" mb="25">
-                {ITEMS.map((item) => {
-                  const isOpen = openWindows.some((w) => w.id === item.id);
-                  const isFocused = focusedWindowId === item.id;
-                  return (
-                    <Grid.Col key={item.id}>
-                      <Group justify="end">
-                        <TriggerCard
-                          category={item.category}
-                          label={item.label}
-                          icon={item.icon}
-                          appIconUrl={item.appIconUrl}
-                          isOpen={isOpen}
-                          isFocused={isFocused}
-                          onClick={() => handleToggleWindow(item)}
-                          width="240px"
-                        />
-                      </Group>
-                    </Grid.Col>
-                  );
-                })}
-              </Grid>
-            </Stack>
           </Grid.Col>
         </Grid>
 
