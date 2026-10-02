@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Box, Group, Stack, Title, Text, Grid } from "@mantine/core";
+import { Box, Group, Stack, Title, Text, Grid, Divider } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import gsap from "gsap";
 import {
@@ -15,6 +15,7 @@ import { FORM_TYPES, ITEMS } from "./about.type";
 import TriggerCard from "../../components/card/trigger.card";
 import "./about.layout.scss";
 import GradientBlinds from "../../components/background/gradientBlinds";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import { ShuffleButton } from "../../components/animations/shuffle.button";
@@ -235,7 +236,6 @@ export default function AboutPage() {
           backgroundColor: "var(--folio-page-bg)",
           overflowX: "hidden",
           borderRadius: 10,
-          overflow: 'hidden'
         }}
       >
         <Box
@@ -266,6 +266,7 @@ export default function AboutPage() {
             color1="#F97316"
             color2="#EAB308"
           />
+          <CyberpunkBackdrop variant="about" layer={1} />
         </Box>
 
         <Grid
@@ -388,8 +389,31 @@ export default function AboutPage() {
                     />
                   </Text>
                 </Group>
-                <Group gap="md" wrap="wrap">
-                  {FORM_TYPES.map((item) => {
+                <Group gap="lg" wrap="wrap">
+                <Group>
+                  {ITEMS.map((item) => {
+                  const isOpen = openWindows.some((w) => w.id === item.id);
+                  const isFocused = focusedWindowId === item.id;
+                  return (
+                    <Box key={item.id}>
+                      <TriggerCard
+                          category={item.category}
+                          label={item.label}
+                          icon={item.icon}
+                          appIconUrl={item.appIconUrl}
+                          isOpen={isOpen}
+                          isFocused={isFocused}
+                          onClick={() => handleToggleWindow(item)}
+                          width={56}
+                          height={56}
+                        />
+                    </Box>
+                  );
+                })}
+                </Group>
+                <Divider orientation="vertical" />
+                <Group>
+                {FORM_TYPES.map((item) => {
                     const isOpen = openForms.some((f) => f.id === item.id);
                     const isFocused = focusedFormId === item.id;
                     const labelText =
@@ -413,25 +437,7 @@ export default function AboutPage() {
                       />
                     );
                   })}
-                  {ITEMS.map((item) => {
-                  const isOpen = openWindows.some((w) => w.id === item.id);
-                  const isFocused = focusedWindowId === item.id;
-                  return (
-                    <Box key={item.id}>
-                      <TriggerCard
-                          category={item.category}
-                          label={item.label}
-                          icon={item.icon}
-                          appIconUrl={item.appIconUrl}
-                          isOpen={isOpen}
-                          isFocused={isFocused}
-                          onClick={() => handleToggleWindow(item)}
-                          width={56}
-                          height={56}
-                        />
-                    </Box>
-                  );
-                })}
+                </Group>
                 </Group>
               </Stack>
             </Stack>

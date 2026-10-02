@@ -8,6 +8,7 @@ import { useLenis } from "lenis/react";
 import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import CatchphraseCard from "../../components/card/catchphrase.card";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -234,6 +235,7 @@ export default function MemoriesLayout() {
                 />
               </Box>
             ))}
+            <CyberpunkBackdrop variant="memories" layer={1} />
           </Box>
           <Box
             component="aside"

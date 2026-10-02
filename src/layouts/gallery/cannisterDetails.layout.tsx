@@ -14,6 +14,7 @@ import type CannisterEntity from "../../models/entity/cannister.model";
 import CannisterService from "../../services/cannister.service";
 import DatabaseService from "../../services/database.service";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 interface CannisterFile {
   name: string;
@@ -216,6 +217,8 @@ export default function CannisterDetailsLayout() {
         bg="var(--folio-page-bg)"
         style={{
           minHeight: "100dvh",
+          position: "relative",
+          isolation: "isolate",
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
@@ -226,6 +229,7 @@ export default function CannisterDetailsLayout() {
           backgroundSize: "24px 24px",
         }}
       >
+        <CyberpunkBackdrop variant="cannister" />
         <style>{`
           .cannister-story-layout {
             display: grid;

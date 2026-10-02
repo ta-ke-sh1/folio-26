@@ -20,6 +20,7 @@ import "./collections.layout.scss";
 import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import CatchphraseCard from "../../components/card/catchphrase.card.tsx";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 /** Helper function to format a Date object or month/year pair into "JUL. 2026" format */
 function formatMonthYear(year: number, monthIndex: number): string {
@@ -111,7 +112,11 @@ export default function CollectionsLayout() {
 
   return (
     <LayoutWrapper>
-      <Stack mb={100}>
+      <Stack
+        mb={100}
+        style={{ position: "relative", isolation: "isolate" }}
+      >
+        <CyberpunkBackdrop variant="collections" />
         <Group pt={"60"} justify={"center"}>
           <Stack justify="center">
             <Title

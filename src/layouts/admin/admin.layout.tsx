@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
 import { BlogEditorPage } from "./forms/admin.blog.form";
 import { CannisterEditorPage } from "./forms/admin.cannisterEditor.modal";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 const VALID_TABS: ActiveTab[] = ["items", "collections", "categories", "tags", "blogs", "cannisters"];
 
@@ -87,8 +88,11 @@ export default function AdminLayout() {
           display: "flex",
           flexDirection: "column",
           height: "calc(100vh - 60px)",
+          position: "relative",
+          isolation: "isolate",
         }}
       >
+        <CyberpunkBackdrop variant="admin" />
         {renderActiveTab()}
       </AppShell.Main>
     </AppShell>

@@ -1,5 +1,7 @@
 import { ActionIcon, Image, Tooltip } from "@mantine/core";
+import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
+import gsap from "gsap";
 
 // --- REUSABLE TRIGGER CARD COMPONENT ---
 interface TriggerCardProps {
@@ -31,19 +33,100 @@ export default function TriggerCard({
   flex,
   className,
 }: TriggerCardProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const statusLabel = isOpen
     ? isFocused
       ? "Active"
       : "Open in background"
     : "Closed";
 
+  const animateInteraction = (isActive: boolean) => {
+    const button = buttonRef.current;
+    if (
+      !button ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    gsap.to(button, {
+      scale: isActive ? 1.06 : 1,
+      y: isActive ? -3 : 0,
+      duration: isActive ? 0.22 : 0.28,
+      ease: isActive ? "back.out(2)" : "power2.out",
+      overwrite: "auto",
+    });
+  };
+
+  const animatePress = () => {
+    const button = buttonRef.current;
+    if (
+      !button ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    gsap.to(button, {
+      scale: 0.94,
+      duration: 0.08,
+      ease: "power1.out",
+      yoyo: true,
+      repeat: 1,
+      overwrite: "auto",
+    });
+  };
+
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const restingShadow = isOpen
+      ? "0 0 24px rgba(255, 119, 0, 0.28), 10px 10px 24px rgba(0, 0, 0, 0.32), inset 1px 1px 0 rgba(255, 255, 255, 0.2)"
+      : "10px 10px 24px rgba(0, 0, 0, 0.32), inset 1px 1px 0 rgba(255, 255, 255, 0.16)";
+    const pulseShadow = isOpen
+      ? "0 0 34px rgba(255, 190, 120, 0.58), 10px 10px 24px rgba(0, 0, 0, 0.32), inset 1px 1px 0 rgba(255, 255, 255, 0.2)"
+      : "0 0 16px rgba(255, 190, 120, 0.42), 10px 10px 24px rgba(0, 0, 0, 0.32), inset 1px 1px 0 rgba(255, 255, 255, 0.16)";
+    const pulse = gsap.fromTo(
+      button,
+      { boxShadow: restingShadow },
+      {
+        boxShadow: pulseShadow,
+        duration: 1.25,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      },
+    );
+
+    return () => {
+      pulse.kill();
+    };
+  }, [isOpen]);
+
   return (
     <Tooltip label={`Click to [${label}]`} withArrow>
       <ActionIcon
+        ref={buttonRef}
         className={className}
         data-cursor="pointer"
         type="button"
-        onClick={onClick}
+        onClick={() => {
+          animatePress();
+          onClick();
+        }}
+        onPointerEnter={(event) => {
+          if (event.pointerType !== "touch") animateInteraction(true);
+        }}
+        onPointerLeave={() => {
+          if (document.activeElement !== buttonRef.current) {
+            animateInteraction(false);
+          }
+        }}
+        onFocus={() => animateInteraction(true)}
+        onBlur={() => animateInteraction(false)}
         variant="default"
         size={56}
         radius={14}
@@ -54,15 +137,18 @@ export default function TriggerCard({
           maxWidth,
           flex,
           padding: 10,
+          transformOrigin: "center",
+          willChange: "transform",
           background: isOpen
             ? "linear-gradient(145deg, rgba(255, 119, 0, 0.22), rgba(255, 255, 255, 0.04))"
             : "linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.025))",
           border: isOpen
-            ? "1px solid rgba(255, 119, 0, 0.75)"
-            : "1px solid rgba(255, 255, 255, 0.16)",
+            ? "1px solid rgba(255, 190, 120, 0.95)"
+            : "1px solid rgba(255, 190, 120, 0.72)",
           backdropFilter: "blur(18px) saturate(135%)",
           WebkitBackdropFilter: "blur(18px) saturate(135%)",
-          transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+          transition:
+            "background 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
           boxShadow: isOpen
             ? "0 0 24px rgba(255, 119, 0, 0.28), 10px 10px 24px rgba(0, 0, 0, 0.32), inset 1px 1px 0 rgba(255, 255, 255, 0.2)"
             : "10px 10px 24px rgba(0, 0, 0, 0.32), inset 1px 1px 0 rgba(255, 255, 255, 0.16)",

@@ -1,56 +1,7 @@
-import { useEffect, useState } from "react";
+
 import { Box, Group, Text } from "@mantine/core";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
-const JAPANESE_LABELS = ["東京記録", "電脳回廊", "夜間資料", "光学記憶"];
-const JAPANESE_GLYPHS = "東京電脳回路記録光夜資料記憶接続未来";
-
-function JapaneseShuffleReadout() {
-  const [label, setLabel] = useState(JAPANESE_LABELS[0]);
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let labelIndex = 0;
-    let cycleTimeout = 0;
-    let scrambleInterval = 0;
-
-    const shuffle = () => {
-      labelIndex = (labelIndex + 1) % JAPANESE_LABELS.length;
-      const target = JAPANESE_LABELS[labelIndex];
-      let iteration = 0;
-
-      scrambleInterval = window.setInterval(() => {
-        setLabel(
-          target
-            .split("")
-            .map((character, index) =>
-              index < iteration
-                ? character
-                : JAPANESE_GLYPHS[
-                    Math.floor(Math.random() * JAPANESE_GLYPHS.length)
-                  ],
-            )
-            .join(""),
-        );
-        iteration += 1;
-
-        if (iteration > target.length) {
-          window.clearInterval(scrambleInterval);
-          setLabel(target);
-          cycleTimeout = window.setTimeout(shuffle, 1800);
-        }
-      }, 58);
-    };
-
-    cycleTimeout = window.setTimeout(shuffle, 900);
-    return () => {
-      window.clearTimeout(cycleTimeout);
-      window.clearInterval(scrambleInterval);
-    };
-  }, []);
-
-  return <>{label}</>;
-}
 
 const cornerStyle = {
   position: "absolute" as const,
@@ -117,6 +68,22 @@ export default function GalleryHud() {
       <Box style={{ ...cornerStyle, bottom: 17, left: 17, borderBottom: "1px solid", borderLeft: "1px solid" }} />
       <Box style={{ ...cornerStyle, bottom: 17, right: 17, borderBottom: "1px solid", borderRight: "1px solid" }} />
 
+      <Text
+        className="gallery-hud-title"
+        style={{
+          position: "absolute",
+          top: 29,
+          left: 34,
+          color: "rgba(255, 207, 171, .9)",
+          fontFamily: "DotGothic16, sans-serif",
+          fontSize: "clamp(14px, 1.5vw, 20px)",
+          letterSpacing: ".2em",
+          textShadow: "0 0 12px rgba(255, 119, 0, .35)",
+        }}
+      >
+        <BilingualShuffle english="GALLERY" japanese="ギャラリー" />
+      </Text>
+
       <Group
         gap={8}
         className="gallery-hud-top-right"
@@ -152,6 +119,19 @@ export default function GalleryHud() {
       >
         <Text className="gallery-hud-micro" size="8px" c="rgba(255,119,0,.68)" style={{ whiteSpace: "nowrap" }}>
           収蔵資料 / ACCESS GRANTED
+        </Text>
+        <Text
+          className="gallery-hud-title"
+          size="xs"
+          c="rgba(255, 207, 171, .9)"
+          style={{
+            fontFamily: "DotGothic16, sans-serif",
+            letterSpacing: ".14em",
+            textAlign: "right",
+            textShadow: "0 0 12px rgba(255, 119, 0, .35)",
+          }}
+        >
+          <BilingualShuffle english="VISUAL ARCHIVE" japanese="ビジュアル・アーカイブ" />
         </Text>
       </Group>
 

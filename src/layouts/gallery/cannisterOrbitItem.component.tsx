@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Image } from "@mantine/core";
 import { ShuffleButton } from "../../components/animations/shuffle.button";
 import type CannisterEntity from "../../models/entity/cannister.model";
+import gsap from "gsap";
 
 const FALLBACK_PREVIEW =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' fill='%23090909'/%3E%3Cpath d='M0 72 24 48l14 14 22-29 36 39v24H0z' fill='%23241a12'/%3E%3Cpath d='M0 82 30 60l15 12 22-20 29 26v18H0z' fill='%23ff7700' fill-opacity='.42'/%3E%3Ccircle cx='68' cy='25' r='8' fill='%23ff7700' fill-opacity='.8'/%3E%3C/svg%3E";
@@ -28,8 +29,28 @@ export default function CannisterOrbitItem({
 }: CannisterOrbitItemProps) {
   const [imageFailed, setImageFailed] = useState(false);
   const [cachedPreview, setCachedPreview] = useState<string>();
+  const itemRef = useRef<HTMLDivElement>(null);
   const imageUrl = imageFailed ? FALLBACK_PREVIEW : cachedPreview ?? previewUrl ?? FALLBACK_PREVIEW;
   const archiveId = `S-${String(cannister.id).padStart(3, "0")}`;
+
+  useEffect(() => {
+    const item = itemRef.current;
+    if (!item || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const tween = gsap.to(item, {
+      scale: isSelected ? 1.08 : 1,
+      y: isSelected ? -4 : 0,
+      duration: isSelected ? 0.2 : 0.26,
+      ease: isSelected ? "back.out(2)" : "power2.out",
+      overwrite: "auto",
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, [isSelected]);
 
   useEffect(() => {
     const sourceUrl = previewUrl ?? "";
@@ -93,53 +114,68 @@ export default function CannisterOrbitItem({
       onMouseEnter={() => onHover?.(true)}
       onMouseLeave={() => onHover?.(false)}
     >
-      <Box data-orbit-counter style={{ width: "min(156px, max(56px, 24cqw))" }}>
-        <ShuffleButton
-          onClick={onOpen}
-          aria-label={`Open ${cannister.name}`}
-          title={`${archiveId} · ${cannister.name}`}
-          onFocus={() => onHover?.(true)}
-          onBlur={() => onHover?.(false)}
-          variant="default"
-          color="primaryOrange"
-          styles={{
-            root: {
-              display: "grid",
-              width: "100%",
-              height: "min(156px, max(56px, 24cqw))",
-              minHeight: 0,
-              padding: 0,
-              placeItems: "center",
-              border: 0,
-              outline: "none",
-              background: "transparent",
-              boxShadow: "none",
-              transition: "transform 160ms ease",
-            },
-            section: { display: "block", width: "100%", height: "100%", margin: 0 },
-            label: { display: "block", width: "100%", height: "100%" },
+      <Box
+        data-orbit-counter
+        style={{
+          width: "min(180px, max(64px, 26cqw))",
+          position: "relative",
+          zIndex: isSelected ? 2 : 1,
+        }}
+      >
+        <Box
+          ref={itemRef}
+          style={{
+            width: "100%",
+            transformOrigin: "center",
+            willChange: "transform",
           }}
         >
-          <Image
-            src={imageUrl}
-            alt=""
-            aria-hidden="true"
-            w="100%"
-            h="100%"
-            fit="cover"
-            onError={() => setImageFailed(true)}
-            style={{
-              display: "block",
-              overflow: "hidden",
-              border: 0,
-              borderRadius: 5,
-              imageRendering: "pixelated",
-              filter: `grayscale(${isSelected ? 0 : 1}) blur(${isBlurred ? 3 : 0}px)`,
-              opacity: isBlurred ? 0.55 : 1,
-              transition: "filter 220ms ease, opacity 220ms ease",
+          <ShuffleButton
+            onClick={onOpen}
+            aria-label={`Open ${cannister.name}`}
+            title={`${archiveId} · ${cannister.name}`}
+            onFocus={() => onHover?.(true)}
+            onBlur={() => onHover?.(false)}
+            variant="default"
+            color="primaryOrange"
+            styles={{
+              root: {
+                display: "grid",
+                width: "100%",
+                height: "min(180px, max(64px, 26cqw))",
+                minHeight: 0,
+                padding: 0,
+                placeItems: "center",
+                border: 0,
+                outline: "none",
+                background: "transparent",
+                boxShadow: "none",
+              },
+              section: { display: "block", width: "100%", height: "100%", margin: 0 },
+              label: { display: "block", width: "100%", height: "100%" },
             }}
-          />
-        </ShuffleButton>
+          >
+            <Image
+              src={imageUrl}
+              alt=""
+              aria-hidden="true"
+              w="100%"
+              h="100%"
+              fit="cover"
+              onError={() => setImageFailed(true)}
+              style={{
+                display: "block",
+                overflow: "hidden",
+                border: 0,
+                borderRadius: 5,
+                imageRendering: "pixelated",
+                filter: `grayscale(${isSelected ? 0 : 1}) blur(${isBlurred ? 3 : 0}px)`,
+                opacity: isBlurred ? 0.55 : 1,
+                transition: "filter 220ms ease, opacity 220ms ease",
+              }}
+            />
+          </ShuffleButton>
+        </Box>
       </Box>
     </Box>
   );

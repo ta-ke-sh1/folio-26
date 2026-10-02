@@ -11,6 +11,7 @@ import CannisterOrbitItem from "./cannisterOrbitItem.component";
 import GalleryHud from "./gallery.hud.component";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import CatchphraseCard from "../../components/card/catchphrase.card";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 const ITEMS_PER_ORBIT = 12;
 
@@ -166,6 +167,7 @@ export default function GalleryLayout() {
               transition: "opacity 260ms ease",
             }}
           />
+          <CyberpunkBackdrop variant="gallery" layer={0} />
           <GalleryHud />
           <Box
             className="gallery-page__content"
@@ -204,7 +206,7 @@ export default function GalleryLayout() {
               position: "absolute",
               left: "50%",
               top: "50%",
-              width: "min(100%, max(180px, min(68vw, calc((100dvh - 420px) / var(--folio-viewport-scale, 1)))), 680px)",
+              width: "min(100%, max(220px, min(76vw, calc((100dvh - 340px) / var(--folio-viewport-scale, 1)))), 820px)",
               aspectRatio: "1 / 1",
               transform: "translate(-50%, -50%)",
               containerType: "size",
@@ -238,8 +240,8 @@ export default function GalleryLayout() {
               position: "absolute",
               left: "50%",
               top: "50%",
-              width: "min(250px, max(200px, calc(min(68vw, (100dvh - 420px) / var(--folio-viewport-scale, 1)) * .34)))",
-              height: "min(250px, max(200px, calc(min(68vw, (100dvh - 420px) / var(--folio-viewport-scale, 1)) * .34)))",
+              width: "min(290px, max(220px, calc(min(76vw, (100dvh - 340px) / var(--folio-viewport-scale, 1)) * .38)))",
+              height: "min(290px, max(220px, calc(min(76vw, (100dvh - 340px) / var(--folio-viewport-scale, 1)) * .38)))",
               padding: 18,
               transform: "translate(-50%, -50%)",
               textAlign: "center",

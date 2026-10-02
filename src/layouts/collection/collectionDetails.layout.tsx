@@ -18,6 +18,7 @@ import Footer from "../../components/footer/footer.tsx";
 import type { CollectionItemEntity } from "../../models/entity/collection.model";
 import { IconChevronLeft, IconFile } from "@tabler/icons-react";
 import { ShuffleText } from "../../components/animations/shuffle.text.tsx";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 const SORT_OPTIONS = [
   { value: "name-asc", label: "Name (A–Z)" },
@@ -94,7 +95,13 @@ export default function CollectionDetailsLayout() {
 
   return (
     <LayoutWrapper>
-      <Stack mb={100} pl={"md"} pr={"md"}>
+      <Stack
+        mb={100}
+        pl={"md"}
+        pr={"md"}
+        style={{ position: "relative", isolation: "isolate" }}
+      >
+        <CyberpunkBackdrop variant="collectionDetails" />
         <Group pt={"60"} justify={"center"}>
           <Stack justify="center">
             <Title

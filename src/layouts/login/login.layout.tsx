@@ -5,6 +5,7 @@ import {
   Paper,
   Title,
   Container,
+  Box,
   Alert,
   Stack,
 } from "@mantine/core";
@@ -15,6 +16,7 @@ import { IconAlertCircle } from "@tabler/icons-react";
 import { supabase } from "../../database/database.connection.ts";
 import Cookies from "js-cookie";
 import { CookiesEnum } from "../../enums/cookies.enum.ts";
+import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 export default function LoginLayout() {
   const [loading, setLoading] = useState(false);
@@ -84,7 +86,16 @@ export default function LoginLayout() {
   };
 
   return (
-    <Container size={420} my={40}>
+    <Box
+      style={{
+        position: "relative",
+        isolation: "isolate",
+        minHeight: "100dvh",
+        display: "flow-root",
+      }}
+    >
+      <CyberpunkBackdrop variant="login" />
+      <Container size={420} my={40}>
       <Title ta="center" fw={700}>
         Sign in to your account
       </Title>
@@ -124,6 +135,7 @@ export default function LoginLayout() {
           </Stack>
         </form>
       </Paper>
-    </Container>
+      </Container>
+    </Box>
   );
 }

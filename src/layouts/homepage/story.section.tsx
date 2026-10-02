@@ -5,6 +5,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import gsap from "gsap";
 
 const SHUFFLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/アイウエオ";
+const DEFAULT_PREVIEW_TEXT = "Waiting transmission from a planet";
 
 function GsapShufflePrompt() {
   const promptRef = useRef<HTMLSpanElement>(null);
@@ -288,7 +289,7 @@ const STORY_INLINE_STYLES = {
     top: 16,
     left: 16,
     padding: "8px 10px",
-    border: "1px solid rgba(255, 119, 0, 0.45)",
+    border: "1px solid rgba(255, 190, 120, 0.92)",
     background: "rgba(5, 5, 5, 0.8)",
     color: "#ffb36b",
     font: "700 10px monospace",
@@ -486,8 +487,32 @@ function GalaxyFocus({
   onClose: () => void;
 }) {
   const [backButtonActive, setBackButtonActive] = useState(false);
+  const backButtonRef = useRef<HTMLButtonElement>(null);
   const planet = GALAXY_PLANETS[planetIndex];
   const panel = STORY_PANELS[activePanel];
+
+  useEffect(() => {
+    const button = backButtonRef.current;
+    if (!button || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const pulse = gsap.fromTo(
+      button,
+      { boxShadow: "0 0 2px rgba(255, 190, 120, 0.2)" },
+      {
+        boxShadow: "0 0 12px rgba(255, 190, 120, 0.68)",
+        duration: 1.15,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      },
+    );
+
+    return () => {
+      pulse.kill();
+    };
+  }, []);
 
   return (
     <Box
@@ -497,13 +522,13 @@ function GalaxyFocus({
       aria-label={`${planet.name} planetary system`}
     >
       <button
+        ref={backButtonRef}
         type="button"
         className="homepage-story-galaxy-back"
         style={{
           ...STORY_INLINE_STYLES.backButton,
           ...(backButtonActive
             ? {
-                borderColor: "#ff7700",
                 background: "rgba(255, 119, 0, 0.14)",
               }
             : {}),
@@ -605,11 +630,10 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
   const [moonStartDelays, setMoonStartDelays] = useState<number[]>([]);
   const isMobile = useMediaQuery("(max-width: 48em)") ?? false;
   const activePreviewIndex = selectedPlanet === null ? hoveredPlanet : null;
-  const previewTextRef = useRef("");
+  const previewTextRef = useRef(DEFAULT_PREVIEW_TEXT);
   const signalRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
-  const [previewText, setPreviewText] = useState("");
+  const [previewText, setPreviewText] = useState(DEFAULT_PREVIEW_TEXT);
 
   useEffect(() => {
     const updatePreview = (value: string) => {
@@ -621,9 +645,15 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
     ).matches;
 
     if (activePreviewIndex === null) {
-      if (!previewTextRef.current) return;
+      if (
+        !previewTextRef.current ||
+        previewTextRef.current === DEFAULT_PREVIEW_TEXT
+      ) {
+        updatePreview(DEFAULT_PREVIEW_TEXT);
+        return;
+      }
       if (reducedMotion) {
-        updatePreview("");
+        updatePreview(DEFAULT_PREVIEW_TEXT);
         return;
       }
 
@@ -641,7 +671,7 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
             ).join(""),
           );
         },
-        onComplete: () => updatePreview(""),
+        onComplete: () => updatePreview(DEFAULT_PREVIEW_TEXT),
       });
       return () => {
         timeline.kill();
@@ -805,21 +835,6 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
 
     return () => context.revert();
   }, [selectedPlanet, moonStartDelays]);
-
-  useEffect(() => {
-    const preview = previewRef.current;
-    if (!preview || activePreviewIndex === null) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const tween = gsap.fromTo(
-      preview,
-      { y: 5, autoAlpha: 0.8 },
-      { y: 0, autoAlpha: 1, duration: 0.18, ease: "power2.out" },
-    );
-    return () => {
-      tween.kill();
-    };
-  }, [activePreviewIndex]);
 
   useEffect(() => {
     const markers = signalRef.current?.querySelectorAll<HTMLElement>(
@@ -1029,7 +1044,6 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
               </Box>
               {selectedPlanet === null && (
                 <Box
-                  ref={previewRef}
                   className="homepage-story-planet-preview"
                   style={{
                     ...STORY_INLINE_STYLES.preview,
