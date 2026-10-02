@@ -3,11 +3,8 @@ import { Box } from "@mantine/core";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
-import { CapabilitySection } from "./capability.section";
 import StorySection from "./story.section";
-import { TechnologySection } from "./technology.section";
 import "./main.layout.scss";
-import PhilosophySection from "./philosophy.section";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -86,11 +83,10 @@ export default function LandingPage({
               zIndex: 10,
               pointerEvents: "auto",
               willChange: "transform",
+              marginBottom: embedded ? 0 : "20px",
             }}
           >
             <StorySection embedded={embedded} />
-            <PhilosophySection embedded={embedded} />
-            <CapabilitySection />
           </Box>
         </LayoutWrapper>
       </Box>

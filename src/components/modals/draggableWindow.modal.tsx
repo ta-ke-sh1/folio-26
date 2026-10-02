@@ -20,7 +20,8 @@ import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { maxWidth } from "../../styles/breakpoints";
-import "./draggableWindow.modal.scss";
+import { EditorialFileModal } from "./editorialFile.modal";
+import { InstrumentModalStyles } from "./instrumentModal.styles";
 
 export interface InteractiveItem {
   id: string;
@@ -56,46 +57,6 @@ interface DraggableWindowProps {
   children?: ReactNode;
 }
 
-function PolaroidStack({
-  item,
-  className,
-  stageRef,
-  style,
-}: {
-  item: InteractiveItem;
-  className: string;
-  stageRef?: React.Ref<HTMLDivElement>;
-  style?: CSSProperties;
-}) {
-  if (!item.photo) return null;
-
-  return (
-    <div
-      ref={stageRef}
-      className={`instrument-detail__photo-stage ${className}`}
-      style={style}
-      role="group"
-      aria-label={`Photo: ${item.photo.alt}`}
-    >
-      <div
-        className="instrument-detail__postcard instrument-detail__postcard--back instrument-detail__postcard--back-one"
-        aria-hidden="true"
-      />
-      <div
-        className="instrument-detail__postcard instrument-detail__postcard--back instrument-detail__postcard--back-two"
-        aria-hidden="true"
-      />
-      <figure className="instrument-detail__postcard instrument-detail__polaroid">
-        <img src={item.photo.src} alt={item.photo.alt} />
-        <figcaption>{item.photo.caption}</figcaption>
-      </figure>
-      <span className="instrument-detail__photo-hint" aria-hidden="true">
-        HOVER TO REVEAL PHOTO
-      </span>
-    </div>
-  );
-}
-
 export function DraggableWindow({
   item,
   itemIndex,
@@ -109,15 +70,7 @@ export function DraggableWindow({
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const windowRef = useRef<HTMLDivElement>(null);
-  const photoStageRef = useRef<HTMLDivElement>(null);
-  const photoRevealedRef = useRef(false);
-  const fanResetTweenRef = useRef<gsap.core.Tween | null>(null);
-  const dragRef = useRef<{
-    startX: number;
-    startY: number;
-    initialX: number;
-    initialY: number;
-  }>({
+  const dragRef = useRef({
     startX: 0,
     startY: 0,
     initialX: 0,
@@ -171,10 +124,8 @@ export function DraggableWindow({
       const maxX = Math.max(12, window.innerWidth - windowElement.offsetWidth - 12);
       const maxY = Math.max(12, window.innerHeight - windowElement.offsetHeight - 12);
       const offset = itemIndex * 28;
-      const centeredX =
-        (window.innerWidth - windowElement.offsetWidth) / 2 + offset;
-      const centeredY =
-        (window.innerHeight - windowElement.offsetHeight) / 2 + offset;
+      const centeredX = (window.innerWidth - windowElement.offsetWidth) / 2 + offset;
+      const centeredY = (window.innerHeight - windowElement.offsetHeight) / 2 + offset;
       setPosition({
         x: Math.min(Math.max(12, centeredX), maxX),
         y: Math.min(Math.max(12, centeredY), maxY),
@@ -183,9 +134,7 @@ export function DraggableWindow({
 
     updatePosition();
     window.addEventListener("resize", updatePosition);
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-    };
+    return () => window.removeEventListener("resize", updatePosition);
   }, [itemIndex]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -214,16 +163,11 @@ export function DraggableWindow({
         y: Math.min(Math.max(0, dragRef.current.initialY + dy), maxY),
       });
     };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
+    const handleMouseUp = () => setIsDragging(false);
     if (isDragging) {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
     }
-
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -232,106 +176,12 @@ export function DraggableWindow({
 
   const ItemIcon = item.icon;
 
-  useEffect(
-    () => () => {
-      fanResetTweenRef.current?.kill();
-    },
-    [],
-  );
-
-  const setPhotoRevealed = (isRevealed: boolean) => {
-    const stage = photoStageRef.current;
-    if (
-      !stage ||
-      isMobile ||
-      !item.photo ||
-      photoRevealedRef.current === isRevealed
-    ) {
-      return;
-    }
-    photoRevealedRef.current = isRevealed;
-    stage.classList.toggle("is-revealed", isRevealed);
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    const fanCards = [
-      {
-        selector: ".instrument-detail__postcard--back-one",
-        revealed: { x: 80, xPercent: 0, rotation: -11 },
-        parked: { x: 0, xPercent: -28, rotation: -12 },
-      },
-      {
-        selector: ".instrument-detail__postcard--back-two",
-        revealed: { x: 60, xPercent: 0, rotation: 19 },
-        parked: { x: 0, xPercent: -15, rotation: 10 },
-      },
-      {
-        selector: ".instrument-detail__polaroid",
-        revealed: { x: 70, xPercent: 0, rotation: 8 },
-        parked: { x: 0, xPercent: -22, rotation: -5 },
-      },
-    ];
-
-    if (isRevealed) {
-      // Cancel any pending reset if the pointer re-enters while the stack is leaving.
-      fanResetTweenRef.current?.kill();
-
-      // GSAP targets each postcard separately to fan it open as the stage enters.
-      fanCards.forEach(({ selector, revealed }) => {
-        const card = stage.querySelector<HTMLElement>(selector);
-        if (!card) return;
-
-        gsap.to(card, {
-          ...revealed,
-          duration: reduceMotion ? 0 : 0.42,
-          ease: "power3.out",
-          overwrite: "auto",
-        });
-      });
-
-      // MOUSE OVER: move from beyond the viewport's left edge to its fixed anchor.
-      stage.style.transition = "none";
-      stage.style.translate = "calc(-100% - 16px) 0px";
-      stage.getBoundingClientRect();
-      stage.style.transition = reduceMotion
-        ? "none"
-        : "translate 720ms cubic-bezier(0.16, 1, 0.3, 1)";
-      stage.style.translate = "0px 0px";
-      return;
-    }
-
-    // MOUSE OUT: slide back beyond the viewport's left edge, not relative to the modal.
-    stage.style.transition = reduceMotion
-      ? "none"
-      : "translate 420ms cubic-bezier(0.65, 0, 0.35, 1)";
-    stage.style.translate = "calc(-100% - 200px) 0px";
-
-    // Keep the cards still while the whole stack exits, then silently reset them offscreen.
-    fanResetTweenRef.current?.kill();
-    fanResetTweenRef.current = gsap.delayedCall(reduceMotion ? 0 : 0.42, () => {
-      fanCards.forEach(({ selector, parked }) => {
-        const card = stage.querySelector<HTMLElement>(selector);
-        if (card) gsap.set(card, parked);
-      });
-    });
-  };
-
   return createPortal(
     <>
-    {/* Pointer enter/exit triggers the reveal/park animation; focus/blur is its keyboard equivalent. */}
+      <InstrumentModalStyles />
     <div
       ref={windowRef}
       className="instrument-window-frame"
-      onMouseEnter={() => setPhotoRevealed(true)}
-      onMouseLeave={() => setPhotoRevealed(false)}
-      onFocusCapture={() => setPhotoRevealed(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setPhotoRevealed(false);
-        }
-      }}
       style={{
         position: "fixed",
         top: position.y,
@@ -345,7 +195,7 @@ export function DraggableWindow({
       }}
     >
       <Paper
-        className={`instrument-window instrument-window--active${item.id === "footer" ? " instrument-window--footer" : ""}`}
+        className={`instrument-window instrument-window--active${item.id === "footer" ? " instrument-window--footer" : ""}${item.photo ? " instrument-window--archive" : ""}`}
         shadow="xl"
         onMouseDown={onFocus}
         style={{
@@ -378,12 +228,6 @@ export function DraggableWindow({
               color="gray"
               onClick={onClose}
               aria-label="Close window"
-              style={{
-                "&:hover": {
-                  backgroundColor: "#FF7700",
-                  color: "#000",
-                },
-              }}
             >
               <IconX size={14} />
             </ActionIcon>
@@ -395,8 +239,8 @@ export function DraggableWindow({
         {/* Window Body Content */}
         <Stack
           className="instrument-window__body"
-          p={item.id === "story" || item.id === "techonology" ? 0 : "md"}
-          gap="md"
+          p={item.photo || item.id === "story" || item.id === "techonology" ? 0 : "md"}
+          gap={item.photo ? 0 : "md"}
           data-lenis-prevent={item.id === "story" ? "" : undefined}
           style={item.id === "story" || item.id === "techonology" ? {
             flex: "1 1 auto",
@@ -406,7 +250,9 @@ export function DraggableWindow({
             overscrollBehavior: "contain",
           } : undefined}
         >
-          {children ?? (
+          {item.photo ? (
+            <EditorialFileModal item={item} />
+          ) : children ?? (
             <>
           {/* Header Badge & Title */}
           <Group
@@ -449,11 +295,6 @@ export function DraggableWindow({
           <Text className="instrument-detail__description" fz="sm">
             {item.content.description}
           </Text>
-          <PolaroidStack
-            item={item}
-            className="instrument-detail__photo-stage--mobile"
-          />
-
           {/* Highlights List */}
           <Box
             className="instrument-detail__features"
@@ -542,16 +383,6 @@ export function DraggableWindow({
         </Stack>
       </Paper>
     </div>
-
-    {item.photo && createPortal(
-      <PolaroidStack
-        item={item}
-        className="instrument-detail__photo-stage--desktop"
-        stageRef={photoStageRef}
-        style={{ zIndex: zIndex + 1, position: 'fixed' }}
-      />,
-      document.body,
-    )}
     </>,
     document.body,
   );

@@ -8,7 +8,7 @@ import CollaborationForm from "../../layouts/about/forms/collaboration.form";
 import EmailDirectForm from "../../layouts/about/forms/email.form";
 import TalkContactsForm from "../../layouts/about/forms/talk.form";
 import { maxWidth } from "../../styles/breakpoints";
-import "./draggableWindow.modal.scss";
+import { InstrumentModalStyles } from "./instrumentModal.styles";
 
 export interface FormWindowItem {
   id: "collaboration" | "say-hi" | "email-me";
@@ -160,21 +160,23 @@ export function DraggableFormWindow({
   const HeaderIcon = item.icon;
 
   return createPortal(
-    <Paper
-      ref={windowRef}
-      className="instrument-window instrument-window--active"
-      shadow="xl"
-      onMouseDown={onFocus}
-      style={{
-        position: "fixed",
-        top: position.y,
-        left: position.x,
-        width: `clamp(320px, 82vw, ${width}px)`,
-        maxWidth: "calc(100vw - 24px)",
-        zIndex: zIndex,
-        userSelect: isDragging ? "none" : "auto",
-      }}
-    >
+    <>
+      <InstrumentModalStyles />
+      <Paper
+        ref={windowRef}
+        className="instrument-window instrument-window--active"
+        shadow="xl"
+        onMouseDown={onFocus}
+        style={{
+          position: "fixed",
+          top: position.y,
+          left: position.x,
+          width: `clamp(320px, 82vw, ${width}px)`,
+          maxWidth: "calc(100vw - 24px)",
+          zIndex: zIndex,
+          userSelect: isDragging ? "none" : "auto",
+        }}
+      >
       {/* Draggable Title Bar */}
       <Group
         className="instrument-window__titlebar"
@@ -212,7 +214,8 @@ export function DraggableFormWindow({
         {item.id === "say-hi" && <TalkContactsForm />}
         {item.id === "email-me" && <EmailDirectForm />}
       </Box>
-    </Paper>,
+      </Paper>
+    </>,
     document.body,
   );
 }

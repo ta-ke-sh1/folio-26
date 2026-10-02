@@ -10,6 +10,7 @@ import CannisterService from "../../services/cannister.service";
 import CannisterOrbitItem from "./cannisterOrbitItem.component";
 import GalleryHud from "./gallery.hud.component";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
+import CatchphraseCard from "../../components/card/catchphrase.card";
 
 const ITEMS_PER_ORBIT = 12;
 
@@ -286,6 +287,13 @@ export default function GalleryLayout() {
           </Box>
         </Stack>
       </Stack>
+      <Box style={{ position: "relative", zIndex: 6 }}>
+          <CatchphraseCard embedded={true} contents={
+            <Text size="lg" c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".1em" }}>
+              A STASH OF VISIONS
+            </Text>
+          } />
+        </Box>
       <Footer />
     </LayoutWrapper>
   );

@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
 import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
+import CatchphraseCard from "../../components/card/catchphrase.card";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,8 +35,10 @@ function ShuffleValue({ text }: { text: string }) {
 export default function MemoriesLayout() {
   const theme = useMantineTheme();
   const lenisSyncRef = useRef<(scrollPosition: number) => void>(() => undefined);
-  const lenis = useLenis((instance) => lenisSyncRef.current(instance.scroll), []);
+  useLenis((instance) => lenisSyncRef.current(instance.scroll), []);
   const pageRef = useRef<HTMLDivElement>(null);
+  const nextSectionRef = useRef<HTMLDivElement>(null);
+  const hudContentRef = useRef<HTMLDivElement>(null);
   const reelRefs = useRef<(HTMLElement | null)[]>([]);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const activeIndexRef = useRef(0);
@@ -44,6 +47,7 @@ export default function MemoriesLayout() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isHudVisible, setIsHudVisible] = useState(true);
+  const [isMetadataVisible, setIsMetadataVisible] = useState(true);
   const currentReel = VIDEO_REELS[activeIndex] ?? VIDEO_REELS[0];
 
   const activateReel = useCallback((index: number) => {
@@ -65,7 +69,7 @@ export default function MemoriesLayout() {
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       reels.forEach((reel, index) => {
-        const video = reel.querySelector<HTMLVideoElement>("video");
+        const video = videoRefs.current[index];
 
         if (!reduceMotion && index > 0 && video) {
           gsap.fromTo(
@@ -141,27 +145,6 @@ export default function MemoriesLayout() {
     };
   }, [activateReel]);
 
-  const scrollToReel = (index: number) => {
-    const reel = reelRefs.current[index];
-    if (!reel) return;
-    if (lenis) {
-      lenis.scrollTo(reel, {
-        duration: 1.15,
-        easing: (progress) => 1 - (1 - progress) ** 3,
-      });
-      return;
-    }
-
-    const tween = { y: window.scrollY };
-    gsap.to(tween, {
-      y: window.scrollY + reel.getBoundingClientRect().top,
-      duration: 1.15,
-      ease: "power3.inOut",
-      overwrite: true,
-      onUpdate: () => window.scrollTo(0, tween.y),
-    });
-  };
-
   const toggleMute = () => {
     const nextMuted = !isMuted;
     setIsMuted(nextMuted);
@@ -197,6 +180,62 @@ export default function MemoriesLayout() {
             }
           `}</style>
           <Box
+            aria-hidden="true"
+            style={{
+              position: "fixed",
+              top: "calc(40px / var(--folio-viewport-scale, 1))",
+              left: 0,
+              right: 0,
+              height: "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
+              minHeight: 480,
+              zIndex: 0,
+              overflow: "hidden",
+              background: "#050505",
+              visibility: "visible",
+              opacity: 1,
+              transition: "opacity 200ms ease",
+            }}
+          >
+            {VIDEO_REELS.map((reel, index) => (
+              <Box
+                key={reel.src}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  opacity: activeIndex === index ? 1 : 0,
+                  transition: "opacity 700ms ease",
+                }}
+              >
+                <video
+                  ref={(node) => { videoRefs.current[index] = node; }}
+                  src={reel.src}
+                  muted={isMuted}
+                  playsInline
+                  loop
+                  preload={index === 0 ? "auto" : "metadata"}
+                  autoPlay={index === 0}
+                  aria-label={`${reel.title}: ${reel.note}`}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    filter: "saturate(.82) contrast(1.04)",
+                  }}
+                />
+                <Box
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    background: "linear-gradient(180deg, rgba(0,0,0,.26), transparent 28%, rgba(0,0,0,.08) 55%, rgba(0,0,0,.72))",
+                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,.045)",
+                  }}
+                />
+              </Box>
+            ))}
+          </Box>
+          <Box
             component="aside"
             aria-label="Current memory"
             style={{
@@ -208,8 +247,8 @@ export default function MemoriesLayout() {
               height: "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
               pointerEvents: "none",
               color: "white",
-              visibility: isHudVisible ? "visible" : "hidden",
-              opacity: isHudVisible ? 1 : 0,
+              visibility: isHudVisible && isMetadataVisible ? "visible" : "hidden",
+              opacity: isHudVisible && isMetadataVisible ? 1 : 0,
               transition: "opacity 200ms ease",
             }}
           >
@@ -240,6 +279,7 @@ export default function MemoriesLayout() {
             </Flex>
 
             <Stack
+              ref={hudContentRef}
               gap={8}
               style={{
                 position: "absolute",
@@ -293,59 +333,23 @@ export default function MemoriesLayout() {
               aria-label={`${reel.title}, ${reel.note}`}
               style={{
                 position: "relative",
-                display: "flex",
-                alignItems: "flex-end",
                 width: "100%",
-                height: "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
-                minHeight: 480,
-                boxSizing: "border-box",
-                padding: "clamp(28px, 5vw, 76px)",
-                overflow: "hidden",
+                height: index < VIDEO_REELS.length - 1
+                  ? "calc((100dvh - 40px) / var(--folio-viewport-scale, 1) + 100px)"
+                  : "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
+                minHeight: index < VIDEO_REELS.length - 1 ? 580 : 480,
                 isolation: "isolate",
-                background: "#080807",
+                pointerEvents: "none",
               }}
-            >
-              <Box
-                data-reel-visual
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: -1,
-                  overflow: "hidden",
-                  background: "#050505",
-                }}
-              >
-                <video
-                  ref={(node) => { videoRefs.current[index] = node; }}
-                  src={reel.src}
-                  muted={isMuted}
-                  playsInline
-                  loop
-                  preload={index === 0 ? "auto" : "metadata"}
-                  autoPlay={index === 0}
-                  aria-label={`${reel.title}: ${reel.note}`}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    filter: "saturate(.82) contrast(1.04)",
-                  }}
-                />
-                <Box
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    pointerEvents: "none",
-                    background: "linear-gradient(180deg, rgba(0,0,0,.26), transparent 28%, rgba(0,0,0,.08) 55%, rgba(0,0,0,.72))",
-                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,.045)",
-                  }}
-                />
-              </Box>
-
-            </Box>
+            />
           ))}
+        </Box>
+        <Box ref={nextSectionRef} style={{ position: "relative", zIndex: 6 }}>
+          <CatchphraseCard embedded={true} contents={
+            <Text size="lg" c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".1em" }}>
+              A STASH OF DREAMS
+            </Text>
+          } />
         </Box>
         <Footer />
 
@@ -357,7 +361,7 @@ export default function MemoriesLayout() {
           gap={8}
           style={{
             position: "fixed",
-            zIndex: 1000,
+            zIndex: 2,
             top: "50%",
             right: 12,
             transform: "translateY(-50%)",

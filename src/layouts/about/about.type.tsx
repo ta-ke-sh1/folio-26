@@ -1,12 +1,11 @@
 import {
   IconCat,
   IconTrophy,
-  IconBook2,
-  IconCamera,
-  IconHandFingerRight,
+  IconWaterpolo,
   IconMessageDots,
-  IconMail,
-  IconTerminal,
+  IconCompass,
+  IconApps,
+  IconUser,
 } from "@tabler/icons-react";
 import type { FormWindowItem } from "../../components/modals/draggableForm.modal";
 import type { InteractiveItem } from "../../components/modals/draggableWindow.modal";
@@ -17,7 +16,7 @@ export const ITEMS: InteractiveItem[] = [
     windowWidth: 720,
     label: "NAVIGATION",
     category: "SYS_NAV",
-    icon: IconTerminal,
+    icon: IconCompass,
     tag: "NAVIGATION",
     content: {
       title: "SITE NAVIGATION",
@@ -29,15 +28,15 @@ export const ITEMS: InteractiveItem[] = [
   },
   {
     id: "pets",
-    windowWidth: 560,
+    windowWidth: 740,
     label: "PETS",
     category: "SYS_BIO",
     icon: IconCat,
     tag: "CAT_V1.0",
     photo: {
       src: "/pictures/about/cat.jpg",
-      alt: "Yellow blossoms framed by dark tree leaves.",
-      caption: "FIELD NOTE 09 // CANOPY",
+      alt: "Cam, a ginger-and-white cat, curled up in a hammock.",
+      caption: "CAM // HOUSEHOLD DIRECTOR",
     },
     content: {
       title: "CAM",
@@ -54,15 +53,15 @@ export const ITEMS: InteractiveItem[] = [
   },
   {
     id: "awards",
-    windowWidth: 680,
+    windowWidth: 800,
     label: "AWARDS & HONORS",
     category: "SYS_ACHIEVE",
     icon: IconTrophy,
     tag: "ACCOLADES",
     photo: {
       src: "/pictures/about/awards.jpg",
-      alt: "City traffic passing beneath an overpass at sunset.",
-      caption: "FIELD NOTE 03 // CONCRETE",
+      alt: "Receiving a Toshiba Vietnam Best Employee award on stage.",
+      caption: "BEST EMPLOYEE // 2025",
     },
     content: {
       title: "RECOGNITIONS & CERTIFICATIONS",
@@ -82,7 +81,7 @@ export const ITEMS: InteractiveItem[] = [
     windowWidth: 1180,
     label: "STORY",
     category: "SYS_STORY",
-    icon: IconBook2,
+    icon: IconUser,
     tag: "PERSONAL_ARCHIVE",
     content: {
       title: "PERSONAL STORY",
@@ -98,7 +97,7 @@ export const ITEMS: InteractiveItem[] = [
     windowHeight: "min(100dvh, 820px)",
     label: "TECHNOLOGY",
     category: "SYS_TECHNOLOGY",
-    icon: IconBook2,
+    icon: IconApps,
     tag: "PERSONAL_SKILLSETS",
     content: {
       title: "PERSONAL SKILLSETS",
@@ -114,7 +113,7 @@ export const FORM_TYPES: FormWindowItem[] = [
   {
     id: "collaboration",
     title: "FORM // COLLABORATION_REQ",
-    icon: IconHandFingerRight,
+    icon: IconWaterpolo,
   },
   {
     id: "say-hi",

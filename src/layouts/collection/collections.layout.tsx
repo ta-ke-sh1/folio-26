@@ -4,6 +4,7 @@ import {
   Title,
   Text,
   SegmentedControl,
+  Box,
 } from "@mantine/core";
 import { ShuffleButton as Button } from "../../components/animations/shuffle.button";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import type { CollectionEntity } from "../../models/entity/collection.model.tsx"
 import "./collections.layout.scss";
 import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
+import CatchphraseCard from "../../components/card/catchphrase.card.tsx";
 
 /** Helper function to format a Date object or month/year pair into "JUL. 2026" format */
 function formatMonthYear(year: number, monthIndex: number): string {
@@ -256,6 +258,13 @@ export default function CollectionsLayout() {
           <ListMap data={data} />
         )}
       </Stack>
+      <Box style={{ position: "relative", zIndex: 6 }}>
+          <CatchphraseCard embedded={true} contents={
+            <Text size="lg" c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".1em" }}>
+              A STASH OF TREASURES
+            </Text>
+          } />
+        </Box>
       <Footer />
     </LayoutWrapper>
   );

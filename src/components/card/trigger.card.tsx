@@ -38,7 +38,7 @@ export default function TriggerCard({
     : "Closed";
 
   return (
-    <Tooltip label={`${category} / ${label} · ${statusLabel}`} withArrow>
+    <Tooltip label={`Click to [${label}]`} withArrow>
       <ActionIcon
         className={className}
         data-cursor="pointer"
