@@ -363,8 +363,7 @@ export default function AboutPage() {
                         maxWidth: "340px",
                       }}
                     >
-                      Currently working full-time at Toshiba Software
-                      Development Vietnam.
+                      Specialized in simulation and web development.
                     </Text>
                   </Box>
                 </Group>
@@ -408,8 +407,9 @@ export default function AboutPage() {
                         isOpen={isOpen}
                         isFocused={isFocused}
                         onClick={() => handleToggleForm(item)}
-                        flex="1 1 180px"
-                        maxWidth="200px"
+                        width={56}
+                        height={56}
+                        flex="0 0 auto"
                       />
                     );
                   })}
@@ -426,7 +426,8 @@ export default function AboutPage() {
                           isOpen={isOpen}
                           isFocused={isFocused}
                           onClick={() => handleToggleWindow(item)}
-                          width="240px"
+                          width={56}
+                          height={56}
                         />
                     </Box>
                   );

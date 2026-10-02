@@ -22,7 +22,7 @@
   .about-page__stage > .mantine-Grid-root,
   .about-page__stage .mantine-Grid-inner {
     height: auto !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .about-story-column {
@@ -43,14 +43,14 @@
   }
 
   .about-mobile-controls {
-    gap: 10px;
+    gap: clamp(8px, 1.8vh, 10px);
     margin: 12px 0 18px;
   }
 
   .about-mobile-controls__heading {
     color: var(--folio-accent);
     font-family: monospace;
-    font-size: clamp(10px, 3vw, 12px);
+    font-size: clamp(10px, 2.8vw, 12px);
     font-weight: 700;
     letter-spacing: 0.04em;
   }
@@ -58,56 +58,39 @@
   .about-mobile-controls__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(7px, 2.2vw, 12px);
+    gap: clamp(6px, 1.8vw, 10px);
   }
 
   .about-mobile-controls__card {
     box-sizing: border-box;
     width: 100%;
+    height: 56px;
     min-width: 0;
     max-width: none;
-    padding: clamp(2px, 2.4vw, 8px) !important;
+    padding: 8px !important;
     border-radius: 10px !important;
   }
 
-  .about-mobile-controls__card .mantine-Group-root {
-    min-width: 0;
-    gap: clamp(6px, 1.4vw, 10px) !important;
+}
+
+@media (max-width: bp.$xs) {
+  .about-page__stage {
+    margin-inline: 6px !important;
+    padding-inline: 8px !important;
   }
 
-  .about-mobile-controls__card__icon {
-    box-sizing: border-box;
-    width: clamp(30px, 9vw, 38px) !important;
-    height: clamp(30px, 9vw, 38px) !important;
-    padding: 4px !important;
+  .about-mobile-controls {
+    margin-top: 8px;
+  }
+
+  .about-mobile-controls__grid {
+    gap: 6px;
+  }
+
+  .about-mobile-controls__card {
+    height: 48px;
+    padding: 6px !important;
     border-radius: 8px !important;
-  }
-
-  .about-mobile-controls__card__icon svg {
-    width: clamp(18px, 5.4vw, 22px);
-    height: clamp(18px, 5.4vw, 22px);
-  }
-
-  .about-mobile-controls__card__content {
-    min-width: 0;
-  }
-
-  .about-mobile-controls__card__content .mantine-Text-root:first-child {
-    font-size: clamp(7px, 2vw, 9px) !important;
-    letter-spacing: 0.2px !important;
-    overflow-wrap: anywhere;
-  }
-
-  .about-mobile-controls__card__content .mantine-Text-root:nth-child(2) {
-    font-size: clamp(10px, 2.9vw, 13px) !important;
-    letter-spacing: -0.4px !important;
-    line-height: 1.1 !important;
-    overflow-wrap: anywhere;
-  }
-
-  .about-mobile-controls__card__content .mantine-Badge-root {
-    max-width: 100%;
-    font-size: clamp(8px, 2vw, 10px) !important;
   }
 }
 

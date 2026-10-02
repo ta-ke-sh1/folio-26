@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box, Group, Stack, Text } from "@mantine/core";
+import { ActionIcon, Box, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import Footer from "../../components/footer/footer";
-import { ShuffleButton } from "../../components/animations/shuffle.button";
 import type CannisterEntity from "../../models/entity/cannister.model";
 import { DatabaseTables } from "../../enums/database.enums";
 import { useAnimatedNavigate } from "../../components/transition/transition";
@@ -256,28 +255,32 @@ export default function GalleryLayout() {
 
         <Group justify="center" gap="sm" mt="md" style={{ flex: "0 0 auto" }}>
           {pageCount > 1 && (
-            <ShuffleButton
-              onClick={() => goToPage(page - 1)}
-              leftSection={<IconChevronLeft size={14} />}
-              variant="outline"
-              color="primaryOrange"
-              size="xs"
-              styles={{ root: { borderRadius: 0, fontFamily: "DotGothic16, sans-serif" } }}
-            >
-              PREVIOUS SET
-            </ShuffleButton>
+            <Tooltip label="Previous set" withArrow>
+              <ActionIcon
+                onClick={() => goToPage(page - 1)}
+                variant="outline"
+                color="primaryOrange"
+                size="lg"
+                radius={0}
+                aria-label="Previous set"
+              >
+                <IconChevronLeft size={18} />
+              </ActionIcon>
+            </Tooltip>
           )}
           {pageCount > 1 && (
-            <ShuffleButton
-              onClick={() => goToPage(page + 1)}
-              rightSection={<IconChevronRight size={14} />}
-              variant="outline"
-              color="primaryOrange"
-              size="xs"
-              styles={{ root: { borderRadius: 0, fontFamily: "DotGothic16, sans-serif" } }}
-            >
-              NEXT SET
-            </ShuffleButton>
+            <Tooltip label="Next set" withArrow>
+              <ActionIcon
+                onClick={() => goToPage(page + 1)}
+                variant="outline"
+                color="primaryOrange"
+                size="lg"
+                radius={0}
+                aria-label="Next set"
+              >
+                <IconChevronRight size={18} />
+              </ActionIcon>
+            </Tooltip>
           )}
         </Group>
           </Box>
