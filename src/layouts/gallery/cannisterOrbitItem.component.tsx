@@ -147,11 +147,11 @@ export default function CannisterOrbitItem({
               position: "absolute",
               left: 5,
               bottom: 5,
-              fontSize: 8,
+              fontSize: "clamp(7px, 1.2vw, 10px)",
               zIndex: 10,
             }}
           >
-            {cannister.id} - {cannister.name}
+            {cannister.name}
           </Text>
           <ShuffleButton
             onClick={onOpen}

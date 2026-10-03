@@ -1,7 +1,5 @@
-
 import { Box, Group, Text } from "@mantine/core";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
-
 
 const cornerStyle = {
   position: "absolute" as const,
@@ -63,10 +61,42 @@ export default function GalleryHud() {
         }}
       />
 
-      <Box style={{ ...cornerStyle, top: 17, left: 17, borderTop: "1px solid", borderLeft: "1px solid" }} />
-      <Box style={{ ...cornerStyle, top: 17, right: 17, borderTop: "1px solid", borderRight: "1px solid" }} />
-      <Box style={{ ...cornerStyle, bottom: 17, left: 17, borderBottom: "1px solid", borderLeft: "1px solid" }} />
-      <Box style={{ ...cornerStyle, bottom: 17, right: 17, borderBottom: "1px solid", borderRight: "1px solid" }} />
+      <Box
+        style={{
+          ...cornerStyle,
+          top: 17,
+          left: 17,
+          borderTop: "1px solid",
+          borderLeft: "1px solid",
+        }}
+      />
+      <Box
+        style={{
+          ...cornerStyle,
+          top: 17,
+          right: 17,
+          borderTop: "1px solid",
+          borderRight: "1px solid",
+        }}
+      />
+      <Box
+        style={{
+          ...cornerStyle,
+          bottom: 17,
+          left: 17,
+          borderBottom: "1px solid",
+          borderLeft: "1px solid",
+        }}
+      />
+      <Box
+        style={{
+          ...cornerStyle,
+          bottom: 17,
+          right: 17,
+          borderBottom: "1px solid",
+          borderRight: "1px solid",
+        }}
+      />
 
       <Text
         className="gallery-hud-title"
@@ -87,7 +117,12 @@ export default function GalleryHud() {
       <Group
         gap={8}
         className="gallery-hud-top-right"
-        style={{ position: "absolute", top: 31, right: 34, alignItems: "center" }}
+        style={{
+          position: "absolute",
+          top: 31,
+          right: 34,
+          alignItems: "center",
+        }}
       >
         <Box
           className="gallery-hud-blink"
@@ -117,7 +152,12 @@ export default function GalleryHud() {
           gap: 16,
         }}
       >
-        <Text className="gallery-hud-micro" size="8px" c="rgba(255,119,0,.68)" style={{ whiteSpace: "nowrap" }}>
+        <Text
+          className="gallery-hud-micro"
+          size="8px"
+          c="rgba(255,119,0,.68)"
+          style={{ whiteSpace: "nowrap" }}
+        >
           収蔵資料 / ACCESS GRANTED
         </Text>
         <Text
@@ -128,10 +168,14 @@ export default function GalleryHud() {
             fontFamily: "DotGothic16, sans-serif",
             letterSpacing: ".14em",
             textAlign: "right",
+            marginLeft: 15,
             textShadow: "0 0 12px rgba(255, 119, 0, .35)",
           }}
         >
-          <BilingualShuffle english="VISUAL ARCHIVE" japanese="ビジュアル・アーカイブ" />
+          <BilingualShuffle
+            english="VISUAL ARCHIVE"
+            japanese="ビジュアル・アーカイブ"
+          />
         </Text>
       </Group>
 

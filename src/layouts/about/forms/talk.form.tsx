@@ -14,11 +14,11 @@ import {
 } from "@mantine/core";
 import {
   IconBrandDiscord,
-  IconBrandTelegram,
-  IconBrandMatrix,
   IconBrandGithub,
   IconCheck,
   IconCopy,
+  IconBrandFacebook,
+  IconBrandInstagram,
 } from "@tabler/icons-react";
 
 // ==========================================
@@ -32,25 +32,25 @@ interface ContactChannel {
 const CONTACT_LIST: ContactChannel[] = [
   {
     name: "Discord",
-    handle: "developer#0001",
+    handle: "tru.ng_ha",
     icon: IconBrandDiscord,
     type: "REALTIME_CHAT",
   },
   {
-    name: "Telegram",
-    handle: "@dev_terminal",
-    icon: IconBrandTelegram,
-    type: "ENCRYPTED_MSG",
+    name: "Facebook",
+    handle: "https://www.facebook.com/ed.1698/",
+    icon: IconBrandFacebook,
+    type: "SOCIAL",
   },
   {
-    name: "Matrix",
-    handle: "@dev:matrix.org",
-    icon: IconBrandMatrix,
-    type: "DECENTRALIZED",
+    name: "Instagram",
+    handle: "https://www.instagram.com/tru.ng_ha/",
+    icon: IconBrandInstagram,
+    type: "SOCIAL",
   },
   {
     name: "GitHub",
-    handle: "github.com/dev-profile",
+    handle: "https://github.com/ta-ke-sh1",
     icon: IconBrandGithub,
     type: "SOURCE_CONTROL",
   },
@@ -100,11 +100,7 @@ export default function TalkContactsForm() {
         {CONTACT_LIST.map((contact, i) => {
           const ChannelIcon = contact.icon;
           return (
-            <Paper
-              className="instrument-contact"
-              key={i}
-              p="xs"
-            >
+            <Paper className="instrument-contact" key={i} p="xs">
               <Group justify="space-between" align="center" wrap="nowrap">
                 <Group gap="sm" wrap="nowrap">
                   <Box

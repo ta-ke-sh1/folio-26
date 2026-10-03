@@ -6,9 +6,9 @@ import { ShuffleButton } from "../animations/shuffle.button";
 import { useAnimatedNavigate } from "../transition/transition";
 import {
   IconBrandDiscord,
+  IconBrandFacebook,
   IconBrandGithub,
-  IconBrandMatrix,
-  IconBrandTelegram,
+  IconBrandInstagram,
 } from "@tabler/icons-react";
 import BilingualShuffle from "../animations/bilingual.shuffle";
 
@@ -177,19 +177,19 @@ const socialLinks = [
   {
     label: "Facebook",
     handle: "@dev_terminal",
-    href: "https://t.me/dev_terminal",
-    icon: IconBrandTelegram,
+    href: "https://www.facebook.com/ed.1698",
+    icon: IconBrandFacebook,
   },
   {
     label: "Instagram",
     handle: "@dev:matrix.org",
-    href: "https://matrix.to/#/@dev:matrix.org",
-    icon: IconBrandMatrix,
+    href: "https://www.instagram.com/tru.ng_ha/",
+    icon: IconBrandInstagram,
   },
   {
     label: "Github",
     handle: "github.com/dev-profile",
-    href: "https://github.com/dev-profile",
+    href: "https://github.com/ta-ke-sh1",
     icon: IconBrandGithub,
   },
 ];
@@ -650,8 +650,8 @@ export default function Footer({ compact = false }: FooterProps) {
                     variant="filled"
                     color="orange"
                     className="footer-console__link footer-console__social-link"
-                    aria-label={`${link.label}: ${link.handle} (opens in a new tab)`}
-                    title={link.handle}
+                    aria-label={`${link.label}: ${link.href} (opens in a new tab)`}
+                    title={link.href}
                     leftSection={
                       <SocialIcon
                         style={{ marginLeft: "5px" }}
