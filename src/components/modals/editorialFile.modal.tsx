@@ -11,6 +11,11 @@ export function EditorialFileModal({ item }: { item: InteractiveItem }) {
             className="editorial-file__clip"
             viewBox="0 0 44 58"
             aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: -20,
+              left: 10,
+            }}
           >
             <path
               d="M13 49V17a9 9 0 0 1 18 0v24a6 6 0 0 1-12 0V20a3 3 0 0 1 6 0v17"
@@ -65,11 +70,15 @@ export function EditorialFileModal({ item }: { item: InteractiveItem }) {
         <figure className="editorial-file__photograph">
           <img src={item.photo.src} alt={item.photo.alt} />
           <figcaption className="editorial-file__note">
-            <span className="editorial-file__note-kicker">A NOTE FROM THE ARCHIVE</span>
+            <span className="editorial-file__note-kicker">
+              A NOTE FROM THE ARCHIVE
+            </span>
             <span className="editorial-file__note-rule" aria-hidden="true" />
             <p>{item.content.description}</p>
             <span className="editorial-file__note-signature">
-              {item.id === "pets" ? "CAM / HOUSEHOLD DIRECTOR" : "MILESTONE / 2025"}
+              {item.id === "pets"
+                ? "CAM / HOUSEHOLD DIRECTOR"
+                : "MILESTONE / 2025"}
             </span>
           </figcaption>
           <span className="editorial-file__photo-count" aria-hidden="true">

@@ -14,7 +14,7 @@ export const ITEMS: InteractiveItem[] = [
   {
     id: "footer",
     windowWidth: 720,
-    label: "NAVIGATION",
+    label: "NAVIGATE",
     category: "SYS_NAV",
     icon: IconCompass,
     tag: "NAVIGATION",
@@ -29,7 +29,7 @@ export const ITEMS: InteractiveItem[] = [
   {
     id: "pets",
     windowWidth: 740,
-    label: "PETS",
+    label: "VIEW MY PETS",
     category: "SYS_BIO",
     icon: IconCat,
     tag: "CAT_V1.0",
@@ -54,7 +54,7 @@ export const ITEMS: InteractiveItem[] = [
   {
     id: "awards",
     windowWidth: 800,
-    label: "AWARDS & HONORS",
+    label: "SEE MY AWARDS & HONORS",
     category: "SYS_ACHIEVE",
     icon: IconTrophy,
     tag: "ACCOLADES",
@@ -79,7 +79,7 @@ export const ITEMS: InteractiveItem[] = [
   {
     id: "story",
     windowWidth: 1180,
-    label: "STORY",
+    label: "VIEW STORY",
     category: "SYS_STORY",
     icon: IconUser,
     tag: "PERSONAL_ARCHIVE",
@@ -95,7 +95,7 @@ export const ITEMS: InteractiveItem[] = [
     id: "techonology",
     windowWidth: 1180,
     windowHeight: "min(100dvh, 820px)",
-    label: "TECHNOLOGY",
+    label: "VIEW MY TECH STACKS",
     category: "SYS_TECHNOLOGY",
     icon: IconApps,
     tag: "PERSONAL_SKILLSETS",
@@ -111,7 +111,7 @@ export const ITEMS: InteractiveItem[] = [
 
 export const FORM_TYPES: FormWindowItem[] = [
   {
-    id: "collaboration",
+    id: "COLLABORATE",
     title: "FORM // COLLABORATION_REQ",
     icon: IconWaterpolo,
   },
@@ -119,5 +119,5 @@ export const FORM_TYPES: FormWindowItem[] = [
     id: "say-hi",
     title: "FORM // DIRECT_COMMUNICATION",
     icon: IconMessageDots,
-  }
+  },
 ];

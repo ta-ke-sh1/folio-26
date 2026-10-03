@@ -228,8 +228,7 @@ export default function AboutPage() {
         pr="xl"
         style={{
           border: "1px solid var(--folio-border)",
-          height:
-            "calc((100dvh - 120px) / var(--folio-viewport-scale, 1))",
+          height: "calc((100dvh - 120px) / var(--folio-viewport-scale, 1))",
           boxSizing: "border-box",
           flex: "0 0 calc((100dvh - 120px) / var(--folio-viewport-scale, 1))",
           position: "relative",
@@ -350,7 +349,7 @@ export default function AboutPage() {
                       Currently working full-time at Toshiba Software
                       Development Vietnam.
                     </Text>
-                     <Text
+                    <Text
                       className="vhs-title"
                       data-text="Currently working full-time at Toshiba Software Development Vietnam"
                       style={{
@@ -376,7 +375,11 @@ export default function AboutPage() {
               </Stack>
 
               {/* Form Trigger Cards */}
-              <Stack className="about-desktop-contacts" gap={5} visibleFrom="md">
+              <Stack
+                className="about-desktop-contacts"
+                gap={5}
+                visibleFrom="md"
+              >
                 <Group justify="start" mr={5}>
                   <Text
                     style={{
@@ -390,54 +393,55 @@ export default function AboutPage() {
                   </Text>
                 </Group>
                 <Group gap="lg" wrap="wrap">
-                <Group>
-                  {ITEMS.map((item) => {
-                  const isOpen = openWindows.some((w) => w.id === item.id);
-                  const isFocused = focusedWindowId === item.id;
-                  return (
-                    <Box key={item.id}>
-                      <TriggerCard
-                          category={item.category}
-                          label={item.label}
+                  <Group>
+                    {ITEMS.map((item) => {
+                      const isOpen = openWindows.some((w) => w.id === item.id);
+                      const isFocused = focusedWindowId === item.id;
+                      return (
+                        <Box key={item.id}>
+                          <TriggerCard
+                            category={item.category}
+                            label={item.label}
+                            icon={item.icon}
+                            appIconUrl={item.appIconUrl}
+                            isOpen={isOpen}
+                            isFocused={isFocused}
+                            onClick={() => handleToggleWindow(item)}
+                            width={56}
+                            height={56}
+                          />
+                        </Box>
+                      );
+                    })}
+                  </Group>
+                  <Divider orientation="vertical" />
+                  <Group>
+                    {FORM_TYPES.map((item) => {
+                      const isOpen = openForms.some((f) => f.id === item.id);
+                      const isFocused = focusedFormId === item.id;
+                      const labelText =
+                        item.id === "COLLABORATE"
+                          ? "COLLABORATE"
+                          : item.id === "say-hi"
+                            ? "SAY HI"
+                            : "REQUEST COLLABORATE";
+
+                      return (
+                        <TriggerCard
+                          key={item.id}
+                          category="SYS_FORM"
+                          label={labelText}
                           icon={item.icon}
-                          appIconUrl={item.appIconUrl}
                           isOpen={isOpen}
                           isFocused={isFocused}
-                          onClick={() => handleToggleWindow(item)}
+                          onClick={() => handleToggleForm(item)}
                           width={56}
                           height={56}
+                          flex="0 0 auto"
                         />
-                    </Box>
-                  );
-                })}
-                </Group>
-                <Divider orientation="vertical" />
-                <Group>
-                {FORM_TYPES.map((item) => {
-                    const isOpen = openForms.some((f) => f.id === item.id);
-                    const isFocused = focusedFormId === item.id;
-                    const labelText =
-                      item.id === "collaboration"
-                        ? "COLLABORATION"
-                        : item.id === "say-hi"
-                          ? "SAY HI"
-                          : "EMAIL ME";
-                    return (
-                      <TriggerCard
-                        key={item.id}
-                        category="SYS_FORM"
-                        label={labelText}
-                        icon={item.icon}
-                        isOpen={isOpen}
-                        isFocused={isFocused}
-                        onClick={() => handleToggleForm(item)}
-                        width={56}
-                        height={56}
-                        flex="0 0 auto"
-                      />
-                    );
-                  })}
-                </Group>
+                      );
+                    })}
+                  </Group>
                 </Group>
               </Stack>
             </Stack>
@@ -464,11 +468,11 @@ export default function AboutPage() {
                       className="about-mobile-controls__card"
                       category="SYS_FORM"
                       label={
-                        item.id === "collaboration"
-                          ? "COLLABORATION"
+                        item.id === "COLLABORATE"
+                          ? "COLLABORATE"
                           : item.id === "say-hi"
                             ? "SAY HI"
-                            : "EMAIL ME"
+                            : "REQUEST COLLABORATE"
                       }
                       icon={item.icon}
                       isOpen={isOpen}
@@ -541,7 +545,6 @@ export default function AboutPage() {
             />
           );
         })}
-
       </Stack>
     </Stack>
   );

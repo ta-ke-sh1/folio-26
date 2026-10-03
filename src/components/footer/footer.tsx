@@ -10,6 +10,7 @@ import {
   IconBrandMatrix,
   IconBrandTelegram,
 } from "@tabler/icons-react";
+import BilingualShuffle from "../animations/bilingual.shuffle";
 
 const createFooterStyles = (xsBreakpoint: string) => `
 .footer-console {
@@ -492,7 +493,9 @@ export default function Footer({ compact = false }: FooterProps) {
               {RULER_MARKS.map((mark, index) => (
                 <span
                   key={mark}
-                  style={{ left: `${(index / (RULER_MARKS.length - 1)) * 100}%` }}
+                  style={{
+                    left: `${(index / (RULER_MARKS.length - 1)) * 100}%`,
+                  }}
                 >
                   {mark}
                 </span>
@@ -649,7 +652,13 @@ export default function Footer({ compact = false }: FooterProps) {
                     className="footer-console__link footer-console__social-link"
                     aria-label={`${link.label}: ${link.handle} (opens in a new tab)`}
                     title={link.handle}
-                    leftSection={<SocialIcon style={{marginLeft: '5px'}} size={14} aria-hidden="true" />}
+                    leftSection={
+                      <SocialIcon
+                        style={{ marginLeft: "5px" }}
+                        size={14}
+                        aria-hidden="true"
+                      />
+                    }
                   >
                     {`> ${link.label}`}
                   </ShuffleButton>
@@ -657,6 +666,19 @@ export default function Footer({ compact = false }: FooterProps) {
               })}
             </Stack>
           </Box>
+        </Box>
+        <Box
+          style={{
+            position: "absolute",
+            bottom: "50px",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <BilingualShuffle
+            english="Click to navigate"
+            japanese="クリックして移動"
+          />
         </Box>
       </Stack>
     </Container>

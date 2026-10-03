@@ -20,7 +20,9 @@ export default function GalleryLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [isStageHovered, setIsStageHovered] = useState(false);
-  const [hoveredCannisterId, setHoveredCannisterId] = useState<number | null>(null);
+  const [hoveredCannisterId, setHoveredCannisterId] = useState<number | null>(
+    null,
+  );
   const orbitRef = useRef<HTMLDivElement>(null);
   const navigate = useAnimatedNavigate();
 
@@ -31,11 +33,13 @@ export default function GalleryLayout() {
       try {
         const records = await CannisterService.getInstance().fetchCannisters();
         if (!isMounted) return;
-        const sorted = [...(records as CannisterEntity[])].sort((first, second) => {
-          const firstDate = new Date(first.created_at).getTime();
-          const secondDate = new Date(second.created_at).getTime();
-          return secondDate - firstDate || second.id - first.id;
-        });
+        const sorted = [...(records as CannisterEntity[])].sort(
+          (first, second) => {
+            const firstDate = new Date(first.created_at).getTime();
+            const secondDate = new Date(second.created_at).getTime();
+            return secondDate - firstDate || second.id - first.id;
+          },
+        );
         setCannisters(sorted);
       } catch (error) {
         console.error("Unable to load the cannister index:", error);
@@ -52,7 +56,8 @@ export default function GalleryLayout() {
 
   const pageCount = Math.ceil(cannisters.length / ITEMS_PER_ORBIT);
   const orbitItems = useMemo(
-    () => cannisters.slice(page * ITEMS_PER_ORBIT, (page + 1) * ITEMS_PER_ORBIT),
+    () =>
+      cannisters.slice(page * ITEMS_PER_ORBIT, (page + 1) * ITEMS_PER_ORBIT),
     [cannisters, page],
   );
 
@@ -185,117 +190,150 @@ export default function GalleryLayout() {
               overflow: "hidden",
               paddingLeft: "clamp(18px, 4vw, 64px)",
               paddingRight: "clamp(18px, 4vw, 64px)",
-              paddingTop: "calc(clamp(78px, 8vw, 112px) - 60px / var(--folio-viewport-scale, 1))",
+              paddingTop:
+                "calc(clamp(78px, 8vw, 112px) - 60px / var(--folio-viewport-scale, 1))",
               paddingBottom: 40,
               fontFamily: "DM Mono, monospace",
             }}
           >
-        <Box
-          aria-label="Rotating cannister collections"
-          style={{
-            position: "relative",
-            width: "100%",
-            flex: "1 1 auto",
-            minHeight: 0,
-            isolation: "isolate",
-          }}
-        >
-          <Box
-            ref={orbitRef}
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              width: "min(100%, max(220px, min(76vw, calc((100dvh - 340px) / var(--folio-viewport-scale, 1)))), 820px)",
-              aspectRatio: "1 / 1",
-              transform: "translate(-50%, -50%)",
-              containerType: "size",
-            }}
-          >
-            {orbitItems.map((cannister, index) => {
-              const angle = (index / orbitItems.length) * Math.PI * 2 - Math.PI / 2;
-              const x = 50 + Math.cos(angle) * 41;
-              const y = 50 + Math.sin(angle) * 41;
-              const url = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${DatabaseTables.Cannisters}/${cannister.name}/1.jpg`
-              return (
-                <CannisterOrbitItem
-                  key={cannister.id}
-                  cannister={cannister}
-                  previewUrl={url}
-                  onOpen={() => navigate(`/gallery/${cannister.id}`)}
-                  isSelected={hoveredCannisterId === cannister.id}
-                  isBlurred={hoveredCannisterId !== null && hoveredCannisterId !== cannister.id}
-                  onHover={(isHovered) => setHoveredCannisterId(isHovered ? cannister.id : null)}
-                  position={{ left: `${x}%`, top: `${y}%` }}
+            <Box
+              aria-label="Rotating cannister collections"
+              style={{
+                position: "relative",
+                width: "100%",
+                flex: "1 1 auto",
+                minHeight: 0,
+                isolation: "isolate",
+              }}
+            >
+              <Box
+                ref={orbitRef}
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  width:
+                    "min(100%, max(220px, min(76vw, calc((100dvh - 340px) / var(--folio-viewport-scale, 1)))), 820px)",
+                  aspectRatio: "1 / 1",
+                  transform: "translate(-50%, -50%)",
+                  containerType: "size",
+                }}
+              >
+                {orbitItems.map((cannister, index) => {
+                  const angle =
+                    (index / orbitItems.length) * Math.PI * 2 - Math.PI / 2;
+                  const x = 50 + Math.cos(angle) * 41;
+                  const y = 50 + Math.sin(angle) * 41;
+                  const url = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${DatabaseTables.Cannisters}/${cannister.name}/1.jpg`;
+                  return (
+                    <CannisterOrbitItem
+                      key={cannister.id}
+                      cannister={cannister}
+                      previewUrl={url}
+                      onOpen={() => navigate(`/gallery/${cannister.id}`)}
+                      isSelected={hoveredCannisterId === cannister.id}
+                      isBlurred={
+                        hoveredCannisterId !== null &&
+                        hoveredCannisterId !== cannister.id
+                      }
+                      onHover={(isHovered) =>
+                        setHoveredCannisterId(isHovered ? cannister.id : null)
+                      }
+                      position={{ left: `${x}%`, top: `${y}%` }}
+                    />
+                  );
+                })}
+              </Box>
+
+              <Stack
+                align="center"
+                justify="center"
+                gap={5}
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  width:
+                    "min(290px, max(220px, calc(min(76vw, (100dvh - 340px) / var(--folio-viewport-scale, 1)) * .38)))",
+                  height:
+                    "min(290px, max(220px, calc(min(76vw, (100dvh - 340px) / var(--folio-viewport-scale, 1)) * .38)))",
+                  padding: 18,
+                  transform: "translate(-50%, -50%)",
+                  textAlign: "center",
+                  boxSizing: "border-box",
+                }}
+              >
+                <BilingualShuffle
+                  english="[ SELECT ONE ]"
+                  japanese="[ 1つ選択して ]"
                 />
-              );
-            })}
-          </Box>
+                <Text size="10px" c="dimmed" mt={6}>
+                  {pageCount > 1 ? `${page + 1} / ${pageCount} · ` : ""}
+                  {isLoading
+                    ? "SCANNING ARCHIVE"
+                    : `${cannisters.length} COLLECTIONS`}
+                </Text>
+              </Stack>
+            </Box>
 
-          <Stack
-            align="center"
-            justify="center"
-            gap={5}
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              width: "min(290px, max(220px, calc(min(76vw, (100dvh - 340px) / var(--folio-viewport-scale, 1)) * .38)))",
-              height: "min(290px, max(220px, calc(min(76vw, (100dvh - 340px) / var(--folio-viewport-scale, 1)) * .38)))",
-              padding: 18,
-              transform: "translate(-50%, -50%)",
-              textAlign: "center",
-              boxSizing: "border-box",
-            }}
-          >
-            <BilingualShuffle english="[ SELECT ONE ]" japanese="[ 1つ選択して ]" />
-            <Text size="10px" c="dimmed" mt={6}>
-              {pageCount > 1 ? `${page + 1} / ${pageCount} · ` : ""}
-              {isLoading ? "SCANNING ARCHIVE" : `${cannisters.length} COLLECTIONS`}
-            </Text>
-          </Stack>
-        </Box>
-
-        <Group justify="center" gap="sm" mt="md" style={{ flex: "0 0 auto" }}>
-          {pageCount > 1 && (
-            <Tooltip label="Previous set" withArrow>
-              <ActionIcon
-                onClick={() => goToPage(page - 1)}
-                variant="outline"
-                color="primaryOrange"
-                size="lg"
-                radius={0}
-                aria-label="Previous set"
-              >
-                <IconChevronLeft size={18} />
-              </ActionIcon>
-            </Tooltip>
-          )}
-          {pageCount > 1 && (
-            <Tooltip label="Next set" withArrow>
-              <ActionIcon
-                onClick={() => goToPage(page + 1)}
-                variant="outline"
-                color="primaryOrange"
-                size="lg"
-                radius={0}
-                aria-label="Next set"
-              >
-                <IconChevronRight size={18} />
-              </ActionIcon>
-            </Tooltip>
-          )}
-        </Group>
+            <Group
+              justify="center"
+              gap="sm"
+              mt="md"
+              style={{ flex: "0 0 auto" }}
+            >
+              {pageCount > 1 && (
+                <Tooltip label="Previous set" withArrow>
+                  <ActionIcon
+                    onClick={() => goToPage(page - 1)}
+                    variant="outline"
+                    color="primaryOrange"
+                    size="lg"
+                    radius={0}
+                    aria-label="Previous set"
+                  >
+                    <IconChevronLeft size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+              {pageCount > 1 && (
+                <Tooltip label="Next set" withArrow>
+                  <ActionIcon
+                    onClick={() => goToPage(page + 1)}
+                    variant="outline"
+                    color="primaryOrange"
+                    size="lg"
+                    radius={0}
+                    aria-label="Next set"
+                  >
+                    <IconChevronRight size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+            </Group>
           </Box>
         </Stack>
       </Stack>
       <Box style={{ position: "relative", zIndex: 6 }}>
-          <CatchphraseCard embedded={true} contents={
-            <Text size="lg" c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".1em" }}>
-              A STASH OF VISIONS
+        <CatchphraseCard
+          embedded={true}
+          contents={
+            <Text
+              size="lg"
+              c="white"
+              style={{
+                fontFamily: "DM Mono, monospace",
+                letterSpacing: ".1em",
+              }}
+            >
+              <BilingualShuffle
+                english="A STASH OF VISONS"
+                japanese="隠された幻影"
+              />
             </Text>
-          } />
-        </Box>
+          }
+        />
+      </Box>
       <Footer />
     </LayoutWrapper>
   );

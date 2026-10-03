@@ -1,9 +1,13 @@
-import { Badge, Container, Stack, Text } from "@mantine/core";
-import BilingualShuffle from "../animations/bilingual.shuffle";
+import { Container, Stack } from "@mantine/core";
 import Dither from "../background/dither.background";
-import JapaneseSignal from "../background/japanese.signal";
 
-export default function CatchphraseCard({ embedded = false, contents }: { embedded?: boolean, contents?: React.ReactNode }) {
+export default function CatchphraseCard({
+  embedded = false,
+  contents,
+}: {
+  embedded?: boolean;
+  contents?: React.ReactNode;
+}) {
   return (
     <Container
       fluid

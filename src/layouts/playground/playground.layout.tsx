@@ -6,17 +6,20 @@ import {
   Group,
   Loader,
   Paper,
-  SegmentedControl,
   Stack,
   Text,
   Title,
   UnstyledButton,
 } from "@mantine/core";
-import { IconArrowUpRight, IconBook2, IconExclamationCircle, IconTerminal } from "@tabler/icons-react";
+import {
+  IconArrowUpRight,
+  IconBook2,
+  IconExclamationCircle,
+  IconTerminal,
+} from "@tabler/icons-react";
 import { DatabaseTables } from "../../enums/database.enums";
 import type { PostEntity } from "../../models/entity/post.model";
 import DatabaseService from "../../services/database.service";
-import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import JapaneseSignal from "../../components/background/japanese.signal";
 import Footer from "../../components/footer/footer";
 import { useAnimatedNavigate } from "../../components/transition/transition";
@@ -53,9 +56,15 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
         p="lg"
         radius={8}
         style={{
-          backgroundColor: isHovered ? "var(--folio-card-hover)" : "var(--folio-card)",
-          border: isHovered ? "1px solid var(--folio-accent)" : "1px solid var(--folio-card-border)",
-          boxShadow: isHovered ? "0 0 20px rgba(255, 119, 0, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.4)",
+          backgroundColor: isHovered
+            ? "var(--folio-card-hover)"
+            : "var(--folio-card)",
+          border: isHovered
+            ? "1px solid var(--folio-accent)"
+            : "1px solid var(--folio-card-border)",
+          boxShadow: isHovered
+            ? "0 0 20px rgba(255, 119, 0, 0.2)"
+            : "0 2px 8px rgba(0, 0, 0, 0.4)",
           transform: isHovered ? "translateY(-2px)" : "translateY(0)",
           transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
           overflow: "hidden",
@@ -67,12 +76,19 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
               <Stack gap="xs">
                 <Group justify="space-between" align="center" wrap="wrap">
                   <Group gap="xs">
-                    <IconTerminal size={16} color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"} />
+                    <IconTerminal
+                      size={16}
+                      color={
+                        isHovered ? "var(--folio-accent)" : "var(--folio-muted)"
+                      }
+                    />
                     <Text
                       size="xs"
                       fw={700}
                       ff="DotGothic16"
-                      c={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
+                      c={
+                        isHovered ? "var(--folio-accent)" : "var(--folio-muted)"
+                      }
                       style={{ letterSpacing: 1 }}
                     >
                       // PLAYGROUND_{post.slug.toUpperCase()}
@@ -82,7 +98,10 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                     size="sm"
                     variant="outline"
                     color="orange"
-                    style={{ fontFamily: "DotGothic16", backgroundColor: "transparent" }}
+                    style={{
+                      fontFamily: "DotGothic16",
+                      backgroundColor: "transparent",
+                    }}
                   >
                     FIELD NOTE
                   </Badge>
@@ -97,7 +116,9 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                     fontFamily: "DotGothic16",
                     letterSpacing: "-1px",
                     lineHeight: 1.1,
-                    textShadow: isHovered ? "0 0 10px rgba(255, 119, 0, 0.4)" : "none",
+                    textShadow: isHovered
+                      ? "0 0 10px rgba(255, 119, 0, 0.4)"
+                      : "none",
                   }}
                 >
                   {post.title}
@@ -125,8 +146,13 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                   </Text>
                   <IconArrowUpRight
                     size={18}
-                    color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
-                    style={{ transform: isHovered ? "translate(2px, -2px)" : "none", transition: "transform 0.2s ease" }}
+                    color={
+                      isHovered ? "var(--folio-accent)" : "var(--folio-muted)"
+                    }
+                    style={{
+                      transform: isHovered ? "translate(2px, -2px)" : "none",
+                      transition: "transform 0.2s ease",
+                    }}
                   />
                 </Group>
               </Group>
@@ -141,7 +167,9 @@ function PlaygroundPostCard({ post }: { post: PostEntity }) {
                 height: "100%",
                 minWidth: 0,
                 borderRadius: 6,
-                border: isHovered ? "1px solid var(--folio-accent)" : "1px solid #262626",
+                border: isHovered
+                  ? "1px solid var(--folio-accent)"
+                  : "1px solid #262626",
                 backgroundImage: post.cover_image
                   ? `linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.78)), url("${post.cover_image}")`
                   : "radial-gradient(circle at 70% 30%, rgba(255,119,0,.16), transparent 42%), linear-gradient(135deg, #191715, #090909)",
@@ -207,7 +235,8 @@ export default function PlaygroundLayout() {
       })
       .catch((fetchError: unknown) => {
         console.error("Unable to load playground entries:", fetchError);
-        if (active) setError("The archive could not be reached. Please try again later.");
+        if (active)
+          setError("The archive could not be reached. Please try again later.");
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -255,7 +284,13 @@ export default function PlaygroundLayout() {
         >
           <Group gap="xs">
             <IconBook2 size={18} color="#FF7700" />
-            <Text size="xs" fw={700} ff="DotGothic16" c="#FF7700" style={{ letterSpacing: 1 }}>
+            <Text
+              size="xs"
+              fw={700}
+              ff="DotGothic16"
+              c="#FF7700"
+              style={{ letterSpacing: 1 }}
+            >
               EXPERIMENTAL // PLAYGROUND
             </Text>
           </Group>
@@ -269,7 +304,13 @@ export default function PlaygroundLayout() {
           <Group justify="space-between" align="center" mb="xs">
             <Group gap="xs">
               <IconTerminal size={18} color="#FF7700" />
-              <Text size="xs" fw={700} ff="DotGothic16" c="#FF7700" style={{ letterSpacing: 1 }}>
+              <Text
+                size="xs"
+                fw={700}
+                ff="DotGothic16"
+                c="#FF7700"
+                style={{ letterSpacing: 1 }}
+              >
                 // PLAYGROUND_ARCHIVE
               </Text>
             </Group>
@@ -279,7 +320,9 @@ export default function PlaygroundLayout() {
           </Group>
 
           {loading ? (
-            <Group justify="center" py="xl"><Loader color="orange" /></Group>
+            <Group justify="center" py="xl">
+              <Loader color="orange" />
+            </Group>
           ) : error ? (
             <Paper p="lg" withBorder radius="sm">
               <Group gap="sm" c="orange">
@@ -289,20 +332,39 @@ export default function PlaygroundLayout() {
             </Paper>
           ) : sortedPosts.length ? (
             <Stack gap="md">
-              {sortedPosts.map((post) => <PlaygroundPostCard key={post.id} post={post} />)}
+              {sortedPosts.map((post) => (
+                <PlaygroundPostCard key={post.id} post={post} />
+              ))}
             </Stack>
           ) : (
-            <Paper p="lg" radius={8} style={{ background: "var(--folio-card)", border: "1px solid var(--folio-card-border)" }}>
+            <Paper
+              p="lg"
+              radius={8}
+              style={{
+                background: "var(--folio-card)",
+                border: "1px solid var(--folio-card-border)",
+              }}
+            >
               <Stack gap="xs">
-                <Text size="xs" c="orange" ff="DotGothic16">// NO_PUBLISHED_ENTRIES</Text>
-                <Title order={3} c="var(--folio-text)">The playground is still taking shape.</Title>
-                <Text c="dimmed">Published journal entries will appear here when they are ready.</Text>
+                <Text size="xs" c="orange" ff="DotGothic16">
+                  // NO_PUBLISHED_ENTRIES
+                </Text>
+                <Title order={3} c="var(--folio-text)">
+                  The playground is still taking shape.
+                </Title>
+                <Text c="dimmed">
+                  Published journal entries will appear here when they are
+                  ready.
+                </Text>
               </Stack>
             </Paper>
           )}
         </Stack>
 
-        <JapaneseSignal channel="playground" className="section-japanese-signal--end" />
+        <JapaneseSignal
+          channel="playground"
+          className="section-japanese-signal--end"
+        />
       </Stack>
       <Footer />
     </LayoutWrapper>

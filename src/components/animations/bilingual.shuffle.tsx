@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const GLYPHS = "電脳未来回路仮想記録光夢夜接続探索情報";
+const GLYPHS = "電脳未来回路仮想記録光夢夜接▓░░";
 
 type BilingualShuffleProps = {
   english: string;
@@ -51,10 +51,7 @@ export default function BilingualShuffle({
           showingJapanese = targetIsJapanese;
           timeoutId = window.setTimeout(
             () =>
-              shuffleTo(
-                showingJapanese ? english : japanese,
-                !showingJapanese,
-              ),
+              shuffleTo(showingJapanese ? english : japanese, !showingJapanese),
             2600 + Math.random() * 3000,
           );
         }

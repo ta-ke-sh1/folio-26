@@ -112,10 +112,7 @@ export default function CollectionsLayout() {
 
   return (
     <LayoutWrapper>
-      <Stack
-        mb={100}
-        style={{ position: "relative", isolation: "isolate" }}
-      >
+      <Stack mb={100} style={{ position: "relative", isolation: "isolate" }}>
         <CyberpunkBackdrop variant="collections" />
         <Group pt={"60"} justify={"center"}>
           <Stack justify="center">
@@ -131,8 +128,14 @@ export default function CollectionsLayout() {
                 textAlign: "center",
               }}
             >
-              <BilingualShuffle english={currentLabel} japanese={formatMonthYearJP(currentDate.year, currentDate.month)} />
-              <br/>
+              <BilingualShuffle
+                english={currentLabel}
+                japanese={formatMonthYearJP(
+                  currentDate.year,
+                  currentDate.month,
+                )}
+              />
+              <br />
               <BilingualShuffle english="COLLECTIONS" japanese="コレクション" />
             </Title>
           </Stack>
@@ -264,12 +267,25 @@ export default function CollectionsLayout() {
         )}
       </Stack>
       <Box style={{ position: "relative", zIndex: 6 }}>
-          <CatchphraseCard embedded={true} contents={
-            <Text size="lg" c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".1em" }}>
-              A STASH OF TREASURES
+        <CatchphraseCard
+          embedded={true}
+          contents={
+            <Text
+              size="lg"
+              c="white"
+              style={{
+                fontFamily: "DM Mono, monospace",
+                letterSpacing: ".1em",
+              }}
+            >
+              <BilingualShuffle
+                english="A STASH OF TREASURES"
+                japanese="秘蔵の宝物"
+              />
             </Text>
-          } />
-        </Box>
+          }
+        />
+      </Box>
       <Footer />
     </LayoutWrapper>
   );

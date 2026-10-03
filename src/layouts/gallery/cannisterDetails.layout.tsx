@@ -15,6 +15,7 @@ import CannisterService from "../../services/cannister.service";
 import DatabaseService from "../../services/database.service";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
+import CatchphraseCard from "../../components/card/catchphrase.card";
 
 interface CannisterFile {
   name: string;
@@ -28,16 +29,25 @@ interface ImageExposureMetadata {
 }
 
 const IMAGE_EXTENSION = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
-const EXPOSURE_TAGS = ["ISO", "PhotographicSensitivity", "ExposureTime", "ShutterSpeedValue", "FNumber"];
+const EXPOSURE_TAGS = [
+  "ISO",
+  "PhotographicSensitivity",
+  "ExposureTime",
+  "ShutterSpeedValue",
+  "FNumber",
+];
 
 function positiveNumber(value: unknown): number | undefined {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
 }
 
-function normalizeExposureMetadata(tags: Record<string, unknown>): ImageExposureMetadata {
+function normalizeExposureMetadata(
+  tags: Record<string, unknown>,
+): ImageExposureMetadata {
   const shutterSpeedValue = Number(tags.ShutterSpeedValue);
-  const exposureTime = positiveNumber(tags.ExposureTime) ??
+  const exposureTime =
+    positiveNumber(tags.ExposureTime) ??
     (Number.isFinite(shutterSpeedValue) ? 2 ** -shutterSpeedValue : undefined);
 
   return {
@@ -61,7 +71,6 @@ export default function CannisterDetailsLayout() {
   const [cannister, setCannister] = useState<CannisterEntity | null>(null);
   const [files, setFiles] = useState<CannisterFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [exposureByFile, setExposureByFile] = useState<Record<string, ImageExposureMetadata>>({});
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const storyRef = useRef<HTMLDivElement>(null);
@@ -74,21 +83,23 @@ export default function CannisterDetailsLayout() {
       try {
         const service = CannisterService.getInstance();
         const records = (await service.fetchCannisters()) as CannisterEntity[];
-        const found = records.find((record) => String(record.id) === id) ?? null;
+        const found =
+          records.find((record) => String(record.id) === id) ?? null;
         if (!isMounted) return;
 
         setCannister(found);
         setFiles([]);
-        setExposureByFile({});
         setActiveImageIndex(0);
         setScrollProgress(0);
         if (found) {
           const storageItems = await service.fetchCannisterItems(found.name);
           if (isMounted && Array.isArray(storageItems)) {
-            setFiles(storageItems.map((file) => ({
-              name: file.name,
-              metadata: file.metadata as Record<string, unknown> | null,
-            })));
+            setFiles(
+              storageItems.map((file) => ({
+                name: file.name,
+                metadata: file.metadata as Record<string, unknown> | null,
+              })),
+            );
           }
         }
       } catch (error) {
@@ -104,58 +115,36 @@ export default function CannisterDetailsLayout() {
     };
   }, [id]);
 
-  const publicUrl = useCallback((fileName: string) => {
-    if (!cannister) return "";
-    const bucket = DatabaseService.getInstance()
-      .getDatabase()
-      .storage.from(DatabaseTables.Cannisters);
-    return bucket.getPublicUrl(`${cannister.name}/${fileName}`).data.publicUrl;
-  }, [cannister]);
+  const publicUrl = useCallback(
+    (fileName: string) => {
+      if (!cannister) return "";
+      const bucket = DatabaseService.getInstance()
+        .getDatabase()
+        .storage.from(DatabaseTables.Cannisters);
+      return bucket.getPublicUrl(`${cannister.name}/${fileName}`).data
+        .publicUrl;
+    },
+    [cannister],
+  );
 
   const imageFiles = useMemo(
-    () => files
-      .filter((file) => IMAGE_EXTENSION.test(file.name))
-      .sort((first, second) => first.name.localeCompare(second.name, undefined, { numeric: true })),
+    () =>
+      files
+        .filter((file) => IMAGE_EXTENSION.test(file.name))
+        .sort((first, second) =>
+          first.name.localeCompare(second.name, undefined, { numeric: true }),
+        ),
     [files],
   );
   const otherFiles = files.filter((file) => !IMAGE_EXTENSION.test(file.name));
-
-  useEffect(() => {
-    if (!cannister || imageFiles.length === 0) return;
-
-    let isActive = true;
-
-    async function readExposureMetadata() {
-      const entries = await Promise.all(imageFiles.map(async (file) => {
-        const stored = normalizeExposureMetadata(file.metadata ?? {});
-        if (stored.iso || stored.exposureTime || stored.aperture) {
-          return [file.name, stored] as const;
-        }
-
-        try {
-          const tags = await parse(publicUrl(file.name), { pick: EXPOSURE_TAGS });
-          return [file.name, normalizeExposureMetadata(tags ?? {})] as const;
-        } catch {
-          return [file.name, {}] as const;
-        }
-      }));
-
-      if (isActive) {
-        setExposureByFile(Object.fromEntries(entries));
-      }
-    }
-
-    void readExposureMetadata();
-    return () => {
-      isActive = false;
-    };
-  }, [cannister, files, imageFiles, publicUrl]);
 
   const updateScrollPosition = useCallback(() => {
     const story = storyRef.current;
     if (!story) return;
 
-    const frames = Array.from(story.querySelectorAll<HTMLElement>("[data-image-frame]"));
+    const frames = Array.from(
+      story.querySelectorAll<HTMLElement>("[data-image-frame]"),
+    );
     if (frames.length === 0) return;
 
     const viewportCenter = window.innerHeight / 2;
@@ -164,7 +153,9 @@ export default function CannisterDetailsLayout() {
 
     frames.forEach((frame, index) => {
       const frameRect = frame.getBoundingClientRect();
-      const distance = Math.abs(frameRect.top + frameRect.height / 2 - viewportCenter);
+      const distance = Math.abs(
+        frameRect.top + frameRect.height / 2 - viewportCenter,
+      );
       if (distance < closestDistance) {
         closestIndex = index;
         closestDistance = distance;
@@ -172,12 +163,18 @@ export default function CannisterDetailsLayout() {
     });
 
     setActiveImageIndex(closestIndex);
-    const firstFrameTop = frames[0].getBoundingClientRect().top + window.scrollY;
-    const lastFrameBottom = frames[frames.length - 1].getBoundingClientRect().bottom + window.scrollY;
+    const firstFrameTop =
+      frames[0].getBoundingClientRect().top + window.scrollY;
+    const lastFrameBottom =
+      frames[frames.length - 1].getBoundingClientRect().bottom + window.scrollY;
     const start = Math.max(0, firstFrameTop - 80);
     const end = Math.max(start, lastFrameBottom - window.innerHeight + 80);
     const distance = end - start;
-    setScrollProgress(distance > 0 ? Math.max(0, Math.min(1, (window.scrollY - start) / distance)) : 0);
+    setScrollProgress(
+      distance > 0
+        ? Math.max(0, Math.min(1, (window.scrollY - start) / distance))
+        : 0,
+    );
   }, []);
 
   useEffect(() => {
@@ -191,10 +188,14 @@ export default function CannisterDetailsLayout() {
   }, [imageFiles.length, updateScrollPosition]);
 
   const scrollToImage = (index: number) => {
-    const frame = storyRef.current?.querySelector<HTMLElement>(`[data-image-frame="${index}"]`);
+    const frame = storyRef.current?.querySelector<HTMLElement>(
+      `[data-image-frame="${index}"]`,
+    );
     if (!frame) return;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (lenis) {
       lenis.scrollTo(frame, {
         offset: -48,
@@ -222,7 +223,8 @@ export default function CannisterDetailsLayout() {
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          padding: "calc(76px / var(--folio-viewport-scale, 1)) clamp(18px, 4vw, 64px) calc(60px / var(--folio-viewport-scale, 1))",
+          padding:
+            "calc(76px / var(--folio-viewport-scale, 1)) clamp(18px, 4vw, 64px) calc(60px / var(--folio-viewport-scale, 1))",
           fontFamily: "DM Mono, monospace",
           backgroundImage:
             "linear-gradient(rgba(255,119,0,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,119,0,.035) 1px, transparent 1px)",
@@ -268,8 +270,7 @@ export default function CannisterDetailsLayout() {
             position: relative;
             display: grid;
             width: 100%;
-            height: calc(100dvh - 56px);
-            min-height: 440px;
+            height: fit-content;
             place-items: center;
             isolation: isolate;
             background: var(--folio-page-bg);
@@ -287,7 +288,7 @@ export default function CannisterDetailsLayout() {
           }
           .cannister-story-frame img {
             width: 100%;
-            height: 100%;
+            height: auto;
             object-fit: contain;
           }
           .cannister-story-rail {
@@ -404,22 +405,43 @@ export default function CannisterDetailsLayout() {
         </Box>
 
         {isLoading ? (
-          <Text c="primaryOrange" role="status" style={{ fontFamily: "DotGothic16, sans-serif" }}>
+          <Text
+            c="primaryOrange"
+            role="status"
+            style={{ fontFamily: "DotGothic16, sans-serif" }}
+          >
             <ShuffleText text="LOADING COLLECTION..." />
           </Text>
         ) : !cannister ? (
           <Stack gap="sm">
-            <Title order={1} size="h2" c="primaryOrange" style={{ fontFamily: "DotGothic16, sans-serif" }}>
+            <Title
+              order={1}
+              size="h2"
+              c="primaryOrange"
+              style={{ fontFamily: "DotGothic16, sans-serif" }}
+            >
               <ShuffleText text="COLLECTION NOT FOUND" />
             </Title>
-            <Text c="dimmed">This cannister is not present in the archive.</Text>
+            <Text c="dimmed">
+              This cannister is not present in the archive.
+            </Text>
           </Stack>
         ) : (
           <Box className="cannister-story-layout">
             <Stack className="cannister-story-details" gap="md">
               <Stack gap={6}>
-                <Text c="var(--folio-accent)" size="sm" fw={600} tt="uppercase" style={{ letterSpacing: ".12em" }}>
-                  <BilingualShuffle english="COLLECTION" japanese="コレクション" /> / {String(cannister.id).padStart(3, "0")}
+                <Text
+                  c="var(--folio-accent)"
+                  size="sm"
+                  fw={600}
+                  tt="uppercase"
+                  style={{ letterSpacing: ".12em" }}
+                >
+                  <BilingualShuffle
+                    english="COLLECTION"
+                    japanese="コレクション"
+                  />{" "}
+                  / {String(cannister.id).padStart(3, "0")}
                 </Text>
                 <Title
                   order={1}
@@ -439,46 +461,142 @@ export default function CannisterDetailsLayout() {
               </Stack>
 
               <Stack gap={4}>
-                <Text size="xs" c="primaryOrange" tt="uppercase" style={{ fontFamily: "DotGothic16, sans-serif" }}>
-                  <ShuffleText text="CREATED" />
+                <Text
+                  size="xs"
+                  c="primaryOrange"
+                  tt="uppercase"
+                  style={{ fontFamily: "DotGothic16, sans-serif" }}
+                >
+                  <Text
+                    size="xs"
+                    c="primaryOrange"
+                    tt="uppercase"
+                    style={{
+                      fontFamily: "DotGothic16, sans-serif",
+                      letterSpacing: ".1em",
+                    }}
+                  >
+                    CREATED AT / 作成日
+                  </Text>
                 </Text>
                 <Text size="sm">
-                  {new Date(cannister.created_at).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {new Date(cannister.created_at).toLocaleDateString(
+                    undefined,
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    },
+                  )}
                 </Text>
               </Stack>
 
               <Stack gap={6}>
-                <Text size="xs" c="primaryOrange" tt="uppercase" style={{ fontFamily: "DotGothic16, sans-serif", letterSpacing: ".1em" }}>
+                <Text
+                  size="xs"
+                  c="primaryOrange"
+                  tt="uppercase"
+                  style={{
+                    fontFamily: "DotGothic16, sans-serif",
+                    letterSpacing: ".1em",
+                  }}
+                >
                   FIELD TAGS / 分類
                 </Text>
                 <Group gap="xs">
-                  {(cannister.tags ?? []).length > 0 ? cannister.tags.map((tag) => (
-                    <Text key={tag} size="xs" c="primaryOrange" style={{ border: "1px solid var(--folio-border)", padding: "5px 8px", background: "var(--folio-card)" }}>
-                      {tag}
+                  {(cannister.tags ?? []).length > 0 ? (
+                    cannister.tags.map((tag) => (
+                      <Text
+                        key={tag}
+                        size="xs"
+                        c="primaryOrange"
+                        style={{
+                          border: "1px solid var(--folio-border)",
+                          padding: "5px 8px",
+                          background: "var(--folio-card)",
+                        }}
+                      >
+                        {tag}
+                      </Text>
+                    ))
+                  ) : (
+                    <Text size="sm" c="dimmed">
+                      No fields assigned
                     </Text>
-                  )) : <Text size="sm" c="dimmed">No fields assigned</Text>}
+                  )}
                 </Group>
               </Stack>
 
-              <Text size="10px" c="dimmed" style={{ marginTop: "auto", fontFamily: "DotGothic16, sans-serif", letterSpacing: ".1em" }}>
-                SCROLL TO EXPLORE / {String(imageFiles.length).padStart(2, "0")} FRAMES
+              <Stack gap={6}>
+                <Text
+                  size="xs"
+                  c="primaryOrange"
+                  tt="uppercase"
+                  style={{
+                    fontFamily: "DotGothic16, sans-serif",
+                    letterSpacing: ".1em",
+                  }}
+                >
+                  DESCRIPTION / 説明
+                </Text>
+                <Group gap="xs">
+                  {cannister.description ? (
+                    <Text size="sm">{cannister.description}</Text>
+                  ) : (
+                    <Text size="sm" c="dimmed">
+                      No description available
+                    </Text>
+                  )}
+                </Group>
+              </Stack>
+
+              <Text
+                size="10px"
+                c="dimmed"
+                style={{
+                  marginTop: "auto",
+                  fontFamily: "DotGothic16, sans-serif",
+                  letterSpacing: ".1em",
+                  marginBottom: 10,
+                }}
+              >
+                SCROLL TO EXPLORE / {String(imageFiles.length).padStart(2, "0")}{" "}
+                FRAMES
               </Text>
             </Stack>
 
-            <Stack
-              className="cannister-story-content"
-              gap={0}
-            >
-              <Group justify="space-between" align="center" px="md" py="sm" style={{ flex: "0 0 auto", borderBottom: "1px solid var(--folio-border)" }}>
-                <Text size="xs" c="primaryOrange" tt="uppercase" style={{ letterSpacing: ".12em", fontFamily: "DotGothic16, sans-serif" }}>
+            <Stack className="cannister-story-content" gap={0}>
+              <Group
+                justify="space-between"
+                align="center"
+                px="md"
+                py="sm"
+                style={{
+                  flex: "0 0 auto",
+                  borderBottom: "1px solid var(--folio-border)",
+                }}
+              >
+                <Text
+                  size="xs"
+                  c="primaryOrange"
+                  tt="uppercase"
+                  style={{
+                    letterSpacing: ".12em",
+                    fontFamily: "DotGothic16, sans-serif",
+                  }}
+                >
                   <ShuffleText text="ARCHIVE CONTENTS" />
                 </Text>
-                <Text size="xs" c="dimmed" style={{ fontFamily: "DotGothic16, sans-serif", letterSpacing: ".08em" }}>
-                  {String(activeImageIndex + 1).padStart(2, "0")} / {String(imageFiles.length).padStart(2, "0")}
+                <Text
+                  size="xs"
+                  c="dimmed"
+                  style={{
+                    fontFamily: "DotGothic16, sans-serif",
+                    letterSpacing: ".08em",
+                  }}
+                >
+                  {String(activeImageIndex + 1).padStart(2, "0")} /{" "}
+                  {String(imageFiles.length).padStart(2, "0")}
                 </Text>
               </Group>
 
@@ -488,13 +606,6 @@ export default function CannisterDetailsLayout() {
                 aria-label={`Image story for ${cannister.name}`}
               >
                 {imageFiles.map((file, index) => {
-                  const exposure = exposureByFile[file.name];
-                  const exposureSummary = [
-                    exposure?.iso ? `ISO ${exposure.iso}` : null,
-                    formatShutterSpeed(exposure?.exposureTime),
-                    exposure?.aperture ? `f/${Number(exposure.aperture.toFixed(1))}` : null,
-                  ].filter(Boolean).join(" · ");
-
                   return (
                     <Box
                       key={file.name}
@@ -502,23 +613,59 @@ export default function CannisterDetailsLayout() {
                       data-image-frame={index}
                       aria-label={`Frame ${index + 1} of ${imageFiles.length}`}
                     >
-                      <Image src={publicUrl(file.name)} alt={`${cannister.name} — ${file.name}`} fit="contain" />
-                      <Group justify="space-between" style={{ position: "absolute", zIndex: 2, top: 14, left: 16, right: 16, pointerEvents: "none" }}>
-                        <Text size="xs" c="white" style={{ fontFamily: "DotGothic16, sans-serif", letterSpacing: ".1em", textShadow: "0 1px 8px #000" }}>
+                      <Image
+                        src={publicUrl(file.name)}
+                        alt={`${cannister.name} — ${file.name}`}
+                        fit="contain"
+                        w="100%"
+                        h="auto"
+                      />
+                      <Group
+                        justify="space-between"
+                        style={{
+                          position: "absolute",
+                          zIndex: 2,
+                          top: 14,
+                          left: 16,
+                          right: 16,
+                          pointerEvents: "none",
+                        }}
+                      >
+                        <Text
+                          size="xs"
+                          c="white"
+                          style={{
+                            fontFamily: "DotGothic16, sans-serif",
+                            letterSpacing: ".1em",
+                            textShadow: "0 1px 8px #000",
+                          }}
+                        >
                           FRAME {String(index + 1).padStart(2, "0")}
                         </Text>
-                        {exposureSummary && (
-                          <Text size="10px" c="white" style={{ textShadow: "0 1px 8px #000" }}>{exposureSummary}</Text>
-                        )}
                       </Group>
-                      <Text size="xs" c="white" style={{ position: "absolute", zIndex: 2, bottom: 14, left: 16, fontFamily: "DM Mono, monospace", textShadow: "0 1px 8px #000" }}>
+                      <Text
+                        size="xs"
+                        c="white"
+                        style={{
+                          position: "absolute",
+                          zIndex: 2,
+                          bottom: 14,
+                          left: 16,
+                          fontFamily: "DM Mono, monospace",
+                          textShadow: "0 1px 8px #000",
+                        }}
+                      >
                         {file.name}
                       </Text>
                     </Box>
                   );
                 })}
                 {imageFiles.length === 0 && (
-                  <Text c="dimmed" p="xl" style={{ fontFamily: "DotGothic16, sans-serif" }}>
+                  <Text
+                    c="dimmed"
+                    p="xl"
+                    style={{ fontFamily: "DotGothic16, sans-serif" }}
+                  >
                     NO IMAGE DATA // THIS COLLECTION IS EMPTY
                   </Text>
                 )}
@@ -532,7 +679,10 @@ export default function CannisterDetailsLayout() {
                         rel="noreferrer"
                         c="var(--folio-accent)"
                         py="sm"
-                        style={{ borderTop: "1px solid var(--folio-card-border)", fontFamily: "DotGothic16, sans-serif" }}
+                        style={{
+                          borderTop: "1px solid var(--folio-card-border)",
+                          fontFamily: "DotGothic16, sans-serif",
+                        }}
                       >
                         <Group justify="space-between">
                           <Text size="sm">{file.name}</Text>
@@ -546,9 +696,18 @@ export default function CannisterDetailsLayout() {
             </Stack>
 
             {imageFiles.length > 0 && (
-              <Box className="cannister-story-rail" aria-label="Image navigation">
+              <Box
+                className="cannister-story-rail"
+                aria-label="Image navigation"
+              >
                 <Box className="cannister-story-rail-track">
-                  <Box className="cannister-story-rail-progress" style={{ height: "100%", transform: `scaleY(${Math.max(scrollProgress, 0.025)})` }} />
+                  <Box
+                    className="cannister-story-rail-progress"
+                    style={{
+                      height: "100%",
+                      transform: `scaleY(${Math.max(scrollProgress, 0.025)})`,
+                    }}
+                  />
                 </Box>
                 {imageFiles.map((file, index) => (
                   <button
@@ -559,13 +718,37 @@ export default function CannisterDetailsLayout() {
                     aria-current={activeImageIndex === index}
                     onClick={() => scrollToImage(index)}
                   >
-                    <Image src={publicUrl(file.name)} alt="" aria-hidden="true" />
+                    <Image
+                      src={publicUrl(file.name)}
+                      alt=""
+                      aria-hidden="true"
+                    />
                   </button>
                 ))}
               </Box>
             )}
           </Box>
         )}
+      </Box>
+      <Box style={{ position: "relative", zIndex: 6 }}>
+        <CatchphraseCard
+          embedded={true}
+          contents={
+            <Text
+              size="lg"
+              c="white"
+              style={{
+                fontFamily: "DM Mono, monospace",
+                letterSpacing: ".1em",
+              }}
+            >
+              <BilingualShuffle
+                english="A STASH OF VISONS"
+                japanese="隠された幻影"
+              />
+            </Text>
+          }
+        />
       </Box>
       <Footer />
     </LayoutWrapper>

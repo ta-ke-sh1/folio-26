@@ -43,7 +43,6 @@ export function ShuffleButton({
   const { displayText, start, stop } = useTextShuffle(
     isPlainText ? String(children) : "",
   );
-  const hoverAudioRef = useRef<HTMLAudioElement | null>(null);
   const { onMouseEnter, onMouseLeave, onFocus, onBlur, ...buttonProps } = props;
 
   return (
@@ -57,13 +56,6 @@ export function ShuffleButton({
       aria-label={buttonProps["aria-label"] ?? (textLabel || undefined)}
       onMouseEnter={(event: MouseEvent<HTMLButtonElement>) => {
         onMouseEnter?.(event);
-        if (localStorage.getItem("folio-sound-enabled") === "true") {
-          const hoverAudio = hoverAudioRef.current ?? new Audio("/sfx/hover.mp3");
-          hoverAudioRef.current = hoverAudio;
-          hoverAudio.volume = 0.12;
-          hoverAudio.currentTime = 0;
-          void hoverAudio.play().catch(() => undefined);
-        }
         if (isPlainText) start();
       }}
       onMouseLeave={(event: MouseEvent<HTMLButtonElement>) => {

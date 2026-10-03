@@ -1,5 +1,6 @@
 export function InstrumentModalStyles() {
-  return <style>{`
+  return (
+    <style>{`
     .instrument-window {
       --instrument-space: clamp(10px, 1.8vw, 16px);
       --instrument-titlebar-height: clamp(34px, 4vw, 38px);
@@ -315,7 +316,7 @@ export function InstrumentModalStyles() {
     .editorial-file__poster-title h2 {
       margin: 0;
       font-family: "Plus Jakarta Sans", "Arial", sans-serif;
-      font-size: clamp(26px, 4.2vw, 48px);
+      font-size: clamp(26px, 4.2vw, 32px);
       font-weight: 800;
       letter-spacing: -0.075em;
       line-height: 0.94;
@@ -553,5 +554,6 @@ export function InstrumentModalStyles() {
     @media (max-height: 42.5em) {
       .instrument-window { max-height: calc(100dvh - 80px); }
     }
-  `}</style>;
+  `}</style>
+  );
 }

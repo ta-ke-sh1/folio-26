@@ -1,5 +1,14 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
-import { ActionIcon, Box, Flex, Group, Stack, Text, Title, useMantineTheme } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Flex,
+  Group,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
 import { IconArrowDown, IconVolume, IconVolumeOff } from "@tabler/icons-react";
 import { useTextShuffle } from "../../components/animations/use-text-shuffle";
 import gsap from "gsap";
@@ -9,13 +18,60 @@ import Footer from "../../components/footer/footer";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import CatchphraseCard from "../../components/card/catchphrase.card";
 import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
+import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const VIDEO_REELS = [
-  { src: "/videos/1.mp4", title: "FIELD TAPE", number: "01", note: "A MOMENT IN MOTION", location: "TOKYO, JAPAN" },
-  { src: "/videos/2.mp4", title: "AFTERIMAGE", number: "02", note: "FRAMES FROM THE ARCHIVE", location: "ON THE ROAD" },
-  { src: "/videos/3.mp4", title: "LIGHT / PLACE", number: "03", note: "A STUDY IN REMEMBERING", location: "SOMEWHERE, ALWAYS" },
+  {
+    src: "/videos/1.mp4",
+    title: "SUMMER DREAM",
+    number: "01",
+    note: "A QUICK ESCAPE FROM REALITY",
+    location: "HANOI, VIETNAM",
+  },
+  {
+    src: "/videos/2.mp4",
+    title: "DON'T BE DUMB",
+    number: "02",
+    note: "JUST CATCHING ON THE TRENDS",
+    location: "BAC NINH, VIETNAM",
+  },
+  {
+    src: "/videos/3.mp4",
+    title: "LUCID",
+    number: "03",
+    note: "DREAMCORE PHASE",
+    location: "HANOI, VIETNAM",
+  },
+  {
+    src: "/videos/4.mp4",
+    title: "COLD HOT DAYS",
+    number: "04",
+    note: "JUST TRYING NEW EDIT STYLE",
+    location: "HANOI, VIETNAM",
+  },
+  {
+    src: "/videos/5.mp4",
+    title: "SUMMER MEMORIES",
+    number: "05",
+    note: "STORING MEMORIES WHILE I CAN",
+    location: "HANOI, VIETNAM",
+  },
+  {
+    src: "/videos/6.mp4",
+    title: "RANDOM STILLS",
+    number: "06",
+    note: "IT'S JUST A RANDOM COLLECTION OF STILLS",
+    location: "HANOI, VIETNAM",
+  },
+  {
+    src: "/videos/7.mp4",
+    title: "SUMMER MEMORIES 1.5",
+    number: "07",
+    note: "LEFTOVER MEMORIES OF LAST SUMMER",
+    location: "HANOI, VIETNAM",
+  },
 ] as const;
 
 function ShuffleValue({ text }: { text: string }) {
@@ -35,7 +91,9 @@ function ShuffleValue({ text }: { text: string }) {
 
 export default function MemoriesLayout() {
   const theme = useMantineTheme();
-  const lenisSyncRef = useRef<(scrollPosition: number) => void>(() => undefined);
+  const lenisSyncRef = useRef<(scrollPosition: number) => void>(
+    () => undefined,
+  );
   useLenis((instance) => lenisSyncRef.current(instance.scroll), []);
   const pageRef = useRef<HTMLDivElement>(null);
   const nextSectionRef = useRef<HTMLDivElement>(null);
@@ -66,8 +124,12 @@ export default function MemoriesLayout() {
     if (!page) return;
 
     const context = gsap.context(() => {
-      const reels = reelRefs.current.filter((reel): reel is HTMLElement => Boolean(reel));
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reels = reelRefs.current.filter((reel): reel is HTMLElement =>
+        Boolean(reel),
+      );
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
       reels.forEach((reel, index) => {
         const video = videoRefs.current[index];
@@ -98,21 +160,25 @@ export default function MemoriesLayout() {
           onEnterBack: () => activateReel(index),
         });
       });
-
     }, page);
 
     const syncPagePosition = (scrollPosition = window.scrollY) => {
       ScrollTrigger.update();
-      const scrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollableDistance > 0 ? scrollPosition / scrollableDistance : 0;
+      const scrollableDistance =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress =
+        scrollableDistance > 0 ? scrollPosition / scrollableDistance : 0;
       if (progressRef.current) {
         gsap.set(progressRef.current, { scaleY: Math.max(progress, 0.012) });
       }
       if (progressLabelRef.current) {
-        progressLabelRef.current.textContent = `${Math.round(progress * 100).toString().padStart(2, "0")}%`;
+        progressLabelRef.current.textContent = `${Math.round(progress * 100)
+          .toString()
+          .padStart(2, "0")}%`;
       }
       const lastReel = reelRefs.current[VIDEO_REELS.length - 1];
-      if (lastReel) setIsHudVisible(lastReel.getBoundingClientRect().bottom > 120);
+      if (lastReel)
+        setIsHudVisible(lastReel.getBoundingClientRect().bottom > 120);
 
       const viewportCenter = window.innerHeight * 0.55;
       let closestIndex = 0;
@@ -153,13 +219,18 @@ export default function MemoriesLayout() {
       if (video) video.muted = nextMuted;
     });
     document.dispatchEvent(
-      new CustomEvent("folio-sound-change", { detail: { enabled: !nextMuted } }),
+      new CustomEvent("folio-sound-change", {
+        detail: { enabled: !nextMuted },
+      }),
     );
   };
 
   return (
     <LayoutWrapper>
-      <Box ref={pageRef} style={{ position: "relative", background: "var(--folio-page-bg)" }}>
+      <Box
+        ref={pageRef}
+        style={{ position: "relative", background: "var(--folio-page-bg)" }}
+      >
         <Box
           component="main"
           aria-label="Memories video archive"
@@ -169,15 +240,21 @@ export default function MemoriesLayout() {
           }}
         >
           <style>{`
-            .memories-current-title { font-size: clamp(34px, 10vw, 56px); }
+            .memories-current-title { font-size: clamp(18px, 10vw, 18px); }
             @media (min-width: ${theme.breakpoints.xs}) {
-              .memories-current-title { font-size: clamp(48px, 10vw, 78px); }
+              .memories-current-title { font-size: clamp(24px, 10vw, 24px); }
             }
             @media (min-width: ${theme.breakpoints.sm}) {
-              .memories-current-title { font-size: clamp(68px, 9vw, 112px); }
+              .memories-current-title { font-size: clamp(40px, 9vw, 56px); }
             }
             @media (min-width: ${theme.breakpoints.md}) {
-              .memories-current-title { font-size: clamp(84px, 10vw, 148px); }
+              .memories-current-title { font-size: clamp(64px, 10vw, 64px); }
+            }
+            @media (min-width: ${theme.breakpoints.lg}) {
+              .memories-current-title { font-size: clamp(84px, 10vw, 86px); }
+            }
+            @media (min-width: ${theme.breakpoints.xl}) {
+              .memories-current-title { font-size: clamp(102px, 10vw, 102px); }
             }
           `}</style>
           <Box
@@ -208,7 +285,9 @@ export default function MemoriesLayout() {
                 }}
               >
                 <video
-                  ref={(node) => { videoRefs.current[index] = node; }}
+                  ref={(node) => {
+                    videoRefs.current[index] = node;
+                  }}
                   src={reel.src}
                   muted={isMuted}
                   playsInline
@@ -229,7 +308,8 @@ export default function MemoriesLayout() {
                     position: "absolute",
                     inset: 0,
                     pointerEvents: "none",
-                    background: "linear-gradient(180deg, rgba(0,0,0,.26), transparent 28%, rgba(0,0,0,.08) 55%, rgba(0,0,0,.72))",
+                    background:
+                      "linear-gradient(180deg, rgba(0,0,0,.26), transparent 28%, rgba(0,0,0,.08) 55%, rgba(0,0,0,.72))",
                     boxShadow: "inset 0 0 0 1px rgba(255,255,255,.045)",
                   }}
                 />
@@ -249,7 +329,8 @@ export default function MemoriesLayout() {
               height: "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
               pointerEvents: "none",
               color: "white",
-              visibility: isHudVisible && isMetadataVisible ? "visible" : "hidden",
+              visibility:
+                isHudVisible && isMetadataVisible ? "visible" : "hidden",
               opacity: isHudVisible && isMetadataVisible ? 1 : 0,
               transition: "opacity 200ms ease",
             }}
@@ -259,12 +340,32 @@ export default function MemoriesLayout() {
               align="center"
               style={{ position: "absolute", inset: "22px 26px auto" }}
             >
-              <Text aria-label={currentReel.location} size="9px" fw={700} c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".14em" }}>
+              <Text
+                aria-label={currentReel.location}
+                size="9px"
+                fw={700}
+                c="white"
+                style={{
+                  fontFamily: "DM Mono, monospace",
+                  letterSpacing: ".14em",
+                }}
+              >
                 <ShuffleValue text={currentReel.location} />
               </Text>
               <Group gap="sm">
-                <Text aria-label={`${currentReel.number} / ${String(VIDEO_REELS.length).padStart(2, "0")}`} size="9px" fw={700} c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".14em" }}>
-                  <ShuffleValue text={`${currentReel.number} / ${String(VIDEO_REELS.length).padStart(2, "0")}`} />
+                <Text
+                  aria-label={`${currentReel.number} / ${String(VIDEO_REELS.length).padStart(2, "0")}`}
+                  size="9px"
+                  fw={700}
+                  c="white"
+                  style={{
+                    fontFamily: "DM Mono, monospace",
+                    letterSpacing: ".14em",
+                  }}
+                >
+                  <ShuffleValue
+                    text={`${currentReel.number} / ${String(VIDEO_REELS.length).padStart(2, "0")}`}
+                  />
                 </Text>
                 <ActionIcon
                   onClick={toggleMute}
@@ -275,7 +376,11 @@ export default function MemoriesLayout() {
                   size="md"
                   style={{ pointerEvents: "auto" }}
                 >
-                  {isMuted ? <IconVolumeOff size={16} /> : <IconVolume size={16} />}
+                  {isMuted ? (
+                    <IconVolumeOff size={16} />
+                  ) : (
+                    <IconVolume size={16} />
+                  )}
                 </ActionIcon>
               </Group>
             </Flex>
@@ -290,10 +395,24 @@ export default function MemoriesLayout() {
                 bottom: "clamp(68px, 9vh, 96px)",
               }}
             >
-              <Text aria-label={currentReel.note} size="10px" fw={700} c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".16em" }}>
+              <Text
+                aria-label={currentReel.note}
+                size="10px"
+                fw={700}
+                c="white"
+                style={{
+                  fontFamily: "DM Mono, monospace",
+                  letterSpacing: ".16em",
+                }}
+              >
                 <ShuffleValue text={currentReel.note} />
               </Text>
-              <Flex justify="space-between" align="flex-end" gap="md" wrap="wrap">
+              <Flex
+                justify="space-between"
+                align="flex-end"
+                gap="md"
+                wrap="wrap"
+              >
                 <Title
                   order={2}
                   className="memories-current-title"
@@ -305,7 +424,7 @@ export default function MemoriesLayout() {
                     fontFamily: "Arial, Helvetica, sans-serif",
                     fontWeight: 800,
                     letterSpacing: "-.085em",
-                    lineHeight: .76,
+                    lineHeight: 0.76,
                     textTransform: "uppercase",
                     textShadow: "0 2px 26px rgba(0,0,0,.18)",
                   }}
@@ -319,7 +438,14 @@ export default function MemoriesLayout() {
                 gap={8}
                 style={{ color: "rgba(255,255,255,.72)" }}
               >
-                <Text size="9px" c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".1em" }}>
+                <Text
+                  size="9px"
+                  c="white"
+                  style={{
+                    fontFamily: "DM Mono, monospace",
+                    letterSpacing: ".1em",
+                  }}
+                >
                   SCROLL TO EXPLORE
                 </Text>
                 <IconArrowDown size={13} />
@@ -330,15 +456,18 @@ export default function MemoriesLayout() {
           {VIDEO_REELS.map((reel, index) => (
             <Box
               key={reel.src}
-              ref={(node) => { reelRefs.current[index] = node; }}
+              ref={(node) => {
+                reelRefs.current[index] = node;
+              }}
               component="section"
               aria-label={`${reel.title}, ${reel.note}`}
               style={{
                 position: "relative",
                 width: "100%",
-                height: index < VIDEO_REELS.length - 1
-                  ? "calc((100dvh - 40px) / var(--folio-viewport-scale, 1) + 100px)"
-                  : "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
+                height:
+                  index < VIDEO_REELS.length - 1
+                    ? "calc((100dvh - 40px) / var(--folio-viewport-scale, 1) + 100px)"
+                    : "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
                 minHeight: index < VIDEO_REELS.length - 1 ? 580 : 480,
                 isolation: "isolate",
                 pointerEvents: "none",
@@ -347,11 +476,24 @@ export default function MemoriesLayout() {
           ))}
         </Box>
         <Box ref={nextSectionRef} style={{ position: "relative", zIndex: 6 }}>
-          <CatchphraseCard embedded={true} contents={
-            <Text size="lg" c="white" style={{ fontFamily: "DM Mono, monospace", letterSpacing: ".1em" }}>
-              A STASH OF DREAMS
-            </Text>
-          } />
+          <CatchphraseCard
+            embedded={true}
+            contents={
+              <Text
+                size="lg"
+                c="white"
+                style={{
+                  fontFamily: "DM Mono, monospace",
+                  letterSpacing: ".1em",
+                }}
+              >
+                <BilingualShuffle
+                  english="A STASH OF DREAMS"
+                  japanese="夢の隠し場所"
+                />
+              </Text>
+            }
+          />
         </Box>
         <Footer />
 
@@ -372,14 +514,48 @@ export default function MemoriesLayout() {
             mixBlendMode: "difference",
           }}
         >
-          <Text size="8px" fw={700} style={{ fontFamily: "DM Mono, monospace", writingMode: "vertical-rl", letterSpacing: ".12em" }}>
+          <Text
+            size="8px"
+            fw={700}
+            style={{
+              fontFamily: "DM Mono, monospace",
+              writingMode: "vertical-rl",
+              letterSpacing: ".12em",
+            }}
+          >
             <span ref={progressLabelRef}>00%</span>
           </Text>
-          <Box style={{ position: "relative", width: 2, height: 128, overflow: "hidden", background: "rgba(255,255,255,.3)" }}>
-            <Box ref={progressRef} style={{ position: "absolute", inset: 0, transform: "scaleY(.012)", transformOrigin: "top", background: "white" }} />
+          <Box
+            style={{
+              position: "relative",
+              width: 2,
+              height: 128,
+              overflow: "hidden",
+              background: "rgba(255,255,255,.3)",
+            }}
+          >
+            <Box
+              ref={progressRef}
+              style={{
+                position: "absolute",
+                inset: 0,
+                transform: "scaleY(.012)",
+                transformOrigin: "top",
+                background: "white",
+              }}
+            />
           </Box>
-          <Text size="8px" fw={700} style={{ fontFamily: "DM Mono, monospace", writingMode: "vertical-rl", letterSpacing: ".12em" }}>
-            {String(activeIndex + 1).padStart(2, "0")} / {String(VIDEO_REELS.length).padStart(2, "0")}
+          <Text
+            size="8px"
+            fw={700}
+            style={{
+              fontFamily: "DM Mono, monospace",
+              writingMode: "vertical-rl",
+              letterSpacing: ".12em",
+            }}
+          >
+            {String(activeIndex + 1).padStart(2, "0")} /{" "}
+            {String(VIDEO_REELS.length).padStart(2, "0")}
           </Text>
         </Flex>
       </Box>

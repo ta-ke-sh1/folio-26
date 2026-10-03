@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Image } from "@mantine/core";
+import { Box, Image, Text } from "@mantine/core";
 import { ShuffleButton } from "../../components/animations/shuffle.button";
 import type CannisterEntity from "../../models/entity/cannister.model";
 import gsap from "gsap";
@@ -30,12 +30,17 @@ export default function CannisterOrbitItem({
   const [imageFailed, setImageFailed] = useState(false);
   const [cachedPreview, setCachedPreview] = useState<string>();
   const itemRef = useRef<HTMLDivElement>(null);
-  const imageUrl = imageFailed ? FALLBACK_PREVIEW : cachedPreview ?? previewUrl ?? FALLBACK_PREVIEW;
+  const imageUrl = imageFailed
+    ? FALLBACK_PREVIEW
+    : (cachedPreview ?? previewUrl ?? FALLBACK_PREVIEW);
   const archiveId = `S-${String(cannister.id).padStart(3, "0")}`;
 
   useEffect(() => {
     const item = itemRef.current;
-    if (!item || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      !item ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
 
@@ -73,8 +78,12 @@ export default function CannisterOrbitItem({
         let response = await cache.match(sourceUrl);
 
         if (!response) {
-          response = await fetch(sourceUrl, { mode: "cors", cache: "force-cache" });
-          if (!response.ok) throw new Error(`Preview request failed: ${response.status}`);
+          response = await fetch(sourceUrl, {
+            mode: "cors",
+            cache: "force-cache",
+          });
+          if (!response.ok)
+            throw new Error(`Preview request failed: ${response.status}`);
           try {
             await cache.put(sourceUrl, response.clone());
           } catch {
@@ -120,16 +129,30 @@ export default function CannisterOrbitItem({
           width: "min(180px, max(64px, 26cqw))",
           position: "relative",
           zIndex: isSelected ? 2 : 1,
+          border: "1px solid rgba(255, 119, 0, 0.2)",
+          borderRadius: 10,
         }}
       >
         <Box
           ref={itemRef}
           style={{
+            position: "relative",
             width: "100%",
             transformOrigin: "center",
             willChange: "transform",
           }}
         >
+          <Text
+            style={{
+              position: "absolute",
+              left: 5,
+              bottom: 5,
+              fontSize: 8,
+              zIndex: 10,
+            }}
+          >
+            {cannister.id} - {cannister.name}
+          </Text>
           <ShuffleButton
             onClick={onOpen}
             aria-label={`Open ${cannister.name}`}
@@ -151,7 +174,12 @@ export default function CannisterOrbitItem({
                 background: "transparent",
                 boxShadow: "none",
               },
-              section: { display: "block", width: "100%", height: "100%", margin: 0 },
+              section: {
+                display: "block",
+                width: "100%",
+                height: "100%",
+                margin: 0,
+              },
               label: { display: "block", width: "100%", height: "100%" },
             }}
           >

@@ -11,7 +11,7 @@ import { maxWidth } from "../../styles/breakpoints";
 import { InstrumentModalStyles } from "./instrumentModal.styles";
 
 export interface FormWindowItem {
-  id: "collaboration" | "say-hi" | "email-me";
+  id: string;
   title: string;
   icon: React.ElementType;
 }
@@ -95,8 +95,14 @@ export function DraggableFormWindow({
       const windowElement = windowRef.current;
       if (!windowElement) return;
 
-      const maxX = Math.max(12, window.innerWidth - windowElement.offsetWidth - 12);
-      const maxY = Math.max(12, window.innerHeight - windowElement.offsetHeight - 12);
+      const maxX = Math.max(
+        12,
+        window.innerWidth - windowElement.offsetWidth - 12,
+      );
+      const maxY = Math.max(
+        12,
+        window.innerHeight - windowElement.offsetHeight - 12,
+      );
       const offset = itemIndex * 28;
       const centeredX =
         (window.innerWidth - windowElement.offsetWidth) / 2 + offset;
@@ -177,43 +183,43 @@ export function DraggableFormWindow({
           userSelect: isDragging ? "none" : "auto",
         }}
       >
-      {/* Draggable Title Bar */}
-      <Group
-        className="instrument-window__titlebar"
-        data-cursor={isDragging ? "grabbing" : "grab"}
-        justify="space-between"
-        px="md"
-        onMouseDown={handleMouseDown}
-      >
-        <Group gap="xs">
-          <span className="instrument-window__signal" />
-          <HeaderIcon size={16} color="#FF7700" />
-          <Text className="instrument-window__title">{item.title}</Text>
+        {/* Draggable Title Bar */}
+        <Group
+          className="instrument-window__titlebar"
+          data-cursor={isDragging ? "grabbing" : "grab"}
+          justify="space-between"
+          px="md"
+          onMouseDown={handleMouseDown}
+        >
+          <Group gap="xs">
+            <span className="instrument-window__signal" />
+            <HeaderIcon size={16} color="#FF7700" />
+            <Text className="instrument-window__title">{item.title}</Text>
+          </Group>
+
+          <Group gap="xs">
+            <IconGripHorizontal size={16} color="#525252" />
+            <ActionIcon
+              className="instrument-window__close"
+              size="sm"
+              variant="subtle"
+              color="gray"
+              onClick={onClose}
+              aria-label="Close window"
+            >
+              <IconX size={14} />
+            </ActionIcon>
+          </Group>
         </Group>
 
-        <Group gap="xs">
-          <IconGripHorizontal size={16} color="#525252" />
-          <ActionIcon
-            className="instrument-window__close"
-            size="sm"
-            variant="subtle"
-            color="gray"
-            onClick={onClose}
-            aria-label="Close window"
-          >
-            <IconX size={14} />
-          </ActionIcon>
-        </Group>
-      </Group>
+        <div className="instrument-window__ruler" aria-hidden="true" />
 
-      <div className="instrument-window__ruler" aria-hidden="true" />
-
-      {/* Render Specific Form Component Based On ID */}
-      <Box className="instrument-window__body" p={0}>
-        {item.id === "collaboration" && <CollaborationForm />}
-        {item.id === "say-hi" && <TalkContactsForm />}
-        {item.id === "email-me" && <EmailDirectForm />}
-      </Box>
+        {/* Render Specific Form Component Based On ID */}
+        <Box className="instrument-window__body" p={0}>
+          {item.id === "COLLABORATE" && <CollaborationForm />}
+          {item.id === "say-hi" && <TalkContactsForm />}
+          {item.id === "email-me" && <EmailDirectForm />}
+        </Box>
       </Paper>
     </>,
     document.body,

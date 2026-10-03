@@ -4,7 +4,7 @@ import { Container, Stack, Grid, Box, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import gsap from "gsap";
 
-const SHUFFLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/アイウエオ";
+const SHUFFLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXY▒▓▔/アイウエオ";
 const DEFAULT_PREVIEW_TEXT = "Waiting transmission from a planet";
 
 function GsapShufflePrompt() {
@@ -36,7 +36,9 @@ function GsapShufflePrompt() {
             .map((character, index) =>
               index < revealed
                 ? character
-                : SHUFFLE_GLYPHS[Math.floor(Math.random() * SHUFFLE_GLYPHS.length)],
+                : SHUFFLE_GLYPHS[
+                    Math.floor(Math.random() * SHUFFLE_GLYPHS.length)
+                  ],
             )
             .join("");
         },
@@ -67,28 +69,28 @@ const STORY_PANELS = [
     index: "01",
     label: "CORE_ROLE",
     title: "CAREER OVERVIEW",
-    body: "Building reliable products from data layer to interface, with a bias for clear systems and considered details.",
+    body: "░░ overview of my career path, achievements, and professional growth.",
     meta: "TSDV // FULL-STACK DEVELOPER // 4 YEARS OF EXPERIENCE",
   },
   {
     index: "02",
     label: "MOTION_LOG",
     title: "MAIN EXPERTISE",
-    body: "Following movement, rhythm, and atmosphere to turn everyday sequences into visual stories with a pulse.",
+    body: "░░ this sections includes my main expertise in programming.",
     meta: "SYSTEM DESIGN // WEB DEVELOPMENT",
   },
   {
     index: "03",
     label: "FRAME_ARCHIVE",
     title: "SIDE QUESTS",
-    body: "Collecting geometry, light, and human traces through deliberate framing and a patient eye.",
+    body: "░░ outside knowledge for those who are curious about me.",
     meta: "VIDEOGRAPHY // PHOTOGRAPHY // FAN OF BAD BUNNY",
   },
   {
     index: "04",
     label: "LANGUAGES",
     title: "COMMUNICATION",
-    body: "Exploring the space between technology and feeling, where interfaces become places to pause, look, and wonder.",
+    body: "░░ my capabilities in communicating with different languages.",
     meta: "VIETNAMESE // ENGLISH // JAPANESE",
   },
 ];
@@ -98,22 +100,17 @@ const GALAXY_PLANETS = [
     name: "CAREER OVERVIEW",
     orbit: 1,
     panel: 1,
-    moons: [
-      "4 YEARS OF EXPERIENCE",
-      "BEST ENGINEER OF COMPANY",
-      "LEAD A TEAM OF 3",
-      "8+ PROJECTS WITH DIFFERENT SCALES",
-    ],
+    moons: ["░░ 4 YEARS OF EXPERIENCE", "░░ 8+ PROJECTS WITH DIFFERENT SCALES"],
   },
   {
     name: "MAIN EXPERTISE",
     orbit: 2,
     panel: 2,
     moons: [
-      "PROTOCOLS SIMULATION",
-      "WEB DEVELOPMENT",
-      "SYSTEM DESIGN",
-      "SECURITY ISSUES",
+      "░░ SYSTEM SIMULATION",
+      "░░ WEB DEVELOPMENT",
+      "░░ ARCHITECTURE DESIGN",
+      "░░ SECURITY",
     ],
   },
   {
@@ -121,10 +118,10 @@ const GALAXY_PLANETS = [
     orbit: 3,
     panel: 3,
     moons: [
-      "BAD BUNNY ENJOYER",
-      "RANDOM PHOTOGRAPHER",
-      "FILMMAKER FOR ONCE IN A WHILE",
-      "I HAVE 2 CATS",
+      "░░ BAD BUNNY ENJOYER",
+      "░░ WEEKEND PHOTOGRAPHER",
+      "░░ RECENTLY STARTED FILMMAKING",
+      "░░ I HAVE 2 CATS",
     ],
   },
   {
@@ -144,7 +141,13 @@ const MOON_ORBIT_DURATIONS = [48, 62, 76, 92];
 const MOON_ORBIT_SIZES = ["48%", "66%", "84%", "100%"];
 const PLANET_ORBIT_STYLES = [
   { width: "28%", angle: 32, markerSize: 12, radius: 6, color: "#ff8a3d" },
-  { width: "48%", angle: 142, markerSize: 16.5, radius: 8.25, color: "#ffc078" },
+  {
+    width: "48%",
+    angle: 142,
+    markerSize: 16.5,
+    radius: 8.25,
+    color: "#ffc078",
+  },
   { width: "70%", angle: 238, markerSize: 21, radius: 10.5, color: "#ff6b35" },
   { width: "90%", angle: 62, markerSize: 27, radius: 13.5, color: "#d94801" },
 ];
@@ -194,7 +197,8 @@ const STORY_INLINE_STYLES = {
     translate: "-50% -50%",
     border: "1px solid rgba(255, 119, 0, 0.7)",
     borderRadius: "50%",
-    boxShadow: "0 0 40px rgba(255, 119, 0, 0.24), inset 0 0 30px rgba(255, 119, 0, 0.12)",
+    boxShadow:
+      "0 0 40px rgba(255, 119, 0, 0.24), inset 0 0 30px rgba(255, 119, 0, 0.12)",
     pointerEvents: "none",
   },
   star: {
@@ -215,7 +219,8 @@ const STORY_INLINE_STYLES = {
     aspectRatio: 1.55,
     border: "1px solid rgba(255, 211, 174, 0.72)",
     borderRadius: "50%",
-    boxShadow: "0 0 8px rgba(255, 173, 112, 0.2), inset 0 0 8px rgba(255, 173, 112, 0.07)",
+    boxShadow:
+      "0 0 8px rgba(255, 173, 112, 0.2), inset 0 0 8px rgba(255, 173, 112, 0.07)",
     background: "rgba(255, 119, 0, 0.015)",
   },
   planetMarker: {
@@ -313,8 +318,10 @@ const STORY_INLINE_STYLES = {
     padding: 12,
     border: "1px solid rgba(255, 179, 92, 0.9)",
     borderRadius: "50%",
-    background: "radial-gradient(circle at 32% 28%, #ffd6a0, #ff7700 38%, #431707 78%)",
-    boxShadow: "0 0 22px rgba(255, 119, 0, 0.72), inset -10px -8px 20px rgba(0, 0, 0, 0.65)",
+    background:
+      "radial-gradient(circle at 32% 28%, #ffd6a0, #ff7700 38%, #431707 78%)",
+    boxShadow:
+      "0 0 22px rgba(255, 119, 0, 0.72), inset -10px -8px 20px rgba(0, 0, 0, 0.65)",
     color: "#fff4e6",
     transform: "translate(-50%, -50%)",
   },
@@ -332,8 +339,10 @@ const STORY_INLINE_STYLES = {
     inset: 0,
     border: "1px solid rgba(255, 191, 128, 0.75)",
     borderRadius: "50%",
-    background: "radial-gradient(circle at 32% 28%, #ffd2a6, #ff7700 65%, #7a2e08)",
-    boxShadow: "0 0 8px rgba(255, 119, 0, 0.65), inset -2px -2px 4px rgba(0, 0, 0, 0.65)",
+    background:
+      "radial-gradient(circle at 32% 28%, #ffd2a6, #ff7700 65%, #7a2e08)",
+    boxShadow:
+      "0 0 8px rgba(255, 119, 0, 0.65), inset -2px -2px 4px rgba(0, 0, 0, 0.65)",
   },
   moonMarker: {
     position: "absolute",
@@ -374,8 +383,10 @@ const STORY_INLINE_STYLES = {
     overflow: "hidden",
     padding: "12px 14px",
     border: "1px solid rgba(255, 119, 0, 0.4)",
-    background: "linear-gradient(135deg, rgba(18, 12, 7, 0.94), rgba(5, 5, 5, 0.9))",
-    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3), inset 2px 0 rgba(255, 119, 0, 0.72)",
+    background:
+      "linear-gradient(135deg, rgba(18, 12, 7, 0.94), rgba(5, 5, 5, 0.9))",
+    boxShadow:
+      "0 8px 24px rgba(0, 0, 0, 0.3), inset 2px 0 rgba(255, 119, 0, 0.72)",
     backdropFilter: "blur(5px)",
     pointerEvents: "none",
     opacity: 1,
@@ -425,8 +436,10 @@ const STORY_INLINE_STYLES = {
     overflowY: "auto",
     padding: "12px 14px",
     border: "1px solid rgba(255, 119, 0, 0.48)",
-    background: "linear-gradient(135deg, rgba(18, 12, 7, 0.94), rgba(5, 5, 5, 0.92))",
-    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.32), inset 2px 0 rgba(255, 119, 0, 0.72)",
+    background:
+      "linear-gradient(135deg, rgba(18, 12, 7, 0.94), rgba(5, 5, 5, 0.92))",
+    boxShadow:
+      "0 8px 24px rgba(0, 0, 0, 0.32), inset 2px 0 rgba(255, 119, 0, 0.72)",
     backdropFilter: "blur(5px)",
   },
   detailKicker: {
@@ -493,7 +506,10 @@ function GalaxyFocus({
 
   useEffect(() => {
     const button = backButtonRef.current;
-    if (!button || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      !button ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
 
@@ -622,7 +638,11 @@ function GalaxyFocus({
   );
 }
 
-export default function StorySection({ embedded = false }: { embedded?: boolean }) {
+export default function StorySection({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
   const [activePanel, setActivePanel] = useState(GALAXY_PLANETS[0].panel);
   const [selectedPlanet, setSelectedPlanet] = useState<number | null>(null);
   const [hoveredPlanet, setHoveredPlanet] = useState<number | null>(null);
@@ -666,8 +686,12 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
         onUpdate: () => {
           const remaining = Math.ceil(progress.value);
           updatePreview(
-            Array.from({ length: remaining }, () =>
-              SHUFFLE_GLYPHS[Math.floor(Math.random() * SHUFFLE_GLYPHS.length)],
+            Array.from(
+              { length: remaining },
+              () =>
+                SHUFFLE_GLYPHS[
+                  Math.floor(Math.random() * SHUFFLE_GLYPHS.length)
+                ],
             ).join(""),
           );
         },
@@ -692,7 +716,8 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
         value: target.length,
         duration: Math.max(0.25, target.length * 0.012),
         ease: "none",
-        onUpdate: () => updatePreview(target.slice(0, Math.floor(progress.value))),
+        onUpdate: () =>
+          updatePreview(target.slice(0, Math.floor(progress.value))),
         onComplete: () => updatePreview(target),
       });
 
@@ -924,10 +949,7 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                 marginTop: isMobile && !embedded ? 42 : 0,
               }}
             >
-              <Box
-                aria-hidden="true"
-                style={STORY_INLINE_STYLES.signalNoise}
-              />
+              <Box aria-hidden="true" style={STORY_INLINE_STYLES.signalNoise} />
               <Box
                 aria-hidden="true"
                 style={STORY_INLINE_STYLES.signalScanline}
@@ -973,7 +995,8 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                             focusedPlanet === index
                               ? "1px solid #ffd2a6"
                               : undefined,
-                          outlineOffset: focusedPlanet === index ? 6 : undefined,
+                          outlineOffset:
+                            focusedPlanet === index ? 6 : undefined,
                           borderRadius:
                             focusedPlanet === index ? "50%" : undefined,
                         }}
@@ -1064,7 +1087,10 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                     className="homepage-story-planet-preview-kicker"
                     style={STORY_INLINE_STYLES.previewKicker}
                   >
-                    PLANET PREVIEW / {activePreviewIndex === null ? "READY" : String(activePreviewIndex + 1).padStart(2, "0")}
+                    PLANET PREVIEW /{" "}
+                    {activePreviewIndex === null
+                      ? "READY"
+                      : String(activePreviewIndex + 1).padStart(2, "0")}
                   </span>
                   <span
                     className="homepage-story-planet-preview-copy"
@@ -1088,10 +1114,7 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                   }}
                 />
               )}
-              <Stack
-                gap={4}
-                style={STORY_INLINE_STYLES.instructions}
-              >
+              <Stack gap={4} style={STORY_INLINE_STYLES.instructions}>
                 <Text
                   className="homepage-story-instruction"
                   style={STORY_INLINE_STYLES.instruction}
@@ -1110,10 +1133,7 @@ export default function StorySection({ embedded = false }: { embedded?: boolean 
                   ROTATION // GALAXY 72s · MOONS 48–92s
                 </Text>
               </Stack>
-              <Text
-                ff="DotGothic16"
-                style={STORY_INLINE_STYLES.statusCorner}
-              >
+              <Text ff="DotGothic16" style={STORY_INLINE_STYLES.statusCorner}>
                 26°
               </Text>
             </Box>
