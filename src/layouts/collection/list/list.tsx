@@ -64,59 +64,30 @@ export default function CollectionListView({
   return (
     <Stack gap="0" pr="md" pl="md" style={{ margin: "0 auto", width: "100%" }}>
       {/* List Header */}
-      <Group align="center" justify="space-between" wrap="wrap" mb="5">
-        <Stack>
-          <Group gap="xs">
-            <IconFolder size={18} color="#FF7700" />
-            <Text
-              style={{
-                fontFamily: "DotGothic16",
-                fontSize: "12px",
-                fontWeight: 700,
-                color: "#FF7700",
-                letterSpacing: "1px",
-              }}
-            >
-              // COLLECTIONS_LIST
-            </Text>
-          </Group>
-        </Stack>
-      </Group>
-      <Group align="end" wrap="wrap" mb="15">
-        <TextInput
-          aria-label="Search collections"
-          label="Search collections"
-          placeholder="Search collections, items, authors, or tags"
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.currentTarget.value)}
-        />
-        <Select
-          aria-label="Order collections"
-          label="Order by"
-          data={SORT_OPTIONS}
-          value={sortOrder}
-          onChange={setSortOrder}
-          allowDeselect={false}
-        />
-        <Text size="sm" c="dimmed" mb={8}>
-          {filteredCollections.length}{" "}
-          {filteredCollections.length === 1 ? "item" : "items"}
-        </Text>
-      </Group>
-
       {/* Collection Cards */}
-      <Stack gap="md">
+      <Stack
+        gap="md"
+        style={{
+          minHeight: "70dvh",
+        }}
+      >
         {filteredCollections.map((collection) => (
           <CollectionCard key={collection.id} collection={collection} />
         ))}
       </Stack>
       {filteredCollections.length === 0 && (
-        <Stack justify="center" style={{
-          height: '50dvh'
-        }}>
+        <Stack
+          justify="center"
+          style={{
+            height: "50dvh",
+          }}
+        >
           <Group justify="center">
             <Text ta="center" c="dimmed" py="xl">
-              <BilingualShuffle english="No matching collections found!" japanese="検索に一致するコレクションはありません。" />
+              <BilingualShuffle
+                english="No matching collections found!"
+                japanese="検索に一致するコレクションはありません。"
+              />
             </Text>
           </Group>
         </Stack>

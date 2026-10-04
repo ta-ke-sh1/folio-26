@@ -218,13 +218,14 @@ const STORY_INLINE_STYLES = {
     borderRight: "1px solid rgba(255, 119, 0, 0.22)",
     pointerEvents: "none",
   },
+  // NOTE: no CSS `translate` here. GSAP centers this element with
+  // xPercent/yPercent so the two never fight over the same transform.
   orbit: {
     position: "absolute",
     top: "50%",
     left: "50%",
     width: "min(96%, 560px)",
     aspectRatio: 1.55,
-    translate: "-50% -50%",
     border: "1px solid rgba(255, 119, 0, 0.7)",
     borderRadius: "50%",
     boxShadow:
@@ -355,12 +356,12 @@ const STORY_INLINE_STYLES = {
     color: "#fff4e6",
     transform: "translate(-50%, -50%)",
   },
+  // NOTE: no CSS `translate` here either (see `orbit`).
   moonOrbit: {
     position: "absolute",
     top: "50%",
     left: "50%",
     aspectRatio: 1,
-    translate: "-50% -50%",
     border: "1px solid rgba(255, 119, 0, 0.28)",
     borderRadius: "50%",
   },
@@ -748,10 +749,19 @@ export default function StorySection({
     }
   }, [activePreviewIndex]);
 
+  // Main galaxy orbit, planet labels, pulses.
   useEffect(() => {
+    const orbit = orbitRef.current;
+    const scope = signalRef.current;
+    if (!orbit || !scope) return;
+
     const context = gsap.context(() => {
-      const orbit = orbitRef.current;
-      if (!orbit) return;
+      // GSAP owns centering + rotation so there's no CSS `translate` conflict.
+      gsap.set(orbit, {
+        xPercent: -50,
+        yPercent: -50,
+        transformOrigin: "50% 50%",
+      });
 
       gsap.to(orbit, {
         rotation: 360,
@@ -763,7 +773,7 @@ export default function StorySection({
       gsap.utils
         .toArray<HTMLElement>(
           ".homepage-story-signal-planet-label-anchor",
-          signalRef.current,
+          scope,
         )
         .forEach((label) => {
           const angle = Number(label.dataset.planetAngle ?? 0);
@@ -777,10 +787,7 @@ export default function StorySection({
         });
 
       gsap.utils
-        .toArray<HTMLElement>(
-          ".homepage-story-signal-planet-marker",
-          signalRef.current,
-        )
+        .toArray<HTMLElement>(".homepage-story-signal-planet-marker", scope)
         .forEach((marker) => {
           const pulse = marker.querySelector<HTMLElement>(
             ".homepage-story-signal-planet-pulse",
@@ -811,15 +818,18 @@ export default function StorySection({
             });
           }
         });
-    }, signalRef);
+    }, scope);
 
     return () => context.revert();
   }, []);
 
+  // Planet focus view: fade-in + continuously rotating moon orbits.
   useEffect(() => {
-    if (!signalRef.current) return;
+    const scope = signalRef.current;
+    if (!scope) return;
+
     const context = gsap.context(() => {
-      const focus = signalRef.current?.querySelector<HTMLElement>(
+      const focus = scope.querySelector<HTMLElement>(
         ".homepage-story-galaxy-focus",
       );
       if (focus) {
@@ -831,25 +841,41 @@ export default function StorySection({
       }
 
       gsap.utils
-        .toArray<HTMLElement>(
-          ".homepage-story-galaxy-moon-orbit",
-          signalRef.current,
-        )
+        .toArray<HTMLElement>(".homepage-story-galaxy-moon-orbit", scope)
         .forEach((moonOrbit, index) => {
           const duration = MOON_ORBIT_DURATIONS[index];
           const direction = index % 2 === 1 ? -1 : 1;
-          const phase = direction * 360 * (moonStartDelays[index] / duration);
+          const phase =
+            direction * 360 * ((moonStartDelays[index] ?? 0) / duration);
           const moonMarker = moonOrbit.querySelector<HTMLElement>(
             ".homepage-story-galaxy-moon-marker",
           );
 
-          gsap.set(moonOrbit, { rotation: phase });
+          gsap.set(moonOrbit, {
+            xPercent: -50,
+            yPercent: -50,
+            transformOrigin: "50% 50%",
+            rotation: phase,
+          });
+          gsap.to(moonOrbit, {
+            rotation: phase + direction * 360,
+            duration,
+            ease: "none",
+            repeat: -1,
+          });
 
+          // Counter-rotate the marker so the moon and its label stay upright.
           if (moonMarker) {
             gsap.set(moonMarker, { rotation: -phase });
+            gsap.to(moonMarker, {
+              rotation: -phase - direction * 360,
+              duration,
+              ease: "none",
+              repeat: -1,
+            });
           }
         });
-    }, signalRef);
+    }, scope);
 
     return () => context.revert();
   }, [selectedPlanet, moonStartDelays]);
