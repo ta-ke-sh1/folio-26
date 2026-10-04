@@ -164,7 +164,7 @@ const sitemapLinks = [
   { label: "HOME", path: "/" },
   { label: "COLLECTIONS", path: "/collections" },
   { label: "GALLERY", path: "/gallery" },
-  { label: "PLAYGROUND", path: "/playground" },
+  { label: "MEMORIES", path: "/memories" },
 ];
 
 const socialLinks = [
