@@ -212,7 +212,7 @@ const STORY_INLINE_STYLES = {
   signalScanline2: {
     position: "absolute",
     zIndex: 0,
-    top: 100,
+    top: 0,
     left: "50%",
     height: "100dvh",
     borderRight: "1px solid rgba(255, 119, 0, 0.22)",
