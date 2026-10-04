@@ -47,7 +47,9 @@ body {
   margin: 0;
   background: var(--folio-page-bg);
   color: var(--folio-text);
-  transition: background-color 180ms ease, color 180ms ease;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
 }
 
 .route-page-entrance {
@@ -60,12 +62,6 @@ body {
   }
   to {
     opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .route-page-entrance {
-    animation-duration: 1ms;
   }
 }
 

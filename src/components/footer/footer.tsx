@@ -101,10 +101,6 @@ const createFooterStyles = (xsBreakpoint: string) => `
 .footer-console--modal { width: 100% !important; max-width: 100% !important; margin: 0 !important; height: 100% !important; min-height: 0 !important; max-height: 100% !important; padding: 0 !important; overflow: hidden !important; }
 .footer-console--modal .footer-console__layout { height: 100% !important; min-height: 0 !important; }
 .footer-console--modal .footer-console__watcher { position: absolute !important; inset: 0 !important; width: 100% !important; min-height: 0 !important; max-height: none !important; flex: none !important; margin: 0 !important; left: auto !important; }
-@media (prefers-reduced-motion: reduce) {
-  .footer-console__blob, .footer-console__blob::before, .footer-console__eye { animation: none; }
-  .footer-console__location, .footer-console__locator-region, .footer-console__locator-crosshair, .footer-console__locator-line { transition: none; }
-}
 `;
 
 import { Box, Container, Stack, useMantineTheme } from "@mantine/core";
@@ -280,11 +276,6 @@ export default function Footer({ compact = false }: FooterProps) {
     const blob = blobRef.current;
     const crosshair = crosshairRef.current;
     if (!watcher || !eye || !iris || !blob || !crosshair) return;
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
     const mobileQuery = window.matchMedia(MOBILE_QUERY);
     let isMobile = mobileQuery.matches;
 
@@ -414,7 +405,7 @@ export default function Footer({ compact = false }: FooterProps) {
       const dt = Math.min(deltaTime, 64) / 1000;
 
       // Mobile: periodically choose a new random direction to drift toward.
-      if (isMobile && !reduceMotion) {
+      if (isMobile) {
         wanderTimer -= dt;
         if (wanderTimer <= 0) pickWanderTarget();
       }
@@ -429,7 +420,7 @@ export default function Footer({ compact = false }: FooterProps) {
 
       if (settled && !dirty) return;
 
-      if (reduceMotion || settled) {
+      if (settled) {
         pointer.x = pointerTarget.x;
         pointer.y = pointerTarget.y;
         iris_.x = irisTarget.x;
