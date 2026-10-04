@@ -1,4 +1,10 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ActionIcon,
   Box,
@@ -10,13 +16,9 @@ import {
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import {
-  IconArrowDown,
-  IconArrowUpRight,
-  IconVolume,
-  IconVolumeOff,
-} from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUpRight } from "@tabler/icons-react";
 import { useTextShuffle } from "../../components/animations/use-text-shuffle";
+import { ShuffleText } from "../../components/animations/shuffle.text";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
@@ -27,6 +29,12 @@ import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Safety net: if a video never reports it can play through (some mobile
+// browsers don't preload video), don't keep the loader up forever.
+const VIDEO_LOAD_TIMEOUT_MS = 25000;
+// HTMLMediaElement.HAVE_ENOUGH_DATA
+const HAVE_ENOUGH_DATA = 4;
 
 const VIDEO_REELS = [
   {
@@ -117,6 +125,8 @@ export default function MemoriesLayout() {
   const progressRef = useRef<HTMLDivElement>(null);
   const progressLabelRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [videosReady, setVideosReady] = useState(false);
+  const [loadedVideos, setLoadedVideos] = useState(0);
   const currentReel = VIDEO_REELS[activeIndex] ?? VIDEO_REELS[0];
 
   const activateReel = useCallback((index: number) => {
@@ -128,6 +138,68 @@ export default function MemoriesLayout() {
       else video.pause();
     });
   }, []);
+
+  // Wait until every video can play through (or errors / times out) before
+  // revealing the page, so reels don't stutter or pop in while scrolling.
+  useEffect(() => {
+    const videos = videoRefs.current.filter(
+      (video): video is HTMLVideoElement => Boolean(video),
+    );
+    if (videos.length === 0) {
+      setVideosReady(true);
+      return;
+    }
+
+    let loaded = 0;
+    let finished = false;
+    const cleanups: Array<() => void> = [];
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      setVideosReady(true);
+    };
+
+    videos.forEach((video) => {
+      let counted = false;
+      const markLoaded = () => {
+        if (counted) return;
+        counted = true;
+        loaded += 1;
+        setLoadedVideos(loaded);
+        if (loaded >= videos.length) finish();
+      };
+
+      // Already buffered (e.g. cached from a previous visit).
+      if (video.readyState >= HAVE_ENOUGH_DATA) {
+        markLoaded();
+        return;
+      }
+
+      // A failed video counts as done so one bad file can't block the page.
+      video.addEventListener("canplaythrough", markLoaded, { once: true });
+      video.addEventListener("error", markLoaded, { once: true });
+      cleanups.push(() => {
+        video.removeEventListener("canplaythrough", markLoaded);
+        video.removeEventListener("error", markLoaded);
+      });
+    });
+
+    const timer = window.setTimeout(finish, VIDEO_LOAD_TIMEOUT_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+      cleanups.forEach((cleanup) => cleanup());
+    };
+  }, []);
+
+  // Once revealed, make sure the current reel is the one playing and that
+  // scroll triggers reflect the final layout.
+  useEffect(() => {
+    if (!videosReady) return;
+    activateReel(activeIndexRef.current);
+    ScrollTrigger.refresh();
+  }, [videosReady, activateReel]);
 
   useLayoutEffect(() => {
     const page = pageRef.current;
@@ -230,6 +302,49 @@ export default function MemoriesLayout() {
         ref={pageRef}
         style={{ position: "relative", background: "var(--folio-page-bg)" }}
       >
+        {/* Loading overlay: stays up until every video can play through */}
+        <Box
+          role="status"
+          aria-live="polite"
+          aria-hidden={videosReady}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--folio-page-bg)",
+            opacity: videosReady ? 0 : 1,
+            visibility: videosReady ? "hidden" : "visible",
+            pointerEvents: videosReady ? "none" : "auto",
+            transition: "opacity 600ms ease, visibility 0s linear 600ms",
+          }}
+        >
+          <Stack gap={6} align="center">
+            <Text
+              c="primaryOrange"
+              style={{
+                fontFamily: "DotGothic16, sans-serif",
+                letterSpacing: ".12em",
+              }}
+            >
+              <ShuffleText text="LOADING MEMORIES..." />
+            </Text>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                fontFamily: "DotGothic16, sans-serif",
+                letterSpacing: ".1em",
+              }}
+            >
+              REELS {String(loadedVideos).padStart(2, "0")} /{" "}
+              {String(VIDEO_REELS.length).padStart(2, "0")}
+            </Text>
+          </Stack>
+        </Box>
+
         <Box
           component="main"
           aria-label="Memories video archive"
@@ -254,6 +369,9 @@ export default function MemoriesLayout() {
             }
             @media (min-width: ${theme.breakpoints.xl}) {
               .memories-current-title { font-size: clamp(102px, 10vw, 102px); }
+            }
+            @media (prefers-reduced-motion: reduce) {
+              [aria-live="polite"][role="status"] { transition: none !important; }
             }
           `}</style>
           <Box
@@ -291,7 +409,7 @@ export default function MemoriesLayout() {
                   muted={true}
                   playsInline
                   loop
-                  preload={index === 0 ? "auto" : "metadata"}
+                  preload="auto"
                   autoPlay={index === 0}
                   aria-label={`${reel.title}: ${reel.note}`}
                   style={{
