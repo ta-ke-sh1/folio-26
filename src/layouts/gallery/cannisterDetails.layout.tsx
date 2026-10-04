@@ -398,10 +398,6 @@ export default function CannisterDetailsLayout() {
             .cannister-story-layout { grid-template-columns: minmax(0, 1fr) 48px; gap: 8px; }
             .cannister-story-thumb { width: 38px; height: 38px; flex-basis: 38px; }
           }
-          @media (prefers-reduced-motion: reduce) {
-            .cannister-story-thumb { transition: none; }
-            .cannister-loading-overlay { transition: none !important; }
-          }
         `}</style>
 
         {/* Loading overlay: stays up until every image has finished loading */}
@@ -723,29 +719,6 @@ export default function CannisterDetailsLayout() {
                   >
                     NO IMAGE DATA // THIS COLLECTION IS EMPTY
                   </Text>
-                )}
-                {otherFiles.length > 0 && (
-                  <Stack gap={0} p="md">
-                    {otherFiles.map((file) => (
-                      <Anchor
-                        key={file.name}
-                        href={publicUrl(file.name)}
-                        target="_blank"
-                        rel="noreferrer"
-                        c="var(--folio-accent)"
-                        py="sm"
-                        style={{
-                          borderTop: "1px solid var(--folio-card-border)",
-                          fontFamily: "DotGothic16, sans-serif",
-                        }}
-                      >
-                        <Group justify="space-between">
-                          <Text size="sm">{file.name}</Text>
-                          <IconExternalLink size={16} />
-                        </Group>
-                      </Anchor>
-                    ))}
-                  </Stack>
                 )}
               </Box>
             </Stack>
