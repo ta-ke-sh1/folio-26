@@ -1,17 +1,3 @@
-import { Box, Container, Stack, useMantineTheme } from "@mantine/core";
-import { useCallback, useEffect, useRef } from "react";
-import { useLocation } from "react-router";
-import gsap from "gsap";
-import { ShuffleButton } from "../animations/shuffle.button";
-import { useAnimatedNavigate } from "../transition/transition";
-import {
-  IconBrandDiscord,
-  IconBrandFacebook,
-  IconBrandGithub,
-  IconBrandInstagram,
-} from "@tabler/icons-react";
-import BilingualShuffle from "../animations/bilingual.shuffle";
-
 const createFooterStyles = (xsBreakpoint: string) => `
 .footer-console {
   position: relative; z-index: 10; width: calc(100dvw / var(--folio-viewport-scale, 1)) !important;
@@ -121,6 +107,20 @@ const createFooterStyles = (xsBreakpoint: string) => `
 }
 `;
 
+import { Box, Container, Stack, useMantineTheme } from "@mantine/core";
+import { useCallback, useEffect, useRef } from "react";
+import { useLocation } from "react-router";
+import gsap from "gsap";
+import { ShuffleButton } from "../animations/shuffle.button";
+import { useAnimatedNavigate } from "../transition/transition";
+import {
+  IconBrandDiscord,
+  IconBrandFacebook,
+  IconBrandGithub,
+  IconBrandInstagram,
+} from "@tabler/icons-react";
+import BilingualShuffle from "../animations/bilingual.shuffle";
+
 /* ----------------------------- static data ------------------------------ */
 
 const LOCATOR_OFFSETS = [
@@ -153,6 +153,14 @@ const LOCATOR_REGIONS = [
 const INITIAL_POINTER: Record<string, number> = { x: 50, y: 50 } as const;
 const RULER_MARKS = ["00", "20", "40", "60", "80", "100"];
 const VERTICAL_RULER_MARKS = ["00", "25", "50", "75", "100"];
+
+// Mobile wandering: treated as "mobile mode" on touch-first devices or narrow
+// viewports. Desktop keeps following the cursor.
+const MOBILE_QUERY = "(pointer: coarse), (max-width: 48em)";
+const WANDER_MIN_INTERVAL = 1.4; // seconds
+const WANDER_MAX_INTERVAL = 3.2; // seconds
+const WANDER_POINTER_SPEED = 1.8; // slower damping = smooth drifting
+const WANDER_IRIS_SPEED = 6;
 
 // Network lines connect point i -> i+1, skipping every third pair.
 const NETWORK_INDEXES = Array.from(
@@ -243,6 +251,9 @@ const INITIAL_REGIONS = LOCATOR_REGIONS.map((r, i) => ({
 const damp = (current: number, target: number, speed: number, dt: number) =>
   current + (target - current) * (1 - Math.exp(-speed * dt));
 
+const randomBetween = (min: number, max: number) =>
+  min + Math.random() * (max - min);
+
 /* ------------------------------ component ------------------------------- */
 
 type FooterProps = { compact?: boolean };
@@ -274,6 +285,9 @@ export default function Footer({ compact = false }: FooterProps) {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    const mobileQuery = window.matchMedia(MOBILE_QUERY);
+    let isMobile = mobileQuery.matches;
+
     const count = LOCATOR_OFFSETS.length;
     const px = new Float32Array(count); // current point x (%)
     const py = new Float32Array(count); // current point y (%)
@@ -284,6 +298,10 @@ export default function Footer({ compact = false }: FooterProps) {
     const iris_ = { x: 0, y: 0 }; // smoothed, in px
     const irisTarget = { x: 0, y: 0 };
 
+    // Mobile only: random drifting target, in % of watcher.
+    const wanderTarget = { ...INITIAL_POINTER };
+    let wanderTimer = 0; // seconds until the next random target
+
     let width = 1;
     let height = 1;
     let lastClientX: number | null = null;
@@ -292,35 +310,48 @@ export default function Footer({ compact = false }: FooterProps) {
     let visible = true;
     let dirty = true;
 
-    /** Convert last cursor position to targets. Only reads layout. */
+    const pickWanderTarget = () => {
+      wanderTarget.x = randomBetween(8, 92);
+      wanderTarget.y = randomBetween(10, 90);
+      wanderTimer = randomBetween(WANDER_MIN_INTERVAL, WANDER_MAX_INTERVAL);
+      needsMeasure = true;
+    };
+
+    /** Convert cursor position (desktop) or wander target (mobile) to targets. Only reads layout. */
     const measure = () => {
       needsMeasure = false;
-      if (lastClientX === null || lastClientY === null) return;
 
       const rect = watcher.getBoundingClientRect();
       width = rect.width || 1;
       height = rect.height || 1;
-      pointerTarget.x = clamp(
-        ((lastClientX - rect.left) / width) * 100,
-        0,
-        100,
-      );
-      pointerTarget.y = clamp(
-        ((lastClientY - rect.top) / height) * 100,
-        0,
-        100,
-      );
+
+      let clientX: number;
+      let clientY: number;
+
+      if (isMobile) {
+        pointerTarget.x = wanderTarget.x;
+        pointerTarget.y = wanderTarget.y;
+        // Virtual "cursor" so the iris looks toward where the items drift.
+        clientX = rect.left + (wanderTarget.x / 100) * width;
+        clientY = rect.top + (wanderTarget.y / 100) * height;
+      } else {
+        if (lastClientX === null || lastClientY === null) return;
+        clientX = lastClientX;
+        clientY = lastClientY;
+        pointerTarget.x = clamp(((clientX - rect.left) / width) * 100, 0, 100);
+        pointerTarget.y = clamp(((clientY - rect.top) / height) * 100, 0, 100);
+      }
 
       const eyeRect = eye.getBoundingClientRect();
       const maxX = Math.max(0, (eye.clientWidth - iris.clientWidth) / 2 - 2);
       const maxY = Math.max(0, (eye.clientHeight - iris.clientHeight) / 2 - 2);
       irisTarget.x = clamp(
-        lastClientX - eyeRect.left - eyeRect.width / 2,
+        clientX - eyeRect.left - eyeRect.width / 2,
         -maxX,
         maxX,
       );
       irisTarget.y = clamp(
-        lastClientY - eyeRect.top - eyeRect.height / 2,
+        clientY - eyeRect.top - eyeRect.height / 2,
         -maxY,
         maxY,
       );
@@ -379,9 +410,17 @@ export default function Footer({ compact = false }: FooterProps) {
 
     const tick = (_time: number, deltaTime: number) => {
       if (!visible) return;
-      if (needsMeasure) measure();
 
       const dt = Math.min(deltaTime, 64) / 1000;
+
+      // Mobile: periodically choose a new random direction to drift toward.
+      if (isMobile && !reduceMotion) {
+        wanderTimer -= dt;
+        if (wanderTimer <= 0) pickWanderTarget();
+      }
+
+      if (needsMeasure) measure();
+
       const settled =
         Math.abs(pointer.x - pointerTarget.x) < 0.005 &&
         Math.abs(pointer.y - pointerTarget.y) < 0.005 &&
@@ -396,22 +435,34 @@ export default function Footer({ compact = false }: FooterProps) {
         iris_.x = irisTarget.x;
         iris_.y = irisTarget.y;
       } else {
-        pointer.x = damp(pointer.x, pointerTarget.x, 8, dt);
-        pointer.y = damp(pointer.y, pointerTarget.y, 8, dt);
-        iris_.x = damp(iris_.x, irisTarget.x, 22, dt);
-        iris_.y = damp(iris_.y, irisTarget.y, 22, dt);
+        const pointerSpeed = isMobile ? WANDER_POINTER_SPEED : 8;
+        const irisSpeed = isMobile ? WANDER_IRIS_SPEED : 22;
+        pointer.x = damp(pointer.x, pointerTarget.x, pointerSpeed, dt);
+        pointer.y = damp(pointer.y, pointerTarget.y, pointerSpeed, dt);
+        iris_.x = damp(iris_.x, irisTarget.x, irisSpeed, dt);
+        iris_.y = damp(iris_.y, irisTarget.y, irisSpeed, dt);
       }
       dirty = false;
       render();
     };
 
     const onPointerMove = (e: PointerEvent) => {
+      // On mobile the items wander on their own; touches shouldn't steer them.
+      if (isMobile) return;
       lastClientX = e.clientX;
       lastClientY = e.clientY;
       needsMeasure = true; // measured once per frame in tick()
     };
     // Bounds change while scrolling / resizing even if the mouse is still.
     const invalidate = () => {
+      needsMeasure = true;
+    };
+
+    const onMobileChange = () => {
+      isMobile = mobileQuery.matches;
+      if (isMobile) {
+        wanderTimer = 0; // pick a fresh target on the next frame
+      }
       needsMeasure = true;
     };
 
@@ -438,6 +489,7 @@ export default function Footer({ compact = false }: FooterProps) {
       capture: true,
     });
     window.addEventListener("resize", invalidate);
+    mobileQuery.addEventListener("change", onMobileChange);
     gsap.ticker.add(tick);
 
     return () => {
@@ -445,6 +497,7 @@ export default function Footer({ compact = false }: FooterProps) {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("scroll", invalidate, { capture: true });
       window.removeEventListener("resize", invalidate);
+      mobileQuery.removeEventListener("change", onMobileChange);
       io.disconnect();
       ro.disconnect();
     };

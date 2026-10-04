@@ -129,18 +129,10 @@ export default function TalkContactsForm() {
                       >
                         {contact.name}
                       </Text>
-                      <Badge
-                        size="xs"
-                        color="gray"
-                        variant="outline"
-                        ff="DotGothic16"
-                      >
-                        {contact.type}
-                      </Badge>
                     </Group>
                     <Text
                       className="instrument-contact__handle"
-                      fz="11px"
+                      fz="clamp(8px, 1.2vw, 12px)"
                       style={{
                         fontFamily: "DotGothic16",
                         color: "var(--mantine-color-gray-5)",

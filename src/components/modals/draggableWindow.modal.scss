@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: min(calc(100dvh - 120px), 760px);
+  max-height: min(calc(100dvh), 760px);
   color: var(--instrument-text);
   border: 1px solid #514b42;
   border-radius: 6px;

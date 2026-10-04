@@ -9,6 +9,7 @@ import EmailDirectForm from "../../layouts/about/forms/email.form";
 import TalkContactsForm from "../../layouts/about/forms/talk.form";
 import { maxWidth } from "../../styles/breakpoints";
 import { InstrumentModalStyles } from "./instrumentModal.styles";
+import { FORM_ID } from "../../layouts/about/about.type";
 
 export interface FormWindowItem {
   id: string;
@@ -177,7 +178,7 @@ export function DraggableFormWindow({
           position: "fixed",
           top: position.y,
           left: position.x,
-          width: `clamp(320px, 82vw, ${width}px)`,
+          width: `clamp(320px, 42vw, ${width}px)`,
           maxWidth: "calc(100vw - 24px)",
           zIndex: zIndex,
           userSelect: isDragging ? "none" : "auto",
@@ -216,9 +217,8 @@ export function DraggableFormWindow({
 
         {/* Render Specific Form Component Based On ID */}
         <Box className="instrument-window__body" p={0}>
-          {item.id === "COLLABORATE" && <CollaborationForm />}
-          {item.id === "say-hi" && <TalkContactsForm />}
-          {item.id === "email-me" && <EmailDirectForm />}
+          {item.id === FORM_ID.CONNECT && <CollaborationForm />}
+          {item.id === FORM_ID.SAY_HI && <TalkContactsForm />}
         </Box>
       </Paper>
     </>,
