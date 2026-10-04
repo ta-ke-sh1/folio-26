@@ -52,18 +52,15 @@ export default function LandingPage({
     };
   }, [embedded]);
 
-
   return (
     <Box
       ref={containerRef}
       className={`ascii-landing-page${embedded ? " ascii-landing-page--embedded" : ""}`}
       style={{
         position: "relative",
-        width: embedded ? "100%" : undefined,
-        height: embedded ? "auto" : undefined,
         minHeight: embedded ? 0 : "100vh",
         overflowX: embedded ? "visible" : "clip",
-        flex: embedded ? "0 0 auto" : undefined,
+        flex: undefined,
         isolation: embedded ? "isolate" : undefined,
         transform: embedded ? "translateZ(0)" : undefined,
         backgroundColor: "var(--folio-page-bg)",
@@ -83,7 +80,6 @@ export default function LandingPage({
               zIndex: 10,
               pointerEvents: "auto",
               willChange: "transform",
-              marginBottom: embedded ? 0 : "20px",
             }}
           >
             <StorySection embedded={embedded} />

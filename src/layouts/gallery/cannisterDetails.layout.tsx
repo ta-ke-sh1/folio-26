@@ -3,7 +3,6 @@ import { Anchor, Box, Group, Image, Stack, Text, Title } from "@mantine/core";
 import { IconArrowLeft, IconExternalLink } from "@tabler/icons-react";
 import { useParams } from "react-router";
 import { useLenis } from "lenis/react";
-import { parse } from "exifr";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import Footer from "../../components/footer/footer";
 import { ShuffleButton } from "../../components/animations/shuffle.button";
@@ -22,47 +21,57 @@ interface CannisterFile {
   metadata?: Record<string, unknown> | null;
 }
 
-interface ImageExposureMetadata {
-  iso?: number;
-  exposureTime?: number;
-  aperture?: number;
-}
-
 const IMAGE_EXTENSION = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
-const EXPOSURE_TAGS = [
-  "ISO",
-  "PhotographicSensitivity",
-  "ExposureTime",
-  "ShutterSpeedValue",
-  "FNumber",
-];
 
-function positiveNumber(value: unknown): number | undefined {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
-}
+// Safety net: if an image is extremely slow, don't keep the loader up forever.
+const IMAGE_PRELOAD_TIMEOUT_MS = 20000;
 
-function normalizeExposureMetadata(
-  tags: Record<string, unknown>,
-): ImageExposureMetadata {
-  const shutterSpeedValue = Number(tags.ShutterSpeedValue);
-  const exposureTime =
-    positiveNumber(tags.ExposureTime) ??
-    (Number.isFinite(shutterSpeedValue) ? 2 ** -shutterSpeedValue : undefined);
+const getPublicUrl = (cannisterName: string, fileName: string) => {
+  const bucket = DatabaseService.getInstance()
+    .getDatabase()
+    .storage.from(DatabaseTables.Cannisters);
+  return bucket.getPublicUrl(`${cannisterName}/${fileName}`).data.publicUrl;
+};
 
-  return {
-    iso: positiveNumber(tags.iso ?? tags.ISO ?? tags.PhotographicSensitivity),
-    exposureTime,
-    aperture: positiveNumber(tags.aperture ?? tags.FNumber),
-  };
-}
+const compareFileNames = (first: CannisterFile, second: CannisterFile) =>
+  first.name.localeCompare(second.name, undefined, { numeric: true });
 
-function formatShutterSpeed(seconds?: number): string | undefined {
-  if (!seconds) return undefined;
-  return seconds < 1
-    ? `1/${Math.round(1 / seconds)}s`
-    : `${Number(seconds.toFixed(2))}s`;
-}
+/** Resolves once the image has loaded (or failed, so one bad file can't block). */
+const preloadImage = (src: string) =>
+  new Promise<void>((resolve) => {
+    // `Image` is shadowed by Mantine's component, so use the DOM constructor.
+    const img = new window.Image();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = src;
+  });
+
+/** Waits for every image (or the timeout), reporting progress as they finish. */
+const preloadImages = async (
+  urls: string[],
+  onProgress: (loaded: number) => void,
+) => {
+  let loaded = 0;
+  const all = Promise.all(
+    urls.map((url) =>
+      preloadImage(url).then(() => {
+        loaded += 1;
+        onProgress(loaded);
+      }),
+    ),
+  );
+
+  let timer: number | undefined;
+  const timeout = new Promise<void>((resolve) => {
+    timer = window.setTimeout(resolve, IMAGE_PRELOAD_TIMEOUT_MS);
+  });
+
+  try {
+    await Promise.race([all, timeout]);
+  } finally {
+    window.clearTimeout(timer);
+  }
+};
 
 export default function CannisterDetailsLayout() {
   const { id } = useParams<{ id: string }>();
@@ -71,6 +80,10 @@ export default function CannisterDetailsLayout() {
   const [cannister, setCannister] = useState<CannisterEntity | null>(null);
   const [files, setFiles] = useState<CannisterFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [preloadProgress, setPreloadProgress] = useState({
+    loaded: 0,
+    total: 0,
+  });
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const storyRef = useRef<HTMLDivElement>(null);
@@ -80,6 +93,7 @@ export default function CannisterDetailsLayout() {
 
     async function loadCannister() {
       setIsLoading(true);
+      setPreloadProgress({ loaded: 0, total: 0 });
       try {
         const service = CannisterService.getInstance();
         const records = (await service.fetchCannisters()) as CannisterEntity[];
@@ -94,12 +108,26 @@ export default function CannisterDetailsLayout() {
         if (found) {
           const storageItems = await service.fetchCannisterItems(found.name);
           if (isMounted && Array.isArray(storageItems)) {
-            setFiles(
-              storageItems.map((file) => ({
-                name: file.name,
-                metadata: file.metadata as Record<string, unknown> | null,
-              })),
-            );
+            const nextFiles: CannisterFile[] = storageItems.map((file) => ({
+              name: file.name,
+              metadata: file.metadata as Record<string, unknown> | null,
+            }));
+            setFiles(nextFiles);
+
+            // Keep the loading state up until every image has finished
+            // loading, so the page appears fully ready instead of images
+            // popping in one by one afterwards.
+            const imageUrls = nextFiles
+              .filter((file) => IMAGE_EXTENSION.test(file.name))
+              .sort(compareFileNames)
+              .map((file) => getPublicUrl(found.name, file.name));
+
+            setPreloadProgress({ loaded: 0, total: imageUrls.length });
+            await preloadImages(imageUrls, (loaded) => {
+              if (isMounted) {
+                setPreloadProgress({ loaded, total: imageUrls.length });
+              }
+            });
           }
         }
       } catch (error) {
@@ -118,11 +146,7 @@ export default function CannisterDetailsLayout() {
   const publicUrl = useCallback(
     (fileName: string) => {
       if (!cannister) return "";
-      const bucket = DatabaseService.getInstance()
-        .getDatabase()
-        .storage.from(DatabaseTables.Cannisters);
-      return bucket.getPublicUrl(`${cannister.name}/${fileName}`).data
-        .publicUrl;
+      return getPublicUrl(cannister.name, fileName);
     },
     [cannister],
   );
@@ -131,9 +155,7 @@ export default function CannisterDetailsLayout() {
     () =>
       files
         .filter((file) => IMAGE_EXTENSION.test(file.name))
-        .sort((first, second) =>
-          first.name.localeCompare(second.name, undefined, { numeric: true }),
-        ),
+        .sort(compareFileNames),
     [files],
   );
   const otherFiles = files.filter((file) => !IMAGE_EXTENSION.test(file.name));
@@ -382,8 +404,53 @@ export default function CannisterDetailsLayout() {
           }
           @media (prefers-reduced-motion: reduce) {
             .cannister-story-thumb { transition: none; }
+            .cannister-loading-overlay { transition: none !important; }
           }
         `}</style>
+
+        {/* Loading overlay: stays up until every image has finished loading */}
+        <Box
+          className="cannister-loading-overlay"
+          role="status"
+          aria-live="polite"
+          aria-hidden={!isLoading}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--folio-page-bg)",
+            opacity: isLoading ? 1 : 0,
+            visibility: isLoading ? "visible" : "hidden",
+            pointerEvents: isLoading ? "auto" : "none",
+            transition: "opacity 600ms ease, visibility 0s linear 600ms",
+          }}
+        >
+          <Stack gap={6} align="center">
+            <Text
+              c="primaryOrange"
+              style={{
+                fontFamily: "DotGothic16, sans-serif",
+                letterSpacing: ".12em",
+              }}
+            >
+              <ShuffleText text="LOADING COLLECTION..." />
+            </Text>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                fontFamily: "DotGothic16, sans-serif",
+                letterSpacing: ".1em",
+              }}
+            >
+              FRAMES {String(preloadProgress.loaded).padStart(2, "0")} /{" "}
+              {String(preloadProgress.total).padStart(2, "0")}
+            </Text>
+          </Stack>
+        </Box>
 
         <Box style={{ flex: "0 0 auto", marginBottom: 14 }}>
           <ShuffleButton
@@ -404,15 +471,7 @@ export default function CannisterDetailsLayout() {
           </ShuffleButton>
         </Box>
 
-        {isLoading ? (
-          <Text
-            c="primaryOrange"
-            role="status"
-            style={{ fontFamily: "DotGothic16, sans-serif" }}
-          >
-            <ShuffleText text="LOADING COLLECTION..." />
-          </Text>
-        ) : !cannister ? (
+        {isLoading ? null : !cannister ? (
           <Stack gap="sm">
             <Title
               order={1}

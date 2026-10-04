@@ -76,9 +76,12 @@ export function DateCard({ data }: DateCardProps) {
   useEffect(() => {
     if (itemCount <= 1 || !isPreloaded) return;
 
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % itemCount);
-    }, getRandomNumber(50, 70) * 10);
+    const interval = setInterval(
+      () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % itemCount);
+      },
+      getRandomNumber(50, 70) * 10,
+    );
 
     return () => clearInterval(interval);
   }, [itemCount, isPreloaded]);
@@ -96,10 +99,14 @@ export function DateCard({ data }: DateCardProps) {
         height: "18dvh",
         minHeight: "100px",
         borderRadius: "6px",
-        backgroundColor: isHovered ? "var(--folio-card-hover)" : "var(--folio-card)",
-        border: isHovered ? "1px solid #FF7700" : "1px solid var(--folio-card-border)",
+        backgroundColor: isHovered
+          ? "var(--folio-card-hover)"
+          : "var(--folio-card)",
+        border: isHovered
+          ? "1px solid #FF7700"
+          : "1px solid var(--folio-card-border)",
         boxShadow: isHovered ? "0 0 20px rgba(255, 119, 0, 0.2)" : "none",
-        filter: isHovered ? "grayscale(0)" : "grayscale(1)",
+        // filter: isHovered ? "grayscale(0)" : "grayscale(1)",
         transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
         padding: "16px 24px",
         position: "relative",
@@ -123,10 +130,18 @@ export function DateCard({ data }: DateCardProps) {
       >
         {/* Terminal Header Row */}
         <Group justify="space-between" align="center" style={{ width: "100%" }}>
-          <Group gap={6}>
+          <Group
+            gap={6}
+            style={{
+              borderRadius: "4px",
+              backgroundColor: hasData ? "#FF7700" : "transparent",
+              padding: hasData ? (isHovered ? "4px 8px" : "2px 4px") : 0,
+              transition: "padding 0.2s ease",
+            }}
+          >
             <IconTerminal
               size={14}
-              color={isHovered ? "var(--folio-accent)" : "var(--folio-muted)"}
+              color={hasData ? "black" : "var(--folio-muted)"}
               style={{ transition: "color 0.2s ease" }}
             />
             <Text
@@ -134,33 +149,37 @@ export function DateCard({ data }: DateCardProps) {
               fw={700}
               style={{
                 fontFamily: "DotGothic16",
-                color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
+                color: hasData ? "black" : "var(--folio-muted)",
                 letterSpacing: "1px",
                 textTransform: "uppercase",
               }}
             >
-              {hasData ? `// COLLECTION_${cardData.name}` : "// N0 DATA"}
+              {hasData ? `COLLECTION_${cardData.name}` : "N0 DATA"}
             </Text>
           </Group>
 
           {hasData && (
-            <Badge
-              size="xs"
-              variant="outline"
+            <Group
               style={{
-                fontFamily: "DotGothic16",
-                borderColor: isHovered
-                  ? "var(--folio-accent)"
-                  : "var(--folio-card-border)",
-                color: isHovered ? "var(--folio-accent)" : "var(--folio-muted)",
-                backgroundColor: isHovered
-                  ? "rgba(255, 119, 0, 0.08)"
-                  : "transparent",
-                transition: "all 0.2s ease",
+                padding: hasData ? (isHovered ? "4px 8px" : "2px 4px") : 0,
+                transition: "padding 0.2s ease",
+                borderRadius: "4px",
+                backgroundColor: hasData ? "#FF7700" : "transparent",
               }}
             >
-              {itemCount} {itemCount === 1 ? "ITEM" : "ITEMS"}
-            </Badge>
+              <Text
+                fz="10px"
+                fw={700}
+                style={{
+                  fontFamily: "DotGothic16",
+                  color: hasData ? "black" : "var(--folio-muted)",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                }}
+              >
+                {itemCount} {itemCount === 1 ? "ITEM" : "ITEMS"}
+              </Text>
+            </Group>
           )}
         </Group>
 
@@ -170,18 +189,27 @@ export function DateCard({ data }: DateCardProps) {
           align="center"
           style={{ width: "100%", marginTop: "2px" }}
         >
-          <Text
-            fw={800}
-            fz="lg"
+          <Group
             style={{
-              fontFamily: "DotGothic16",
-              color: "var(--folio-text)",
-              transition: "color 0.2s ease",
-              letterSpacing: "-0.5px",
+              padding: hasData ? (isHovered ? "4px 8px" : "2px 4px") : 0,
+              transition: "padding 0.2s ease",
+              borderRadius: "4px",
+              backgroundColor: hasData ? "#FF7700" : "transparent",
             }}
           >
-            {data?.value}
-          </Text>
+            <Text
+              fw={800}
+              fz="md"
+              style={{
+                fontFamily: "DotGothic16",
+                color: hasData ? "black" : "var(--folio-muted)",
+                transition: "color 0.2s ease",
+                letterSpacing: "-0.5px",
+              }}
+            >
+              {data?.value}
+            </Text>
+          </Group>
 
           <IconArrowUpRight
             size={20}

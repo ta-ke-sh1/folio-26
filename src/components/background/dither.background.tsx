@@ -233,7 +233,9 @@ export default function Dither({
       waveColor: { value: [...settings.waveColor] },
       backgroundColor: { value: [...settings.backgroundColor] },
       mousePos: { value: [0, 0] },
-      enableMouseInteraction: { value: settings.enableMouseInteraction ? 1 : 0 },
+      enableMouseInteraction: {
+        value: settings.enableMouseInteraction ? 1 : 0,
+      },
       mouseRadius: { value: settings.mouseRadius },
       colorNum: { value: settings.colorNum },
       pixelSize: { value: settings.pixelSize },
@@ -260,8 +262,14 @@ export default function Dither({
       renderer.setSize(rect.width, rect.height);
       canvas.style.width = "100%";
       canvas.style.height = "100%";
-      uniforms.resolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight];
-      uniforms.mousePos.value = [gl.drawingBufferWidth / 2, gl.drawingBufferHeight / 2];
+      uniforms.resolution.value = [
+        gl.drawingBufferWidth,
+        gl.drawingBufferHeight,
+      ];
+      uniforms.mousePos.value = [
+        gl.drawingBufferWidth / 2,
+        gl.drawingBufferHeight / 2,
+      ];
       draw();
     };
 
@@ -280,7 +288,10 @@ export default function Dither({
       ) {
         return;
       }
-      uniforms.mousePos.value = [event.clientX - rect.left, event.clientY - rect.top];
+      uniforms.mousePos.value = [
+        event.clientX - rect.left,
+        event.clientY - rect.top,
+      ];
       if (propsRef.current.disableAnimation) draw();
     };
     window.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -365,12 +376,23 @@ export default function Dither({
     <div
       ref={containerRef}
       className={className}
-      style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+      }}
     >
       <canvas
         ref={canvasRef}
         aria-hidden="true"
-        style={{ position: "absolute", inset: 0, display: "block", width: "100%", height: "100%" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "block",
+          width: "100%",
+          height: "100%",
+        }}
       />
     </div>
   );

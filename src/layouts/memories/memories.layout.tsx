@@ -1,4 +1,10 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ActionIcon,
   Box,
@@ -7,10 +13,12 @@ import {
   Stack,
   Text,
   Title,
+  Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import { IconArrowDown, IconVolume, IconVolumeOff } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUpRight } from "@tabler/icons-react";
 import { useTextShuffle } from "../../components/animations/use-text-shuffle";
+import { ShuffleText } from "../../components/animations/shuffle.text";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
@@ -22,6 +30,12 @@ import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Safety net: if a video never reports it can play through (some mobile
+// browsers don't preload video), don't keep the loader up forever.
+const VIDEO_LOAD_TIMEOUT_MS = 25000;
+// HTMLMediaElement.HAVE_ENOUGH_DATA
+const HAVE_ENOUGH_DATA = 4;
+
 const VIDEO_REELS = [
   {
     src: "/videos/1.mp4",
@@ -29,6 +43,7 @@ const VIDEO_REELS = [
     number: "01",
     note: "A QUICK ESCAPE FROM REALITY",
     location: "HANOI, VIETNAM",
+    href: "https://www.instagram.com/reel/DdCBYI3hq3u/",
   },
   {
     src: "/videos/2.mp4",
@@ -36,6 +51,7 @@ const VIDEO_REELS = [
     number: "02",
     note: "JUST CATCHING ON THE TRENDS",
     location: "BAC NINH, VIETNAM",
+    href: "https://www.instagram.com/reel/DdT-WOwvx_-/",
   },
   {
     src: "/videos/3.mp4",
@@ -43,6 +59,7 @@ const VIDEO_REELS = [
     number: "03",
     note: "DREAMCORE PHASE",
     location: "HANOI, VIETNAM",
+    href: "https://www.instagram.com/reel/DcynIp4scc9/",
   },
   {
     src: "/videos/4.mp4",
@@ -50,6 +67,7 @@ const VIDEO_REELS = [
     number: "04",
     note: "JUST TRYING NEW EDIT STYLE",
     location: "HANOI, VIETNAM",
+    href: "https://www.instagram.com/reel/DQvcbShD3PT/",
   },
   {
     src: "/videos/5.mp4",
@@ -57,6 +75,7 @@ const VIDEO_REELS = [
     number: "05",
     note: "STORING MEMORIES WHILE I CAN",
     location: "HANOI, VIETNAM",
+    href: "https://www.instagram.com/reel/DNTMmoqz2EN/",
   },
   {
     src: "/videos/6.mp4",
@@ -64,6 +83,7 @@ const VIDEO_REELS = [
     number: "06",
     note: "IT'S JUST A RANDOM COLLECTION OF STILLS",
     location: "HANOI, VIETNAM",
+    href: "https://www.instagram.com/reel/DOoII7Bj44D/",
   },
   {
     src: "/videos/7.mp4",
@@ -71,6 +91,7 @@ const VIDEO_REELS = [
     number: "07",
     note: "LEFTOVER MEMORIES OF LAST SUMMER",
     location: "HANOI, VIETNAM",
+    href: "https://www.instagram.com/reel/DNBTitOTlEB/",
   },
 ] as const;
 
@@ -104,9 +125,8 @@ export default function MemoriesLayout() {
   const progressRef = useRef<HTMLDivElement>(null);
   const progressLabelRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isHudVisible, setIsHudVisible] = useState(true);
-  const [isMetadataVisible, setIsMetadataVisible] = useState(true);
+  const [videosReady, setVideosReady] = useState(false);
+  const [loadedVideos, setLoadedVideos] = useState(0);
   const currentReel = VIDEO_REELS[activeIndex] ?? VIDEO_REELS[0];
 
   const activateReel = useCallback((index: number) => {
@@ -118,6 +138,68 @@ export default function MemoriesLayout() {
       else video.pause();
     });
   }, []);
+
+  // Wait until every video can play through (or errors / times out) before
+  // revealing the page, so reels don't stutter or pop in while scrolling.
+  useEffect(() => {
+    const videos = videoRefs.current.filter(
+      (video): video is HTMLVideoElement => Boolean(video),
+    );
+    if (videos.length === 0) {
+      setVideosReady(true);
+      return;
+    }
+
+    let loaded = 0;
+    let finished = false;
+    const cleanups: Array<() => void> = [];
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      setVideosReady(true);
+    };
+
+    videos.forEach((video) => {
+      let counted = false;
+      const markLoaded = () => {
+        if (counted) return;
+        counted = true;
+        loaded += 1;
+        setLoadedVideos(loaded);
+        if (loaded >= videos.length) finish();
+      };
+
+      // Already buffered (e.g. cached from a previous visit).
+      if (video.readyState >= HAVE_ENOUGH_DATA) {
+        markLoaded();
+        return;
+      }
+
+      // A failed video counts as done so one bad file can't block the page.
+      video.addEventListener("canplaythrough", markLoaded, { once: true });
+      video.addEventListener("error", markLoaded, { once: true });
+      cleanups.push(() => {
+        video.removeEventListener("canplaythrough", markLoaded);
+        video.removeEventListener("error", markLoaded);
+      });
+    });
+
+    const timer = window.setTimeout(finish, VIDEO_LOAD_TIMEOUT_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+      cleanups.forEach((cleanup) => cleanup());
+    };
+  }, []);
+
+  // Once revealed, make sure the current reel is the one playing and that
+  // scroll triggers reflect the final layout.
+  useEffect(() => {
+    if (!videosReady) return;
+    activateReel(activeIndexRef.current);
+    ScrollTrigger.refresh();
+  }, [videosReady, activateReel]);
 
   useLayoutEffect(() => {
     const page = pageRef.current;
@@ -176,9 +258,6 @@ export default function MemoriesLayout() {
           .toString()
           .padStart(2, "0")}%`;
       }
-      const lastReel = reelRefs.current[VIDEO_REELS.length - 1];
-      if (lastReel)
-        setIsHudVisible(lastReel.getBoundingClientRect().bottom > 120);
 
       const viewportCenter = window.innerHeight * 0.55;
       let closestIndex = 0;
@@ -212,18 +291,10 @@ export default function MemoriesLayout() {
     };
   }, [activateReel]);
 
-  const toggleMute = () => {
-    const nextMuted = !isMuted;
-    setIsMuted(nextMuted);
-    videoRefs.current.forEach((video) => {
-      if (video) video.muted = nextMuted;
-    });
-    document.dispatchEvent(
-      new CustomEvent("folio-sound-change", {
-        detail: { enabled: !nextMuted },
-      }),
-    );
-  };
+  function handleNavigate() {
+    console.log("Navigating to Instagram:", currentReel.href);
+    window.open(currentReel.href, "_blank");
+  }
 
   return (
     <LayoutWrapper>
@@ -231,6 +302,49 @@ export default function MemoriesLayout() {
         ref={pageRef}
         style={{ position: "relative", background: "var(--folio-page-bg)" }}
       >
+        {/* Loading overlay: stays up until every video can play through */}
+        <Box
+          role="status"
+          aria-live="polite"
+          aria-hidden={videosReady}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--folio-page-bg)",
+            opacity: videosReady ? 0 : 1,
+            visibility: videosReady ? "hidden" : "visible",
+            pointerEvents: videosReady ? "none" : "auto",
+            transition: "opacity 600ms ease, visibility 0s linear 600ms",
+          }}
+        >
+          <Stack gap={6} align="center">
+            <Text
+              c="primaryOrange"
+              style={{
+                fontFamily: "DotGothic16, sans-serif",
+                letterSpacing: ".12em",
+              }}
+            >
+              <ShuffleText text="LOADING MEMORIES..." />
+            </Text>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                fontFamily: "DotGothic16, sans-serif",
+                letterSpacing: ".1em",
+              }}
+            >
+              REELS {String(loadedVideos).padStart(2, "0")} /{" "}
+              {String(VIDEO_REELS.length).padStart(2, "0")}
+            </Text>
+          </Stack>
+        </Box>
+
         <Box
           component="main"
           aria-label="Memories video archive"
@@ -240,9 +354,9 @@ export default function MemoriesLayout() {
           }}
         >
           <style>{`
-            .memories-current-title { font-size: clamp(18px, 10vw, 18px); }
+            .memories-current-title { font-size: clamp(18px, 10vw, 36px); }
             @media (min-width: ${theme.breakpoints.xs}) {
-              .memories-current-title { font-size: clamp(24px, 10vw, 24px); }
+              .memories-current-title { font-size: clamp(36px, 10vw, 38px); }
             }
             @media (min-width: ${theme.breakpoints.sm}) {
               .memories-current-title { font-size: clamp(40px, 9vw, 56px); }
@@ -255,6 +369,9 @@ export default function MemoriesLayout() {
             }
             @media (min-width: ${theme.breakpoints.xl}) {
               .memories-current-title { font-size: clamp(102px, 10vw, 102px); }
+            }
+            @media (prefers-reduced-motion: reduce) {
+              [aria-live="polite"][role="status"] { transition: none !important; }
             }
           `}</style>
           <Box
@@ -289,10 +406,10 @@ export default function MemoriesLayout() {
                     videoRefs.current[index] = node;
                   }}
                   src={reel.src}
-                  muted={isMuted}
+                  muted={true}
                   playsInline
                   loop
-                  preload={index === 0 ? "auto" : "metadata"}
+                  preload="auto"
                   autoPlay={index === 0}
                   aria-label={`${reel.title}: ${reel.note}`}
                   style={{
@@ -318,6 +435,24 @@ export default function MemoriesLayout() {
             <CyberpunkBackdrop variant="memories" layer={1} />
           </Box>
           <Box
+            style={{
+              position: "fixed",
+              left: "28px",
+              top: "50%",
+              transform: "translateY(-70%)",
+            }}
+          >
+            <Tooltip label="View on Instagram" position="left" withArrow>
+              <ActionIcon
+                variant="outline"
+                onClick={handleNavigate}
+                aria-label="View on Instagram"
+              >
+                <IconArrowUpRight />
+              </ActionIcon>
+            </Tooltip>
+          </Box>
+          <Box
             component="aside"
             aria-label="Current memory"
             style={{
@@ -329,16 +464,15 @@ export default function MemoriesLayout() {
               height: "calc((100dvh - 40px) / var(--folio-viewport-scale, 1))",
               pointerEvents: "none",
               color: "white",
-              visibility:
-                isHudVisible && isMetadataVisible ? "visible" : "hidden",
-              opacity: isHudVisible && isMetadataVisible ? 1 : 0,
+              visibility: "visible",
+              opacity: 1,
               transition: "opacity 200ms ease",
             }}
           >
             <Flex
               justify="space-between"
               align="center"
-              style={{ position: "absolute", inset: "22px 26px auto" }}
+              style={{ position: "absolute", inset: "22px 28px auto" }}
             >
               <Text
                 aria-label={currentReel.location}
@@ -367,21 +501,6 @@ export default function MemoriesLayout() {
                     text={`${currentReel.number} / ${String(VIDEO_REELS.length).padStart(2, "0")}`}
                   />
                 </Text>
-                <ActionIcon
-                  onClick={toggleMute}
-                  aria-label={isMuted ? "Unmute videos" : "Mute videos"}
-                  variant="outline"
-                  color="white"
-                  radius={2}
-                  size="md"
-                  style={{ pointerEvents: "auto" }}
-                >
-                  {isMuted ? (
-                    <IconVolumeOff size={16} />
-                  ) : (
-                    <IconVolume size={16} />
-                  )}
-                </ActionIcon>
               </Group>
             </Flex>
 
@@ -390,14 +509,14 @@ export default function MemoriesLayout() {
               gap={8}
               style={{
                 position: "absolute",
-                left: "clamp(28px, 5vw, 76px)",
+                left: "28px",
                 right: "clamp(28px, 5vw, 76px)",
-                bottom: "clamp(68px, 9vh, 96px)",
+                bottom: "clamp(68px, 9vh, 60px)",
               }}
             >
               <Text
                 aria-label={currentReel.note}
-                size="10px"
+                size="clamp(8px, 1vw, 12px)"
                 fw={700}
                 c="white"
                 style={{
@@ -423,7 +542,7 @@ export default function MemoriesLayout() {
                     color: "#fff",
                     fontFamily: "Arial, Helvetica, sans-serif",
                     fontWeight: 800,
-                    letterSpacing: "-.085em",
+                    letterSpacing: "-0.06em",
                     lineHeight: 0.76,
                     textTransform: "uppercase",
                     textShadow: "0 2px 26px rgba(0,0,0,.18)",
@@ -439,7 +558,7 @@ export default function MemoriesLayout() {
                 style={{ color: "rgba(255,255,255,.72)" }}
               >
                 <Text
-                  size="9px"
+                  size="clamp(10px, 1.5vw, 12px)"
                   c="white"
                   style={{
                     fontFamily: "DM Mono, monospace",

@@ -69,60 +69,85 @@ const STORY_PANELS = [
     index: "01",
     label: "CORE_ROLE",
     title: "CAREER OVERVIEW",
-    body: "░░ overview of my career path, achievements, and professional growth.",
+    body:
+      "░░ 4+ years at Toshiba Software Development Vietnam, growing from a junior developer into a full-stack engineer." +
+      "<br/>░░ 8+ projects delivered, from industrial system simulation to modern web applications." +
+      "<br/>░░ Comfortable across the stack: designing the architecture, building the interface, and shipping it to production." +
+      "<br/>░░ Worked in international teams, where clear communication and careful documentation matter as much as the code.",
     meta: "TSDV // FULL-STACK DEVELOPER // 4 YEARS OF EXPERIENCE",
   },
   {
     index: "02",
     label: "MOTION_LOG",
-    title: "MAIN EXPERTISE",
-    body: "░░ this sections includes my main expertise in programming.",
-    meta: "SYSTEM DESIGN // WEB DEVELOPMENT",
+    title: "OVERVIEW",
+    body:
+      "░░ Modeling industrial systems in software, so real-world behavior can be tested, tuned and understood before it ever touches hardware." +
+      "<br/>░░ Building fast, polished full-stack applications, with extra care for motion, detail and the small interactions that make an interface feel alive." +
+      "<br/>░░ Turning complex, messy requirements into clean, modular systems that are simple to use and easy to maintain.",
+    meta: "SYSTEM SIMULATION // WEB DEVELOPMENT // ARCHITECTURE DESIGN // SECURITY",
   },
   {
     index: "03",
     label: "FRAME_ARCHIVE",
     title: "SIDE QUESTS",
-    body: "░░ outside knowledge for those who are curious about me.",
+    body:
+      "░░ When the laptop is closed, I'm usually behind a camera, chasing good light and the right frame." +
+      "<br/>░░ Videography and photography taught me about pacing, composition and color, and I bring that eye back into my UI work." +
+      "<br/>░░ Bad Bunny big fan. Yes, I will defend the whole discography." +
+      "<br/>░░ Ask me about my favorite shoot, or just send me your best playlist.",
     meta: "VIDEOGRAPHY // PHOTOGRAPHY // FAN OF BAD BUNNY",
   },
   {
     index: "04",
     label: "LANGUAGES",
     title: "COMMUNICATION",
-    body: "░░ my capabilities in communicating with different languages.",
+    body:
+      "░░ Vietnamese is my mother tongue, and the language I think and joke in." +
+      "<br/>░░ English is my daily working language for documentation, meetings and technical discussions." +
+      "<br/>░░ Japanese is my ongoing quest, growing through years of working alongside Japanese teammates." +
+      "<br/>░░ Different languages, same goal: making sure everyone is on the same page.",
     meta: "VIETNAMESE // ENGLISH // JAPANESE",
   },
 ];
 
 const GALAXY_PLANETS = [
   {
-    name: "CAREER OVERVIEW",
+    name: "OVERVIEW",
     orbit: 1,
-    panel: 1,
-    moons: ["░░ 4 YEARS OF EXPERIENCE", "░░ 8+ PROJECTS WITH DIFFERENT SCALES"],
+    panel: 0,
+    moons: [
+      "░░ 4 YEARS OF EXPERIENCE IN SOFTWARE ENGINEERING",
+      "░░ 8+ PROJECTS WITH DIFFERENT SCALES",
+      "░░ BORN IN 01/06/1998",
+    ],
+    preview:
+      "Four years in software engineering and 8+ projects of every scale, from a Hanoi-born developer who keeps learning.",
   },
   {
-    name: "MAIN EXPERTISE",
+    name: "CAREER",
     orbit: 2,
-    panel: 2,
+    panel: 1,
     moons: [
       "░░ SYSTEM SIMULATION",
       "░░ WEB DEVELOPMENT",
       "░░ ARCHITECTURE DESIGN",
       "░░ SECURITY",
     ],
+    preview:
+      "From simulating industrial systems to building secure, well-architected web applications.",
   },
   {
     name: "SIDE QUESTS",
     orbit: 3,
-    panel: 3,
+    panel: 2,
     moons: [
       "░░ BAD BUNNY ENJOYER",
       "░░ WEEKEND PHOTOGRAPHER",
       "░░ RECENTLY STARTED FILMMAKING",
-      "░░ I HAVE 2 CATS",
+      "░░ I HAVE A CAT",
     ],
+    preview:
+      "Life outside the code: weekend photos, first steps in filmmaking, Bad Bunny on repeat, and a cat supervising.",
   },
   {
     name: "CERTIFICATES",
@@ -134,6 +159,7 @@ const GALAXY_PLANETS = [
       "FIRST CLASS HONORS IN COMPUTING",
       "28 YEARS OF HONING VIETNAMESE",
     ],
+    preview: "Some proof of the work behind the words.",
   },
 ];
 
@@ -186,6 +212,15 @@ const STORY_INLINE_STYLES = {
     left: 0,
     width: "100%",
     borderTop: "1px solid rgba(255, 119, 0, 0.22)",
+    pointerEvents: "none",
+  },
+  signalScanline2: {
+    position: "absolute",
+    zIndex: 0,
+    top: 100,
+    left: "50%",
+    height: "100dvh",
+    borderRight: "1px solid rgba(255, 119, 0, 0.22)",
     pointerEvents: "none",
   },
   orbit: {
@@ -339,6 +374,7 @@ const STORY_INLINE_STYLES = {
     inset: 0,
     border: "1px solid rgba(255, 191, 128, 0.75)",
     borderRadius: "50%",
+    transform: "translate(-4px, -4px)",
     background:
       "radial-gradient(circle at 32% 28%, #ffd2a6, #ff7700 65%, #7a2e08)",
     boxShadow:
@@ -350,7 +386,7 @@ const STORY_INLINE_STYLES = {
     left: "50%",
     width: 8,
     height: 8,
-    marginLeft: -4,
+    marginLeft: -2,
     transformOrigin: "0 0",
   },
   moonLabel: {
@@ -431,7 +467,7 @@ const STORY_INLINE_STYLES = {
     bottom: 18,
     width: "min(300px, 42%)",
     maxWidth: "calc(100% - 36px)",
-    maxHeight: "min(42%, 220px)",
+    maxHeight: "min(50%, 320px)",
     boxSizing: "border-box",
     overflowY: "auto",
     padding: "12px 14px",
@@ -631,7 +667,10 @@ function GalaxyFocus({
           {panel.label} // SYSTEM DATA
         </span>
         <span style={STORY_INLINE_STYLES.detailTitle}>{panel.title}</span>
-        <p style={STORY_INLINE_STYLES.detailBody}>{panel.body}</p>
+        <p
+          style={STORY_INLINE_STYLES.detailBody}
+          dangerouslySetInnerHTML={{ __html: panel.body }}
+        />
         <span style={STORY_INLINE_STYLES.detailMeta}>{panel.meta}</span>
       </Box>
     </Box>
@@ -703,7 +742,9 @@ export default function StorySection({
     } else {
       const planet = GALAXY_PLANETS[activePreviewIndex];
       const panel = STORY_PANELS[planet.panel];
-      const target = `${planet.name}\n${panel.body}\n${planet.moons.slice(0, 3).join("  /  ")}`;
+
+      if (!panel || !planet) return;
+      const target = `${planet.preview}`;
 
       if (reducedMotion) {
         updatePreview(target);
@@ -913,10 +954,11 @@ export default function StorySection({
     <Container
       fluid
       p={0}
-      className={`homepage-story-section${embedded ? " homepage-story-section--embedded" : ""}`}
+      className={`homepage-story-section${embedded ? "" : ""}`}
       style={{
         ...STORY_INLINE_STYLES.section,
         overflow: embedded ? "hidden" : "visible",
+        height: "100%",
       }}
     >
       <Stack
@@ -932,7 +974,6 @@ export default function StorySection({
           className="homepage-story-grid"
           style={{
             ...STORY_INLINE_STYLES.grid,
-            display: isMobile ? "flex" : undefined,
           }}
         >
           <Grid.Col
@@ -945,7 +986,7 @@ export default function StorySection({
               className={`homepage-story-signal${selectedPlanet !== null ? " is-expanded" : ""}`}
               style={{
                 ...STORY_INLINE_STYLES.signal,
-                minHeight: isMobile ? 340 : 500,
+                minHeight: isMobile ? "70dvh" : 500,
                 marginTop: isMobile && !embedded ? 42 : 0,
               }}
             >
@@ -953,6 +994,10 @@ export default function StorySection({
               <Box
                 aria-hidden="true"
                 style={STORY_INLINE_STYLES.signalScanline}
+              />
+              <Box
+                aria-hidden="true"
+                style={STORY_INLINE_STYLES.signalScanline2}
               />
               <Box
                 ref={orbitRef}
@@ -1130,7 +1175,7 @@ export default function StorySection({
                   c="orange.3"
                   ff="DotGothic16"
                 >
-                  ROTATION // GALAXY 72s · MOONS 48–92s
+                  ROTATION // GALAXY 72s
                 </Text>
               </Stack>
               <Text ff="DotGothic16" style={STORY_INLINE_STYLES.statusCorner}>

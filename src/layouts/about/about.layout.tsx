@@ -302,7 +302,7 @@ export default function AboutPage() {
                 height: "100%",
               }}
             >
-              <Stack pt="25" gap={5}>
+              <Stack pt="25" gap={0}>
                 <Text
                   style={{
                     fontFamily: "DotGothic16",
@@ -321,16 +321,16 @@ export default function AboutPage() {
                         color: "var(--folio-text)",
                         letterSpacing: "-1.5px",
                         lineHeight: 1.1,
-                        maxWidth: "600px",
+                        maxWidth: "570px",
                       }}
                     >
-                      A back-end developer with a twist of artistic ideas
-                      running through his veins.
+                      A back-end developer with a twist of artistic ideas that
+                      always stay within his mind.
                     </Title>
                   </Box>
                 </Group>
 
-                <Group justify="left" mt="md">
+                <Group justify="left" mt="xs">
                   <Box className="vhs-title-container">
                     <Text
                       className="vhs-title"
@@ -343,13 +343,14 @@ export default function AboutPage() {
                         letterSpacing: "-1px",
                         lineHeight: 1.4,
                         textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
-                        maxWidth: "340px",
+                        maxWidth: "500px",
                       }}
                     >
-                      Currently working full-time at Toshiba Software
-                      Development Vietnam.
+                      4+ years of experience, specialized in simulation and web
+                      application development.
                     </Text>
                     <Text
+                      mt="xs"
                       className="vhs-title"
                       data-text="Currently working full-time at Toshiba Software Development Vietnam"
                       style={{
@@ -360,10 +361,11 @@ export default function AboutPage() {
                         letterSpacing: "-1px",
                         lineHeight: 1.4,
                         textShadow: "0 0 12px rgba(255, 119, 0, 0.6)",
-                        maxWidth: "340px",
+                        maxWidth: "500px",
                       }}
                     >
-                      Specialized in simulation and web development.
+                      Located in Hanoi, Vietnam. Currently working full-time at
+                      Toshiba Software Development Vietnam.
                     </Text>
                   </Box>
                 </Group>
@@ -419,12 +421,7 @@ export default function AboutPage() {
                     {FORM_TYPES.map((item) => {
                       const isOpen = openForms.some((f) => f.id === item.id);
                       const isFocused = focusedFormId === item.id;
-                      const labelText =
-                        item.id === "COLLABORATE"
-                          ? "COLLABORATE"
-                          : item.id === "say-hi"
-                            ? "SAY HI"
-                            : "REQUEST COLLABORATE";
+                      const labelText = item.id;
 
                       return (
                         <TriggerCard
@@ -467,13 +464,7 @@ export default function AboutPage() {
                       key={item.id}
                       className="about-mobile-controls__card"
                       category="SYS_FORM"
-                      label={
-                        item.id === "COLLABORATE"
-                          ? "COLLABORATE"
-                          : item.id === "say-hi"
-                            ? "SAY HI"
-                            : "REQUEST COLLABORATE"
-                      }
+                      label={item.id}
                       icon={item.icon}
                       isOpen={isOpen}
                       isFocused={focusedFormId === item.id}
