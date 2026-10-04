@@ -42,9 +42,6 @@ export default function GalleryHud() {
           .gallery-hud-top-right { right: 18px !important; }
           .gallery-hud-bottom { left: 18px !important; right: 18px !important; }
         }
-        @media (prefers-reduced-motion: reduce) {
-          .gallery-hud-scan, .gallery-hud-blink, .gallery-hud-meter { animation: none !important; }
-        }
       `}</style>
 
       <Box

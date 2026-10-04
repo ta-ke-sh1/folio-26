@@ -14,11 +14,6 @@ function GsapShufflePrompt() {
     const element = promptRef.current;
     if (!element) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      element.textContent = "SELECT A PLANET";
-      return;
-    }
-
     const english = "SELECT A PLANET";
     const japanese = "惑星を選択してください";
     const timeline = gsap.timeline({ repeat: -1, repeatDelay: 1.8 });
@@ -542,10 +537,7 @@ function GalaxyFocus({
 
   useEffect(() => {
     const button = backButtonRef.current;
-    if (
-      !button ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (!button) {
       return;
     }
 
@@ -699,19 +691,12 @@ export default function StorySection({
       previewTextRef.current = value;
       setPreviewText(value);
     };
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
 
     if (activePreviewIndex === null) {
       if (
         !previewTextRef.current ||
         previewTextRef.current === DEFAULT_PREVIEW_TEXT
       ) {
-        updatePreview(DEFAULT_PREVIEW_TEXT);
-        return;
-      }
-      if (reducedMotion) {
         updatePreview(DEFAULT_PREVIEW_TEXT);
         return;
       }
@@ -746,11 +731,6 @@ export default function StorySection({
       if (!panel || !planet) return;
       const target = `${planet.preview}`;
 
-      if (reducedMotion) {
-        updatePreview(target);
-        return;
-      }
-
       updatePreview("");
       const progress = { value: 0 };
       const timeline = gsap.to(progress, {
@@ -769,11 +749,6 @@ export default function StorySection({
   }, [activePreviewIndex]);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reducedMotion) return;
-
     const context = gsap.context(() => {
       const orbit = orbitRef.current;
       if (!orbit) return;
@@ -843,16 +818,11 @@ export default function StorySection({
 
   useEffect(() => {
     if (!signalRef.current) return;
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
     const context = gsap.context(() => {
       const focus = signalRef.current?.querySelector<HTMLElement>(
         ".homepage-story-galaxy-focus",
       );
-      if (focus && reducedMotion) {
-        gsap.set(focus, { autoAlpha: 1, scale: 1 });
-      } else if (focus) {
+      if (focus) {
         gsap.fromTo(
           focus,
           { autoAlpha: 0, scale: 0.94 },
@@ -868,33 +838,15 @@ export default function StorySection({
         .forEach((moonOrbit, index) => {
           const duration = MOON_ORBIT_DURATIONS[index];
           const direction = index % 2 === 1 ? -1 : 1;
-          const phase = reducedMotion
-            ? 0
-            : direction * 360 * (moonStartDelays[index] / duration);
+          const phase = direction * 360 * (moonStartDelays[index] / duration);
           const moonMarker = moonOrbit.querySelector<HTMLElement>(
             ".homepage-story-galaxy-moon-marker",
           );
 
           gsap.set(moonOrbit, { rotation: phase });
-          if (!reducedMotion) {
-            gsap.to(moonOrbit, {
-              rotation: phase + direction * 360,
-              duration,
-              ease: "none",
-              repeat: -1,
-            });
-          }
 
           if (moonMarker) {
             gsap.set(moonMarker, { rotation: -phase });
-            if (!reducedMotion) {
-              gsap.to(moonMarker, {
-                rotation: -phase - direction * 360,
-                duration,
-                ease: "none",
-                repeat: -1,
-              });
-            }
           }
         });
     }, signalRef);
@@ -906,9 +858,7 @@ export default function StorySection({
     const markers = signalRef.current?.querySelectorAll<HTMLElement>(
       ".homepage-story-signal-planet-marker",
     );
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+
     const tweens: gsap.core.Tween[] = [];
     markers?.forEach((marker, index) => {
       const planet = marker.querySelector<HTMLElement>(
@@ -925,17 +875,14 @@ export default function StorySection({
             ? "0 0 15px rgba(255, 171, 92, 1)"
             : baseBoxShadow,
       };
-      if (reducedMotion) gsap.set(planet, vars);
-      else {
-        tweens.push(
-          gsap.to(planet, {
-            ...vars,
-            duration: 0.16,
-            ease: "power2.out",
-            overwrite: "auto",
-          }),
-        );
-      }
+      tweens.push(
+        gsap.to(planet, {
+          ...vars,
+          duration: 0.16,
+          ease: "power2.out",
+          overwrite: "auto",
+        }),
+      );
     });
     return () => tweens.forEach((tween) => tween.kill());
   }, [hoveredPlanet]);

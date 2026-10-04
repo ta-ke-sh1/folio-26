@@ -433,17 +433,3 @@
     left: 12px;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .technology-flow .react-flow__edge.animated .react-flow__edge-path {
-    animation: none !important;
-  }
-
-  .technology-node {
-    transition-duration: 0.01ms !important;
-  }
-
-  .technology-flow .react-flow__node {
-    transition-duration: 0.01ms !important;
-  }
-}

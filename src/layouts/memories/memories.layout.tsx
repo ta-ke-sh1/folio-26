@@ -102,7 +102,6 @@ function ShuffleValue({ text }: { text: string }) {
   useLayoutEffect(() => {
     if (previousText.current === text) return;
     previousText.current = text;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     start();
     return stop;
   }, [start, stop, text]);
@@ -209,14 +208,11 @@ export default function MemoriesLayout() {
       const reels = reelRefs.current.filter((reel): reel is HTMLElement =>
         Boolean(reel),
       );
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
 
       reels.forEach((reel, index) => {
         const video = videoRefs.current[index];
 
-        if (!reduceMotion && index > 0 && video) {
+        if (index > 0 && video) {
           gsap.fromTo(
             video,
             { scale: 1.08 },
@@ -369,9 +365,6 @@ export default function MemoriesLayout() {
             }
             @media (min-width: ${theme.breakpoints.xl}) {
               .memories-current-title { font-size: clamp(102px, 10vw, 102px); }
-            }
-            @media (prefers-reduced-motion: reduce) {
-              [aria-live="polite"][role="status"] { transition: none !important; }
             }
           `}</style>
           <Box

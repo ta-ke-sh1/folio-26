@@ -133,7 +133,6 @@ export default function GalleryLayout() {
   useEffect(() => {
     const orbit = orbitRef.current;
     if (!orbit || orbitItems.length < 2) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const orbitAnimation = orbit.animate(
       [
@@ -245,9 +244,6 @@ export default function GalleryLayout() {
               overflow: hidden !important;
               padding: 18px 0 24px !important;
             }
-          }
-          @media (prefers-reduced-motion: reduce) {
-            .gallery-loading-overlay { transition: none !important; }
           }
         `}</style>
         <Stack

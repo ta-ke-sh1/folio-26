@@ -215,19 +215,15 @@ export default function CannisterDetailsLayout() {
     );
     if (!frame) return;
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
     if (lenis) {
       lenis.scrollTo(frame, {
         offset: -48,
-        duration: reduceMotion ? 0 : 0.8,
-        immediate: reduceMotion,
+        duration: 0.8,
       });
     } else {
       window.scrollTo({
         top: frame.getBoundingClientRect().top + window.scrollY - 48,
-        behavior: reduceMotion ? "instant" : "smooth",
+        behavior: "smooth",
       });
     }
   };
