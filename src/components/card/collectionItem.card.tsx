@@ -4,11 +4,15 @@ import { useState } from "react";
 
 interface CollectionItemCardProps {
   data: any;
+  isMobile: boolean;
 }
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
 
-export function CollectionItemCard({ data }: CollectionItemCardProps) {
+export function CollectionItemCard({
+  data,
+  isMobile,
+}: CollectionItemCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   function handleNavigate() {
@@ -16,10 +20,13 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
   }
 
   return (
-    <Stack gap={0} style={{
-      height: '50dvh',
-      minHeight: '300px'
-    }}>
+    <Stack
+      gap={0}
+      style={{
+        height: "50dvh",
+        minHeight: "300px",
+      }}
+    >
       <Box
         data-cursor={data?.id ? "pointer" : "default"}
         onClick={handleNavigate}
@@ -35,7 +42,11 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
           boxShadow: isHovered ? "0 0 20px rgba(255, 119, 0, 0.2)" : "none",
           transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
           backgroundColor: isHovered ? "#ffa94d" : undefined,
-          filter: isHovered ? "grayscale(0)" : "grayscale(1)",
+          filter: !isMobile
+            ? isHovered
+              ? "grayscale(0)"
+              : "grayscale(1)"
+            : undefined,
           padding: "16px 24px",
           position: "relative",
           overflow: "hidden",
@@ -98,7 +109,7 @@ export function CollectionItemCard({ data }: CollectionItemCardProps) {
       </Text>
       <Group gap={3}>
         {data.tags.map((t: any, index: number) => (
-          <Badge color="gray" key={`${data.name}-${index}-tag`}>
+          <Badge color="#FF7700" key={`${data.name}-${index}-tag`}>
             {t}
           </Badge>
         ))}
