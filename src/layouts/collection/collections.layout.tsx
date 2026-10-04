@@ -279,7 +279,7 @@ export default function CollectionsLayout() {
               }}
             >
               <BilingualShuffle
-                english="A STASH OF TREASURES"
+                english="A STASH OF CURATED TREASURES"
                 japanese="秘蔵の宝物"
               />
             </Text>

@@ -113,11 +113,6 @@ function SignalFragment({
   const currentPhraseRef = useRef(initialPhrase);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (prefersReducedMotion) return;
-
     let cycleTimeout: number;
     let scrambleInterval: number;
     const shuffle = () => {

@@ -37,10 +37,7 @@ export default function CannisterOrbitItem({
 
   useEffect(() => {
     const item = itemRef.current;
-    if (
-      !item ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (!item) {
       return;
     }
 

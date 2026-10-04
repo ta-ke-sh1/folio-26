@@ -10,14 +10,61 @@ import CannisterService from "../../services/cannister.service";
 import CannisterOrbitItem from "./cannisterOrbitItem.component";
 import GalleryHud from "./gallery.hud.component";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
+import { ShuffleText } from "../../components/animations/shuffle.text";
 import CatchphraseCard from "../../components/card/catchphrase.card";
 import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
 const ITEMS_PER_ORBIT = 12;
 
+// Safety net: if an image is extremely slow, don't keep the loader up forever.
+const IMAGE_PRELOAD_TIMEOUT_MS = 20000;
+
+const getPreviewUrl = (cannisterName: string) =>
+  `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${DatabaseTables.Cannisters}/${cannisterName}/1.jpg`;
+
+/** Resolves once the image has loaded (or failed, so one bad file can't block). */
+const preloadImage = (src: string) =>
+  new Promise<void>((resolve) => {
+    const img = new window.Image();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = src;
+  });
+
+/** Waits for every image (or the timeout), reporting progress as they finish. */
+const preloadImages = async (
+  urls: string[],
+  onProgress: (loaded: number) => void,
+) => {
+  let loaded = 0;
+  const all = Promise.all(
+    urls.map((url) =>
+      preloadImage(url).then(() => {
+        loaded += 1;
+        onProgress(loaded);
+      }),
+    ),
+  );
+
+  let timer: number | undefined;
+  const timeout = new Promise<void>((resolve) => {
+    timer = window.setTimeout(resolve, IMAGE_PRELOAD_TIMEOUT_MS);
+  });
+
+  try {
+    await Promise.race([all, timeout]);
+  } finally {
+    window.clearTimeout(timer);
+  }
+};
+
 export default function GalleryLayout() {
   const [cannisters, setCannisters] = useState<CannisterEntity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [preloadProgress, setPreloadProgress] = useState({
+    loaded: 0,
+    total: 0,
+  });
   const [page, setPage] = useState(0);
   const [isStageHovered, setIsStageHovered] = useState(false);
   const [hoveredCannisterId, setHoveredCannisterId] = useState<number | null>(
@@ -41,6 +88,28 @@ export default function GalleryLayout() {
           },
         );
         setCannisters(sorted);
+
+        // Keep the loading overlay up until the first orbit's previews have
+        // finished loading, so the gallery appears fully ready.
+        const firstOrbitUrls = sorted
+          .slice(0, ITEMS_PER_ORBIT)
+          .map((cannister) => getPreviewUrl(cannister.name));
+        setPreloadProgress({ loaded: 0, total: firstOrbitUrls.length });
+        await preloadImages(firstOrbitUrls, (loaded) => {
+          if (isMounted) {
+            setPreloadProgress({ loaded, total: firstOrbitUrls.length });
+          }
+        });
+
+        // Warm the cache for the remaining sets in the background so paging
+        // through the orbit feels instant, without delaying the first reveal.
+        if (isMounted) {
+          sorted
+            .slice(ITEMS_PER_ORBIT)
+            .forEach(
+              (cannister) => void preloadImage(getPreviewUrl(cannister.name)),
+            );
+        }
       } catch (error) {
         console.error("Unable to load the cannister index:", error);
       } finally {
@@ -64,7 +133,6 @@ export default function GalleryLayout() {
   useEffect(() => {
     const orbit = orbitRef.current;
     if (!orbit || orbitItems.length < 2) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const orbitAnimation = orbit.animate(
       [
@@ -95,6 +163,50 @@ export default function GalleryLayout() {
 
   return (
     <LayoutWrapper>
+      {/* Loading overlay: stays up until the first set of previews has loaded */}
+      <Box
+        className="gallery-loading-overlay"
+        role="status"
+        aria-live="polite"
+        aria-hidden={!isLoading}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "var(--folio-page-bg)",
+          opacity: isLoading ? 1 : 0,
+          visibility: isLoading ? "visible" : "hidden",
+          pointerEvents: isLoading ? "auto" : "none",
+          transition: "opacity 600ms ease, visibility 0s linear 600ms",
+        }}
+      >
+        <Stack gap={6} align="center">
+          <Text
+            c="primaryOrange"
+            style={{
+              fontFamily: "DotGothic16, sans-serif",
+              letterSpacing: ".12em",
+            }}
+          >
+            <ShuffleText text="LOADING ARCHIVE..." />
+          </Text>
+          <Text
+            size="xs"
+            c="dimmed"
+            style={{
+              fontFamily: "DotGothic16, sans-serif",
+              letterSpacing: ".1em",
+            }}
+          >
+            PREVIEWS {String(preloadProgress.loaded).padStart(2, "0")} /{" "}
+            {String(preloadProgress.total).padStart(2, "0")}
+          </Text>
+        </Stack>
+      </Box>
+
       <Stack
         component="main"
         className="gallery-page"
@@ -224,7 +336,7 @@ export default function GalleryLayout() {
                     (index / orbitItems.length) * Math.PI * 2 - Math.PI / 2;
                   const x = 50 + Math.cos(angle) * 41;
                   const y = 50 + Math.sin(angle) * 41;
-                  const url = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${DatabaseTables.Cannisters}/${cannister.name}/1.jpg`;
+                  const url = getPreviewUrl(cannister.name);
                   return (
                     <CannisterOrbitItem
                       key={cannister.id}

@@ -14,11 +14,6 @@ function GsapShufflePrompt() {
     const element = promptRef.current;
     if (!element) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      element.textContent = "SELECT A PLANET";
-      return;
-    }
-
     const english = "SELECT A PLANET";
     const japanese = "惑星を選択してください";
     const timeline = gsap.timeline({ repeat: -1, repeatDelay: 1.8 });
@@ -69,60 +64,85 @@ const STORY_PANELS = [
     index: "01",
     label: "CORE_ROLE",
     title: "CAREER OVERVIEW",
-    body: "░░ overview of my career path, achievements, and professional growth.",
+    body:
+      "░░ 4+ years at Toshiba Software Development Vietnam, growing from a junior developer into a full-stack engineer." +
+      "<br/>░░ 8+ projects delivered, from industrial system simulation to modern web applications." +
+      "<br/>░░ Comfortable across the stack: designing the architecture, building the interface, and shipping it to production." +
+      "<br/>░░ Worked in international teams, where clear communication and careful documentation matter as much as the code.",
     meta: "TSDV // FULL-STACK DEVELOPER // 4 YEARS OF EXPERIENCE",
   },
   {
     index: "02",
     label: "MOTION_LOG",
-    title: "MAIN EXPERTISE",
-    body: "░░ this sections includes my main expertise in programming.",
-    meta: "SYSTEM DESIGN // WEB DEVELOPMENT",
+    title: "OVERVIEW",
+    body:
+      "░░ Modeling industrial systems in software, so real-world behavior can be tested, tuned and understood before it ever touches hardware." +
+      "<br/>░░ Building fast, polished full-stack applications, with extra care for motion, detail and the small interactions that make an interface feel alive." +
+      "<br/>░░ Turning complex, messy requirements into clean, modular systems that are simple to use and easy to maintain.",
+    meta: "SYSTEM SIMULATION // WEB DEVELOPMENT // ARCHITECTURE DESIGN // SECURITY",
   },
   {
     index: "03",
     label: "FRAME_ARCHIVE",
     title: "SIDE QUESTS",
-    body: "░░ outside knowledge for those who are curious about me.",
+    body:
+      "░░ When the laptop is closed, I'm usually behind a camera, chasing good light and the right frame." +
+      "<br/>░░ Videography and photography taught me about pacing, composition and color, and I bring that eye back into my UI work." +
+      "<br/>░░ Bad Bunny big fan. Yes, I will defend the whole discography." +
+      "<br/>░░ Ask me about my favorite shoot, or just send me your best playlist.",
     meta: "VIDEOGRAPHY // PHOTOGRAPHY // FAN OF BAD BUNNY",
   },
   {
     index: "04",
     label: "LANGUAGES",
     title: "COMMUNICATION",
-    body: "░░ my capabilities in communicating with different languages.",
+    body:
+      "░░ Vietnamese is my mother tongue, and the language I think and joke in." +
+      "<br/>░░ English is my daily working language for documentation, meetings and technical discussions." +
+      "<br/>░░ Japanese is my ongoing quest, growing through years of working alongside Japanese teammates." +
+      "<br/>░░ Different languages, same goal: making sure everyone is on the same page.",
     meta: "VIETNAMESE // ENGLISH // JAPANESE",
   },
 ];
 
 const GALAXY_PLANETS = [
   {
-    name: "CAREER OVERVIEW",
+    name: "OVERVIEW",
     orbit: 1,
-    panel: 1,
-    moons: ["░░ 4 YEARS OF EXPERIENCE", "░░ 8+ PROJECTS WITH DIFFERENT SCALES"],
+    panel: 0,
+    moons: [
+      "░░ 4 YEARS OF EXPERIENCE IN SOFTWARE ENGINEERING",
+      "░░ 8+ PROJECTS WITH DIFFERENT SCALES",
+      "░░ BORN IN 01/06/1998",
+    ],
+    preview:
+      "Four years in software engineering and 8+ projects of every scale, from a Hanoi-born developer who keeps learning.",
   },
   {
-    name: "MAIN EXPERTISE",
+    name: "CAREER",
     orbit: 2,
-    panel: 2,
+    panel: 1,
     moons: [
       "░░ SYSTEM SIMULATION",
       "░░ WEB DEVELOPMENT",
       "░░ ARCHITECTURE DESIGN",
       "░░ SECURITY",
     ],
+    preview:
+      "From simulating industrial systems to building secure, well-architected web applications.",
   },
   {
     name: "SIDE QUESTS",
     orbit: 3,
-    panel: 3,
+    panel: 2,
     moons: [
       "░░ BAD BUNNY ENJOYER",
       "░░ WEEKEND PHOTOGRAPHER",
       "░░ RECENTLY STARTED FILMMAKING",
-      "░░ I HAVE 2 CATS",
+      "░░ I HAVE A CAT",
     ],
+    preview:
+      "Life outside the code: weekend photos, first steps in filmmaking, Bad Bunny on repeat, and a cat supervising.",
   },
   {
     name: "CERTIFICATES",
@@ -134,6 +154,7 @@ const GALAXY_PLANETS = [
       "FIRST CLASS HONORS IN COMPUTING",
       "28 YEARS OF HONING VIETNAMESE",
     ],
+    preview: "Some proof of the work behind the words.",
   },
 ];
 
@@ -188,13 +209,23 @@ const STORY_INLINE_STYLES = {
     borderTop: "1px solid rgba(255, 119, 0, 0.22)",
     pointerEvents: "none",
   },
+  signalScanline2: {
+    position: "absolute",
+    zIndex: 0,
+    top: 100,
+    left: "50%",
+    height: "100dvh",
+    borderRight: "1px solid rgba(255, 119, 0, 0.22)",
+    pointerEvents: "none",
+  },
+  // NOTE: no CSS `translate` here. GSAP centers this element with
+  // xPercent/yPercent so the two never fight over the same transform.
   orbit: {
     position: "absolute",
     top: "50%",
     left: "50%",
     width: "min(96%, 560px)",
     aspectRatio: 1.55,
-    translate: "-50% -50%",
     border: "1px solid rgba(255, 119, 0, 0.7)",
     borderRadius: "50%",
     boxShadow:
@@ -325,12 +356,12 @@ const STORY_INLINE_STYLES = {
     color: "#fff4e6",
     transform: "translate(-50%, -50%)",
   },
+  // NOTE: no CSS `translate` here either (see `orbit`).
   moonOrbit: {
     position: "absolute",
     top: "50%",
     left: "50%",
     aspectRatio: 1,
-    translate: "-50% -50%",
     border: "1px solid rgba(255, 119, 0, 0.28)",
     borderRadius: "50%",
   },
@@ -339,6 +370,7 @@ const STORY_INLINE_STYLES = {
     inset: 0,
     border: "1px solid rgba(255, 191, 128, 0.75)",
     borderRadius: "50%",
+    transform: "translate(-4px, -4px)",
     background:
       "radial-gradient(circle at 32% 28%, #ffd2a6, #ff7700 65%, #7a2e08)",
     boxShadow:
@@ -350,7 +382,7 @@ const STORY_INLINE_STYLES = {
     left: "50%",
     width: 8,
     height: 8,
-    marginLeft: -4,
+    marginLeft: -2,
     transformOrigin: "0 0",
   },
   moonLabel: {
@@ -431,7 +463,7 @@ const STORY_INLINE_STYLES = {
     bottom: 18,
     width: "min(300px, 42%)",
     maxWidth: "calc(100% - 36px)",
-    maxHeight: "min(42%, 220px)",
+    maxHeight: "min(50%, 320px)",
     boxSizing: "border-box",
     overflowY: "auto",
     padding: "12px 14px",
@@ -506,10 +538,7 @@ function GalaxyFocus({
 
   useEffect(() => {
     const button = backButtonRef.current;
-    if (
-      !button ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (!button) {
       return;
     }
 
@@ -631,7 +660,10 @@ function GalaxyFocus({
           {panel.label} // SYSTEM DATA
         </span>
         <span style={STORY_INLINE_STYLES.detailTitle}>{panel.title}</span>
-        <p style={STORY_INLINE_STYLES.detailBody}>{panel.body}</p>
+        <p
+          style={STORY_INLINE_STYLES.detailBody}
+          dangerouslySetInnerHTML={{ __html: panel.body }}
+        />
         <span style={STORY_INLINE_STYLES.detailMeta}>{panel.meta}</span>
       </Box>
     </Box>
@@ -660,19 +692,12 @@ export default function StorySection({
       previewTextRef.current = value;
       setPreviewText(value);
     };
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
 
     if (activePreviewIndex === null) {
       if (
         !previewTextRef.current ||
         previewTextRef.current === DEFAULT_PREVIEW_TEXT
       ) {
-        updatePreview(DEFAULT_PREVIEW_TEXT);
-        return;
-      }
-      if (reducedMotion) {
         updatePreview(DEFAULT_PREVIEW_TEXT);
         return;
       }
@@ -703,12 +728,9 @@ export default function StorySection({
     } else {
       const planet = GALAXY_PLANETS[activePreviewIndex];
       const panel = STORY_PANELS[planet.panel];
-      const target = `${planet.name}\n${panel.body}\n${planet.moons.slice(0, 3).join("  /  ")}`;
 
-      if (reducedMotion) {
-        updatePreview(target);
-        return;
-      }
+      if (!panel || !planet) return;
+      const target = `${planet.preview}`;
 
       updatePreview("");
       const progress = { value: 0 };
@@ -727,15 +749,19 @@ export default function StorySection({
     }
   }, [activePreviewIndex]);
 
+  // Main galaxy orbit, planet labels, pulses.
   useEffect(() => {
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reducedMotion) return;
+    const orbit = orbitRef.current;
+    const scope = signalRef.current;
+    if (!orbit || !scope) return;
 
     const context = gsap.context(() => {
-      const orbit = orbitRef.current;
-      if (!orbit) return;
+      // GSAP owns centering + rotation so there's no CSS `translate` conflict.
+      gsap.set(orbit, {
+        xPercent: -50,
+        yPercent: -50,
+        transformOrigin: "50% 50%",
+      });
 
       gsap.to(orbit, {
         rotation: 360,
@@ -747,7 +773,7 @@ export default function StorySection({
       gsap.utils
         .toArray<HTMLElement>(
           ".homepage-story-signal-planet-label-anchor",
-          signalRef.current,
+          scope,
         )
         .forEach((label) => {
           const angle = Number(label.dataset.planetAngle ?? 0);
@@ -761,10 +787,7 @@ export default function StorySection({
         });
 
       gsap.utils
-        .toArray<HTMLElement>(
-          ".homepage-story-signal-planet-marker",
-          signalRef.current,
-        )
+        .toArray<HTMLElement>(".homepage-story-signal-planet-marker", scope)
         .forEach((marker) => {
           const pulse = marker.querySelector<HTMLElement>(
             ".homepage-story-signal-planet-pulse",
@@ -795,23 +818,21 @@ export default function StorySection({
             });
           }
         });
-    }, signalRef);
+    }, scope);
 
     return () => context.revert();
   }, []);
 
+  // Planet focus view: fade-in + continuously rotating moon orbits.
   useEffect(() => {
-    if (!signalRef.current) return;
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const scope = signalRef.current;
+    if (!scope) return;
+
     const context = gsap.context(() => {
-      const focus = signalRef.current?.querySelector<HTMLElement>(
+      const focus = scope.querySelector<HTMLElement>(
         ".homepage-story-galaxy-focus",
       );
-      if (focus && reducedMotion) {
-        gsap.set(focus, { autoAlpha: 1, scale: 1 });
-      } else if (focus) {
+      if (focus) {
         gsap.fromTo(
           focus,
           { autoAlpha: 0, scale: 0.94 },
@@ -820,43 +841,41 @@ export default function StorySection({
       }
 
       gsap.utils
-        .toArray<HTMLElement>(
-          ".homepage-story-galaxy-moon-orbit",
-          signalRef.current,
-        )
+        .toArray<HTMLElement>(".homepage-story-galaxy-moon-orbit", scope)
         .forEach((moonOrbit, index) => {
           const duration = MOON_ORBIT_DURATIONS[index];
           const direction = index % 2 === 1 ? -1 : 1;
-          const phase = reducedMotion
-            ? 0
-            : direction * 360 * (moonStartDelays[index] / duration);
+          const phase =
+            direction * 360 * ((moonStartDelays[index] ?? 0) / duration);
           const moonMarker = moonOrbit.querySelector<HTMLElement>(
             ".homepage-story-galaxy-moon-marker",
           );
 
-          gsap.set(moonOrbit, { rotation: phase });
-          if (!reducedMotion) {
-            gsap.to(moonOrbit, {
-              rotation: phase + direction * 360,
+          gsap.set(moonOrbit, {
+            xPercent: -50,
+            yPercent: -50,
+            transformOrigin: "50% 50%",
+            rotation: phase,
+          });
+          gsap.to(moonOrbit, {
+            rotation: phase + direction * 360,
+            duration,
+            ease: "none",
+            repeat: -1,
+          });
+
+          // Counter-rotate the marker so the moon and its label stay upright.
+          if (moonMarker) {
+            gsap.set(moonMarker, { rotation: -phase });
+            gsap.to(moonMarker, {
+              rotation: -phase - direction * 360,
               duration,
               ease: "none",
               repeat: -1,
             });
           }
-
-          if (moonMarker) {
-            gsap.set(moonMarker, { rotation: -phase });
-            if (!reducedMotion) {
-              gsap.to(moonMarker, {
-                rotation: -phase - direction * 360,
-                duration,
-                ease: "none",
-                repeat: -1,
-              });
-            }
-          }
         });
-    }, signalRef);
+    }, scope);
 
     return () => context.revert();
   }, [selectedPlanet, moonStartDelays]);
@@ -865,9 +884,7 @@ export default function StorySection({
     const markers = signalRef.current?.querySelectorAll<HTMLElement>(
       ".homepage-story-signal-planet-marker",
     );
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+
     const tweens: gsap.core.Tween[] = [];
     markers?.forEach((marker, index) => {
       const planet = marker.querySelector<HTMLElement>(
@@ -884,17 +901,14 @@ export default function StorySection({
             ? "0 0 15px rgba(255, 171, 92, 1)"
             : baseBoxShadow,
       };
-      if (reducedMotion) gsap.set(planet, vars);
-      else {
-        tweens.push(
-          gsap.to(planet, {
-            ...vars,
-            duration: 0.16,
-            ease: "power2.out",
-            overwrite: "auto",
-          }),
-        );
-      }
+      tweens.push(
+        gsap.to(planet, {
+          ...vars,
+          duration: 0.16,
+          ease: "power2.out",
+          overwrite: "auto",
+        }),
+      );
     });
     return () => tweens.forEach((tween) => tween.kill());
   }, [hoveredPlanet]);
@@ -913,10 +927,11 @@ export default function StorySection({
     <Container
       fluid
       p={0}
-      className={`homepage-story-section${embedded ? " homepage-story-section--embedded" : ""}`}
+      className={`homepage-story-section${embedded ? "" : ""}`}
       style={{
         ...STORY_INLINE_STYLES.section,
         overflow: embedded ? "hidden" : "visible",
+        height: "100%",
       }}
     >
       <Stack
@@ -932,7 +947,6 @@ export default function StorySection({
           className="homepage-story-grid"
           style={{
             ...STORY_INLINE_STYLES.grid,
-            display: isMobile ? "flex" : undefined,
           }}
         >
           <Grid.Col
@@ -945,7 +959,7 @@ export default function StorySection({
               className={`homepage-story-signal${selectedPlanet !== null ? " is-expanded" : ""}`}
               style={{
                 ...STORY_INLINE_STYLES.signal,
-                minHeight: isMobile ? 340 : 500,
+                minHeight: isMobile ? "70dvh" : 500,
                 marginTop: isMobile && !embedded ? 42 : 0,
               }}
             >
@@ -953,6 +967,10 @@ export default function StorySection({
               <Box
                 aria-hidden="true"
                 style={STORY_INLINE_STYLES.signalScanline}
+              />
+              <Box
+                aria-hidden="true"
+                style={STORY_INLINE_STYLES.signalScanline2}
               />
               <Box
                 ref={orbitRef}
@@ -1130,7 +1148,7 @@ export default function StorySection({
                   c="orange.3"
                   ff="DotGothic16"
                 >
-                  ROTATION // GALAXY 72s · MOONS 48–92s
+                  ROTATION // GALAXY 72s
                 </Text>
               </Stack>
               <Text ff="DotGothic16" style={STORY_INLINE_STYLES.statusCorner}>

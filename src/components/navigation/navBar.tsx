@@ -15,7 +15,12 @@ import {
 import { ShuffleButton as Button } from "../animations/shuffle.button";
 import { ShuffleText } from "../animations/shuffle.text";
 import { useDisclosure } from "@mantine/hooks";
-import { IconMoon, IconSun, IconVolume, IconVolumeOff } from "@tabler/icons-react";
+import {
+  IconMoon,
+  IconSun,
+  IconVolume,
+  IconVolumeOff,
+} from "@tabler/icons-react";
 import { ZIndexLevel } from "../../enums/styles.enum";
 import { useLocation } from "react-router";
 import { useAnimatedNavigate } from "../transition/transition";
@@ -361,7 +366,7 @@ export default function NavigationBar() {
             >
               {soundEnabled ? <IconVolume size={16} /> : <IconVolumeOff size={16} />}
             </Button> */}
-            <Button
+            {/* <Button
               variant="subtle"
               color="orange"
               size="compact-xs"
@@ -375,7 +380,7 @@ export default function NavigationBar() {
               ) : (
                 <IconMoon size={16} />
               )}
-            </Button>
+            </Button> */}
             <Text size="xs" c="dimmed" style={{ letterSpacing: "0.5px" }}>
               SYS_TIME:{" "}
               <Text component="span" c="orange.4" fw={700} inherit>

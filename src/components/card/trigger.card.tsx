@@ -1,4 +1,4 @@
-import { ActionIcon, Image, Tooltip } from "@mantine/core";
+import { ActionIcon, Image, Stack, Text } from "@mantine/core";
 import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import gsap from "gsap";
@@ -79,7 +79,10 @@ export default function TriggerCard({
 
   useEffect(() => {
     const button = buttonRef.current;
-    if (!button || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      !button ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
 
@@ -107,7 +110,7 @@ export default function TriggerCard({
   }, [isOpen]);
 
   return (
-    <Tooltip label={`Click to [${label}]`} withArrow>
+    <Stack justify="center" align="center" gap={0}>
       <ActionIcon
         ref={buttonRef}
         className={className}
@@ -128,7 +131,7 @@ export default function TriggerCard({
         onFocus={() => animateInteraction(true)}
         onBlur={() => animateInteraction(false)}
         variant="default"
-        size={56}
+        size={64}
         radius={14}
         aria-label={`${label}, ${category}, ${statusLabel}`}
         style={{
@@ -154,24 +157,34 @@ export default function TriggerCard({
             : "10px 10px 24px rgba(0, 0, 0, 0.32), inset 1px 1px 0 rgba(255, 255, 255, 0.16)",
         }}
       >
-        {appIconUrl ? (
-          <Image
-            src={appIconUrl}
-            alt=""
-            aria-hidden="true"
-            w={32}
-            h={32}
-            fit="contain"
-            fallbackSrc="https://cdn-icons-png.flaticon.com/512/565/565547.png"
-          />
-        ) : Icon ? (
-          <Icon
-            size={26}
-            aria-hidden="true"
-            color={isOpen ? "var(--folio-accent)" : "var(--folio-text)"}
-          />
-        ) : null}
+        <Stack justify="center" align="center" gap={0}>
+          {appIconUrl ? (
+            <Image
+              src={appIconUrl}
+              alt=""
+              aria-hidden="true"
+              w={32}
+              h={32}
+              fit="contain"
+              fallbackSrc="https://cdn-icons-png.flaticon.com/512/565/565547.png"
+            />
+          ) : Icon ? (
+            <Icon
+              size={32}
+              aria-hidden="true"
+              color={isOpen ? "var(--folio-accent)" : "var(--folio-text)"}
+            />
+          ) : null}
+          <Text
+            style={{
+              fontSize: 8,
+              fontFamily: "monospace",
+            }}
+          >
+            {label}
+          </Text>
+        </Stack>
       </ActionIcon>
-    </Tooltip>
+    </Stack>
   );
 }

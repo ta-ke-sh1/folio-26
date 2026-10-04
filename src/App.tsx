@@ -15,7 +15,7 @@ import "./styles/base.scss";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
-import '@mantine/tiptap/styles.css';
+import "@mantine/tiptap/styles.css";
 import "mantine-datatable/styles.layer.css";
 
 import "@fontsource-variable/inter"; // Defaults to wght axis
@@ -25,7 +25,7 @@ import "@fontsource-variable/plus-jakarta-sans"; // Defaults to wght axis
 import "@fontsource-variable/plus-jakarta-sans/wght.css"; // Specify axis
 
 import "@fontsource/dm-mono/400.css"; // Default monospace font
-import '@fontsource/dotgothic16'; // Styling fonts
+import "@fontsource/dotgothic16"; // Styling fonts
 
 import CollectionDetailsLayout from "./layouts/collection/collectionDetails.layout.tsx";
 import NavigationBar from "./components/navigation/navBar.tsx";
@@ -45,8 +45,8 @@ import {
   PageTransitionProvider,
 } from "./components/transition/transition.tsx";
 
-import { SpeedInsights } from "@vercel/speed-insights/react"
-import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 import { MANTINE_BREAKPOINTS } from "./styles/breakpoints";
 
 type RouteItem = {
@@ -55,10 +55,6 @@ type RouteItem = {
 };
 
 const routes: RouteItem[] = [
-  {
-    path: "/login",
-    element: <LoginLayout />,
-  },
   {
     path: "/admin/*",
     element: <AdminLayout />,
@@ -138,7 +134,9 @@ export default function App() {
     const root = document.getElementById("root");
     if (!root) return;
 
-    const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const pointerQuery = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    );
     const updateViewportScale = () => {
       const scale = pointerQuery.matches
         ? Math.max(
@@ -165,7 +163,8 @@ export default function App() {
     const initialSoundEnabled =
       localStorage.getItem("folio-sound-enabled") === "true";
     const applySoundPreference = (node: ParentNode) => {
-      const soundEnabled = localStorage.getItem("folio-sound-enabled") === "true";
+      const soundEnabled =
+        localStorage.getItem("folio-sound-enabled") === "true";
       if (node instanceof HTMLMediaElement) {
         node.muted = !soundEnabled;
       }
@@ -175,7 +174,8 @@ export default function App() {
     };
 
     const handleSoundChange = (event: Event) => {
-      const enabled = (event as CustomEvent<{ enabled: boolean }>).detail.enabled;
+      const enabled = (event as CustomEvent<{ enabled: boolean }>).detail
+        .enabled;
       localStorage.setItem("folio-sound-enabled", String(enabled));
       document.querySelectorAll("audio, video").forEach((media) => {
         (media as HTMLMediaElement).muted = !enabled;
