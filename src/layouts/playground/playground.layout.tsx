@@ -213,7 +213,7 @@ export default function PlaygroundLayout() {
   const [posts, setPosts] = useState<PostEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<SortOrder>("latest");
+  const sortOrder: SortOrder = "latest";
 
   const fetchPosts = useCallback(async () => {
     const { data, error: queryError } = await DatabaseService.getInstance()

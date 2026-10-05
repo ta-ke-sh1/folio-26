@@ -17,7 +17,6 @@ import CollectionService from "../../services/collection.service";
 import ListMap from "./list/list.tsx";
 import type { CollectionEntity } from "../../models/entity/collection.model.tsx";
 import "./collections.layout.scss";
-import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import CatchphraseCard from "../../components/card/catchphrase.card.tsx";
 import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";

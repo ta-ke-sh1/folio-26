@@ -9,35 +9,22 @@ import {
   Stack,
   Text,
   Box,
-  useComputedColorScheme,
-  useMantineColorScheme,
 } from "@mantine/core";
 import { ShuffleButton as Button } from "../animations/shuffle.button";
 import { ShuffleText } from "../animations/shuffle.text";
 import { useDisclosure } from "@mantine/hooks";
-import {
-  IconMoon,
-  IconSun,
-  IconVolume,
-  IconVolumeOff,
-} from "@tabler/icons-react";
 import { ZIndexLevel } from "../../enums/styles.enum";
 import { useLocation } from "react-router";
 import { useAnimatedNavigate } from "../transition/transition";
 
 export default function NavigationBar() {
   const [opened, { open, close }] = useDisclosure(false);
-  const { setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme("dark");
   const animatedNavigate = useAnimatedNavigate();
   const location = useLocation();
 
   // Telemetry state: Mouse coordinates & dynamic local time
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [timeStr, setTimeStr] = useState<string>("");
-  const [soundEnabled, setSoundEnabled] = useState(
-    () => localStorage.getItem("folio-sound-enabled") === "true",
-  );
 
   useEffect(() => {
     // 1. Mouse move tracker
@@ -75,18 +62,6 @@ export default function NavigationBar() {
   const handleNavigation = (href: string) => {
     close();
     animatedNavigate(href);
-  };
-
-  const toggleColorScheme = () => {
-    setColorScheme(computedColorScheme === "dark" ? "light" : "dark");
-  };
-
-  const toggleSound = () => {
-    const enabled = !soundEnabled;
-    setSoundEnabled(enabled);
-    document.dispatchEvent(
-      new CustomEvent("folio-sound-change", { detail: { enabled } }),
-    );
   };
 
   return createPortal(
@@ -355,32 +330,6 @@ export default function NavigationBar() {
 
           {/* Real-time Digital Clock */}
           <Group gap="xs">
-            {/* <Button
-              variant="subtle"
-              color="orange"
-              size="compact-xs"
-              onClick={toggleSound}
-              aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
-              title={soundEnabled ? "Turn sound off" : "Turn sound on"}
-              px={6}
-            >
-              {soundEnabled ? <IconVolume size={16} /> : <IconVolumeOff size={16} />}
-            </Button> */}
-            {/* <Button
-              variant="subtle"
-              color="orange"
-              size="compact-xs"
-              onClick={toggleColorScheme}
-              aria-label={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
-              title={`Switch to ${computedColorScheme === "dark" ? "light" : "dark"} mode`}
-              px={6}
-            >
-              {computedColorScheme === "dark" ? (
-                <IconSun size={16} />
-              ) : (
-                <IconMoon size={16} />
-              )}
-            </Button> */}
             <Text size="xs" c="dimmed" style={{ letterSpacing: "0.5px" }}>
               SYS_TIME:{" "}
               <Text component="span" c="orange.4" fw={700} inherit>

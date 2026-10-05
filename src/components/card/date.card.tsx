@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from "react";
-import { Group, Text, Box, Badge, Stack } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Group, Text, Box, Stack } from "@mantine/core";
 import { IconTerminal, IconArrowUpRight } from "@tabler/icons-react";
 
 import { useAnimatedNavigate } from "../transition/transition";
@@ -40,37 +40,31 @@ export function DateCard({ data }: DateCardProps) {
     return "";
   }
 
-  // Generate array of all image URLs for preloading
-  const imageUrls = useMemo(() => {
-    return items.map((item: any) => getImageUrl(item)).filter(Boolean);
-  }, [items, cardData?.id]);
+  const currentItem = items[currentImageIndex];
+  const bgImageUrl = getImageUrl(currentItem);
 
-  // Preload all images into browser cache
+  // Preload only the next image, not every image in every visible card.
   useEffect(() => {
-    if (!imageUrls.length) return;
-
+    if (itemCount <= 1) return;
+    const nextImageUrl = getImageUrl(items[(currentImageIndex + 1) % itemCount]);
+    if (!nextImageUrl) return;
     let isMounted = true;
-    setIsPreloaded(false);
 
-    const loadPromises = imageUrls.map((url: string) => {
-      return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => resolve();
-        img.onerror = () => resolve(); // Resolve anyway so broken images don't block the rest
-      });
-    });
-
-    Promise.all(loadPromises).then(() => {
+    const img = new Image();
+    img.onload = () => {
       if (isMounted) {
         setIsPreloaded(true);
       }
-    });
+    };
+    img.onerror = () => {
+      if (isMounted) setIsPreloaded(true);
+    };
+    img.src = nextImageUrl;
 
     return () => {
       isMounted = false;
     };
-  }, [imageUrls]);
+  }, [items, currentImageIndex, itemCount, cardData?.id]);
 
   // Cycle through collection items only after preloading finishes
   useEffect(() => {
@@ -85,9 +79,6 @@ export function DateCard({ data }: DateCardProps) {
 
     return () => clearInterval(interval);
   }, [itemCount, isPreloaded]);
-
-  const currentItem = items[currentImageIndex];
-  const bgImageUrl = getImageUrl(currentItem);
 
   return (
     <Box

@@ -7,7 +7,6 @@ import {
   Text,
   Paper,
   Group,
-  Badge,
   CopyButton,
   Tooltip,
   ActionIcon,

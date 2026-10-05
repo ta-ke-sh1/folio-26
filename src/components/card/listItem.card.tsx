@@ -1,7 +1,6 @@
 import {
   Badge,
   Box,
-  Flex,
   Grid,
   Group,
   Paper,
@@ -48,39 +47,28 @@ export default function CollectionCard({
   );
   const itemCount = items.length;
 
-  // Generate array of all image URLs for preloading
-  const imageUrls = useMemo(() => {
-    return items
-      .map((item: CollectionItemEntity) => getImageUrl(item, collection.id))
-      .filter(Boolean);
-  }, [items, collection.id]);
-
-  // Preload all images into browser cache
+  // Preload only the upcoming image to avoid downloading the whole collection.
   useEffect(() => {
-    if (!imageUrls.length) return;
-
+    if (itemCount <= 1) return;
+    const nextItem = items[(currentImageIndex + 1) % itemCount];
+    if (!nextItem) return;
+    const nextImageUrl = getImageUrl(nextItem, collection.id);
     let isMounted = true;
-    setIsPreloaded(false);
-
-    const loadPromises = imageUrls.map((url: string) => {
-      return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => resolve();
-        img.onerror = () => resolve(); // Don't let broken images block preloading
-      });
-    });
-
-    Promise.all(loadPromises).then(() => {
+    const img = new Image();
+    img.onload = () => {
       if (isMounted) {
         setIsPreloaded(true);
       }
-    });
+    };
+    img.onerror = () => {
+      if (isMounted) setIsPreloaded(true);
+    };
+    img.src = nextImageUrl;
 
     return () => {
       isMounted = false;
     };
-  }, [imageUrls]);
+  }, [items, currentImageIndex, itemCount, collection.id]);
 
   // Cycle through collection items only after preloading finishes
   useEffect(() => {

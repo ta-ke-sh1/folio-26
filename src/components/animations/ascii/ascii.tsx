@@ -53,7 +53,6 @@ export function AsciiCanvas({
     let B = 0; // 3D Donut rotation angle B
 
     const densityChars = " .:-=+*#%@";
-    const binaryChars = "01";
     const matrixChars = "0101010101./\\|[]{}-+*#_";
 
     const fontSize = 12;

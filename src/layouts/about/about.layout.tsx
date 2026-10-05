@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Box, Group, Stack, Title, Text, Grid, Divider } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
@@ -21,7 +21,12 @@ import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import { ShuffleButton } from "../../components/animations/shuffle.button";
 import Footer from "../../components/footer/footer";
 import LandingPage from "../homepage/main.layout";
-import { TechnologySection } from "../homepage/technology.section";
+
+const TechnologySection = lazy(() =>
+  import("../homepage/technology.section").then((module) => ({
+    default: module.TechnologySection,
+  })),
+);
 
 const ABOUT_GRADIENT_COLORS = ["#F97316", "#EAB308"];
 
@@ -32,7 +37,7 @@ export default function AboutPage() {
 
   const [openWindows, setOpenWindows] = useState<InteractiveItem[]>([]);
   const [focusedWindowId, setFocusedWindowId] = useState<string | null>(null);
-  const [topZIndex, setTopZIndex] = useState<number>(1000);
+  const [, setTopZIndex] = useState<number>(1000);
   const [zIndices, setZIndices] = useState<Record<string, number>>({});
   const [closingWindowIds, setClosingWindowIds] = useState<string[]>([]);
   const [closingFormIds, setClosingFormIds] = useState<string[]>([]);
@@ -514,7 +519,9 @@ export default function AboutPage() {
               ) : item.id === "story" ? (
                 <LandingPage embedded />
               ) : item.id === "techonology" ? (
-                <TechnologySection embedded />
+                <Suspense fallback={null}>
+                  <TechnologySection />
+                </Suspense>
               ) : null}
             </DraggableWindow>
           );

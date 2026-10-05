@@ -8,7 +8,6 @@ interface ProtectedWrapperProps {
 
 export default function ProtectedWrapper({
     children,
-    roles,
 }: ProtectedWrapperProps) {
     return <>{children}</>;
 }

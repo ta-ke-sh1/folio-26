@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Anchor, Box, Group, Image, Stack, Text, Title } from "@mantine/core";
-import { IconArrowLeft, IconExternalLink } from "@tabler/icons-react";
+import { Box, Group, Image, Stack, Text, Title } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useParams } from "react-router";
 import { useLenis } from "lenis/react";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
@@ -158,7 +158,6 @@ export default function CannisterDetailsLayout() {
         .sort(compareFileNames),
     [files],
   );
-  const otherFiles = files.filter((file) => !IMAGE_EXTENSION.test(file.name));
 
   const updateScrollPosition = useCallback(() => {
     const story = storyRef.current;

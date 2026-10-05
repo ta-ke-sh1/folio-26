@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Badge, Box, Group, Stack, Text } from "@mantine/core";
+import { Badge, Box, Group, Stack } from "@mantine/core";
 import {
   IconApi,
   IconBrandCSharp,
@@ -36,7 +36,6 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "./technology.section.scss";
-import JapaneseSignal from "../../components/background/japanese.signal";
 import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 import { maxWidth } from "../../styles/breakpoints";
 
@@ -533,7 +532,7 @@ function TechnologyFlowNode({ data }: NodeProps<TechnologyNode>) {
 
 const NODE_TYPES: NodeTypes = { technology: TechnologyFlowNode };
 
-export function TechnologySection({ embedded = false }: { embedded?: boolean }) {
+export function TechnologySection() {
   const [isMobile, setIsMobile] = useState(
     () => window.matchMedia(MOBILE_BREAKPOINT).matches,
   );

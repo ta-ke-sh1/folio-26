@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import CollaborationForm from "../../layouts/about/forms/collaboration.form";
-import EmailDirectForm from "../../layouts/about/forms/email.form";
 import TalkContactsForm from "../../layouts/about/forms/talk.form";
 import { maxWidth } from "../../styles/breakpoints";
 import { InstrumentModalStyles } from "./instrumentModal.styles";

@@ -2,35 +2,34 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 
 import { Notifications } from "@mantine/notifications";
-import { useEffect, type JSX } from "react";
+import { lazy, Suspense, useEffect, type JSX } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import AdminLayout from "./layouts/admin/admin.layout";
-import LoginLayout from "./layouts/login/login.layout";
-import GalleryLayout from "./layouts/gallery/gallery.layout.tsx";
-import CannisterDetailsLayout from "./layouts/gallery/cannisterDetails.layout.tsx";
-import MemoriesLayout from "./layouts/memories/memories.layout.tsx";
+const AdminLayout = lazy(() => import("./layouts/admin/admin.layout"));
+const GalleryLayout = lazy(() => import("./layouts/gallery/gallery.layout"));
+const CannisterDetailsLayout = lazy(
+  () => import("./layouts/gallery/cannisterDetails.layout"),
+);
+const MemoriesLayout = lazy(() => import("./layouts/memories/memories.layout"));
+const CollectionDetailsLayout = lazy(
+  () => import("./layouts/collection/collectionDetails.layout"),
+);
+const CollectionsLayout = lazy(
+  () => import("./layouts/collection/collections.layout"),
+);
+const AboutLayout = lazy(() => import("./layouts/about/about.layout"));
 
 import "./styles/base.scss";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
-import "@mantine/dates/styles.css";
-import "@mantine/tiptap/styles.css";
-import "mantine-datatable/styles.layer.css";
 
 import "@fontsource-variable/inter"; // Defaults to wght axis
 import "@fontsource-variable/inter/wght.css"; // Specify axis
 
-import "@fontsource-variable/plus-jakarta-sans"; // Defaults to wght axis
-import "@fontsource-variable/plus-jakarta-sans/wght.css"; // Specify axis
-
 import "@fontsource/dm-mono/400.css"; // Default monospace font
 import "@fontsource/dotgothic16"; // Styling fonts
 
-import CollectionDetailsLayout from "./layouts/collection/collectionDetails.layout.tsx";
 import NavigationBar from "./components/navigation/navBar.tsx";
-import CollectionsLayout from "./layouts/collection/collections.layout.tsx";
-import AboutLayout from "./layouts/about/about.layout.tsx";
 import { ReactLenis } from "lenis/react";
 
 import "lenis/dist/lenis.css";
@@ -224,17 +223,17 @@ export default function App() {
           <PageTransitionProvider>
             <NavigationBar />
             <PageEntrance>
-              <Routes>
-                {routes.map((route: RouteItem, index: number) => {
-                  return (
+              <Suspense fallback={<div className="route-loading" aria-label="Loading page" />}>
+                <Routes>
+                  {routes.map((route: RouteItem, index: number) => (
                     <Route
                       key={`route-item-${index}-${route.path}`}
                       path={route.path}
                       element={route.element}
                     />
-                  );
-                })}
-              </Routes>
+                  ))}
+                </Routes>
+              </Suspense>
             </PageEntrance>
           </PageTransitionProvider>
         </BrowserRouter>

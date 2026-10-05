@@ -13,6 +13,9 @@ import { BlogEditorPage } from "./forms/admin.blog.form";
 import { CannisterEditorPage } from "./forms/admin.cannisterEditor.modal";
 import CyberpunkBackdrop from "../../components/background/cyberpunk.backdrop";
 
+import "@mantine/tiptap/styles.css";
+import "mantine-datatable/styles.layer.css";
+
 const VALID_TABS: ActiveTab[] = ["items", "collections", "categories", "tags", "blogs", "cannisters"];
 
 export default function AdminLayout() {

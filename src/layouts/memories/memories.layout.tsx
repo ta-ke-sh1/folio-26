@@ -30,9 +30,8 @@ import BilingualShuffle from "../../components/animations/bilingual.shuffle";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Safety net: if a video never reports it can play through (some mobile
-// browsers don't preload video), don't keep the loader up forever.
-const VIDEO_LOAD_TIMEOUT_MS = 25000;
+// Avoid making the page wait for every reel before becoming interactive.
+const VIDEO_LOAD_TIMEOUT_MS = 8000;
 // HTMLMediaElement.HAVE_ENOUGH_DATA
 const HAVE_ENOUGH_DATA = 4;
 
@@ -138,57 +137,33 @@ export default function MemoriesLayout() {
     });
   }, []);
 
-  // Wait until every video can play through (or errors / times out) before
-  // revealing the page, so reels don't stutter or pop in while scrolling.
+  // Only gate the initial reveal on the first reel; the rest load on demand.
   useEffect(() => {
-    const videos = videoRefs.current.filter(
-      (video): video is HTMLVideoElement => Boolean(video),
-    );
-    if (videos.length === 0) {
+    const video = videoRefs.current[0];
+    if (!video) {
       setVideosReady(true);
       return;
     }
 
-    let loaded = 0;
     let finished = false;
-    const cleanups: Array<() => void> = [];
 
     const finish = () => {
       if (finished) return;
       finished = true;
+      setLoadedVideos(1);
       setVideosReady(true);
     };
 
-    videos.forEach((video) => {
-      let counted = false;
-      const markLoaded = () => {
-        if (counted) return;
-        counted = true;
-        loaded += 1;
-        setLoadedVideos(loaded);
-        if (loaded >= videos.length) finish();
-      };
-
-      // Already buffered (e.g. cached from a previous visit).
-      if (video.readyState >= HAVE_ENOUGH_DATA) {
-        markLoaded();
-        return;
-      }
-
-      // A failed video counts as done so one bad file can't block the page.
-      video.addEventListener("canplaythrough", markLoaded, { once: true });
-      video.addEventListener("error", markLoaded, { once: true });
-      cleanups.push(() => {
-        video.removeEventListener("canplaythrough", markLoaded);
-        video.removeEventListener("error", markLoaded);
-      });
-    });
+    if (video.readyState >= HAVE_ENOUGH_DATA) finish();
+    video.addEventListener("canplay", finish, { once: true });
+    video.addEventListener("error", finish, { once: true });
 
     const timer = window.setTimeout(finish, VIDEO_LOAD_TIMEOUT_MS);
 
     return () => {
       window.clearTimeout(timer);
-      cleanups.forEach((cleanup) => cleanup());
+      video.removeEventListener("canplay", finish);
+      video.removeEventListener("error", finish);
     };
   }, []);
 
@@ -402,7 +377,7 @@ export default function MemoriesLayout() {
                   muted={true}
                   playsInline
                   loop
-                  preload="auto"
+                  preload={index === 0 ? "auto" : "none"}
                   autoPlay={index === 0}
                   aria-label={`${reel.title}: ${reel.note}`}
                   style={{

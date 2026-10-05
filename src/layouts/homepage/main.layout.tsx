@@ -4,7 +4,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LayoutWrapper from "../../components/wrappers/layout/layout.wrapper";
 import StorySection from "./story.section";
-import "./main.layout.scss";
 
 gsap.registerPlugin(ScrollTrigger);
 
